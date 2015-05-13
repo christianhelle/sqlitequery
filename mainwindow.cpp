@@ -78,4 +78,5 @@ void MainWindow::openExistingFile()
 void MainWindow::appExit()
 {
     qDebug("MainWindow::appExit()");
+    exit(0);
 }
