@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>SQLite Query Analyzer</string>
+  </property>
+  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menuQuery">
+    <property name="title">
+     <string>Query</string>
+    </property>
+    <widget class="QMenu" name="menuResults">
+     <property name="title">
+      <string>Results</string>
+     </property>
+     <addaction name="actionResults_as_Grid"/>
+     <addaction name="actionResults_as_Text"/>
+     <addaction name="actionResults_as_XML"/>
+     <addaction name="actionResults_as_JSON"/>
+    </widget>
+    <addaction name="actionExecute_Query"/>
+    <addaction name="menuResults"/>
+   </widget>
+   <widget class="QMenu" name="menuDatabase">
+    <property name="title">
+     <string>Database</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuQuery"/>
+   <addaction name="menuDatabase"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionExecute_Query">
+   <property name="text">
+    <string>Execute Query</string>
+   </property>
+  </action>
+  <action name="actionResults_as_Grid">
+   <property name="text">
+    <string>Results as Grid</string>
+   </property>
+  </action>
+  <action name="actionResults_as_XML">
+   <property name="text">
+    <string>Results as XML</string>
+   </property>
+  </action>
+  <action name="actionResults_as_JSON">
+   <property name="text">
+    <string>Results as JSON</string>
+   </property>
+  </action>
+  <action name="actionResults_as_Text">
+   <property name="text">
+    <string>Results as Text</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
