@@ -49,8 +49,11 @@ bool DatabaseAnalyzer::analyze(DatabaseInfo &info)
 
 void DatabaseAnalyzer::loadTables(DatabaseInfo &info)
 {
+    const QString sql = "SELECT * FROM sqlite_master WHERE type='table'";
+    qDebug() << sql;
+
     QSqlQuery query(this->database);
-    query.exec("SELECT * FROM sqlite_master WHERE type='table'");
+    query.exec(sql);
 
     while (query.next())
     {
@@ -65,8 +68,11 @@ void DatabaseAnalyzer::loadColumns(DatabaseInfo &info)
 {
     foreach (Table table, info.tables)
     {
+        const QString sql = "PRAGMA table_info (" + table.name + ")";
+        qDebug() << sql;
+
         QSqlQuery query(this->database);
-        query.exec("PRAGMA table_info (" + table.name + ")");
+        query.exec(sql);
 
         while (query.next())
         {
@@ -74,8 +80,9 @@ void DatabaseAnalyzer::loadColumns(DatabaseInfo &info)
             col.ordinal = query.value("cid").toInt();
             col.name = query.value("name").toString();
             col.dataType = query.value("type").toString();
-            col.allowNull = query.value("notnull").toBool();
+            col.notNull = query.value("notnull").toBool();
             table.columns.append(col);
+            qDebug() << col.ordinal << col.name << col.dataType << col.notNull;
         }
     }
 }

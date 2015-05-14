@@ -6,7 +6,7 @@ struct Column
     int ordinal;
     QString name;
     QString dataType;
-    bool allowNull;
+    bool notNull;
     int maxLength;
 };
 
