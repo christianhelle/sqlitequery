@@ -14,6 +14,8 @@ public:
     void close();
     bool analyze(DatabaseInfo &info);
 
+    void loadTables(DatabaseInfo &info);
+    void loadColumns(DatabaseInfo &info);
 private:
     QSqlDatabase database;
     QString filename;
