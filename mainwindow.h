@@ -17,6 +17,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void populateTree(DatabaseInfo info);
 public slots:
     void createNewFile();
     void openExistingFile();

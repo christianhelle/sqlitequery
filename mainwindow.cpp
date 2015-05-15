@@ -57,25 +57,8 @@ void MainWindow::createNewFile()
     }
 }
 
-void MainWindow::openExistingFile()
+void MainWindow::populateTree(DatabaseInfo info)
 {
-    qDebug("MainWindow::openExistingFile()");
-
-    QString filename = this->showFileDialog(QFileDialog::AcceptOpen);
-
-    if (!database->open(filename))
-    {
-        qDebug("Unable to open file");
-        return;
-    }
-
-    DatabaseInfo info;
-    if (!database->analyze(info))
-    {
-        qDebug("Analyze database failed");
-        return;
-    }
-
     ui->treeWidget->clear();
 
     QTreeWidgetItem *dbInfoNode = new QTreeWidgetItem(ui->treeWidget);
@@ -98,6 +81,28 @@ void MainWindow::openExistingFile()
         QTreeWidgetItem *tableNode = new QTreeWidgetItem(tablesRootNode);
         tableNode->setText(0, table.name);
     }
+}
+
+void MainWindow::openExistingFile()
+{
+    qDebug("MainWindow::openExistingFile()");
+
+    QString filename = this->showFileDialog(QFileDialog::AcceptOpen);
+
+    if (!database->open(filename))
+    {
+        qDebug("Unable to open file");
+        return;
+    }
+
+    DatabaseInfo info;
+    if (!database->analyze(info))
+    {
+        qDebug("Analyze database failed");
+        return;
+    }
+
+    populateTree(info);
 }
 
 void MainWindow::appExit()
