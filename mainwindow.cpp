@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(appExit()));
 
     database = new DatabaseAnalyzer();
+
+   ui->treeWidget->setColumnCount(1);
 }
 
 MainWindow::~MainWindow()
@@ -72,6 +74,29 @@ void MainWindow::openExistingFile()
     {
         qDebug("Analyze database failed");
         return;
+    }
+
+    ui->treeWidget->clear();
+
+    QTreeWidgetItem *dbInfoNode = new QTreeWidgetItem(ui->treeWidget);
+    dbInfoNode->setText(0, "Database Info");
+
+    QTreeWidgetItem *filenameNode = new QTreeWidgetItem(dbInfoNode);
+    filenameNode->setText(0, QString("File name: ").append(info.filename));
+
+    QTreeWidgetItem *creationDateNode = new QTreeWidgetItem(dbInfoNode);
+    creationDateNode->setText(0, QString("Creation date: ").append(info.creationDate.toLocalTime().toString()));
+
+    QTreeWidgetItem *sizeNode = new QTreeWidgetItem(dbInfoNode);
+    sizeNode->setText(0, QString("File size: ").append(QString::number(info.size)));
+
+    QTreeWidgetItem *tablesRootNode = new QTreeWidgetItem(ui->treeWidget);
+    tablesRootNode->setText(0, "Tables");
+
+    foreach (Table table, info.tables)
+    {
+        QTreeWidgetItem *tableNode = new QTreeWidgetItem(tablesRootNode);
+        tableNode->setText(0, table.name);
     }
 }
 

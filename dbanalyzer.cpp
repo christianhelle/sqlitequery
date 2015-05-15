@@ -60,7 +60,7 @@ void DatabaseAnalyzer::loadTables(DatabaseInfo &info)
         Table table;
         table.name = query.value("name").toString();
         info.tables.append(table);
-        qDebug(table.name.toStdString().c_str());
+        qDebug() << table.name;
     }
 }
 
