@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(createNewFile()));
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openExistingFile()));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(appExit()));
+    connect(ui->actionExecute_Query, SIGNAL(triggered()), this, SLOT(executeQuery()));
 
     database = new DatabaseAnalyzer();
     highlighter = new Highlighter(ui->textEdit->document());
@@ -108,4 +109,12 @@ void MainWindow::appExit()
 {
     qDebug("MainWindow::appExit()");
     exit(0);
+}
+
+void MainWindow::executeQuery()
+{
+    qDebug("MainWindow::executeQuery()");
+
+    QSqlQuery query(this->database->getDatabase());
+    query.exec(ui->textEdit->toPlainText());
 }

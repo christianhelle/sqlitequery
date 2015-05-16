@@ -87,3 +87,7 @@ void DatabaseAnalyzer::loadColumns(DatabaseInfo &info)
     }
 }
 
+QSqlDatabase DatabaseAnalyzer::getDatabase()
+{
+    return this->database;
+}

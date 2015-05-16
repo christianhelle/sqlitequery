@@ -16,6 +16,7 @@ public:
 
     void loadTables(DatabaseInfo &info);
     void loadColumns(DatabaseInfo &info);
+    QSqlDatabase getDatabase();
 
 private:
     QSqlDatabase database;

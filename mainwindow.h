@@ -23,6 +23,7 @@ public slots:
     void createNewFile();
     void openExistingFile();
     void appExit();
+    void executeQuery();
 
 private:
     QString showFileDialog(QFileDialog::AcceptMode mode);
