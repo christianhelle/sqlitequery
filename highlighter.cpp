@@ -12,7 +12,7 @@ Highlighter::Highlighter(QTextDocument *parent)
                     << "\\bdelete\\b" << "\\bupdate\\b" << "\\binto\\b" << "\\bvalues\\b"
                     << "\\bleft\\b" << "\\inner\\b" << "\\bjoin\\b" << "\\bright\\b"
                     << "\\bouter\\b" << "\\bunion\\b" << "\\ball\\b" << "\\bhaving\\b"
-                    << "\\border\\b" << "\\bby\\b"; << "\\basc\\b" << "\\bdesc\\b"
+                    << "\\border\\b" << "\\bby\\b" << "\\basc\\b" << "\\bdesc\\b"
                     << "\\bhaving\\b" << "\\bin\\b";
     foreach (const QString &pattern, keywordPatterns) {
         rule.pattern = QRegExp(pattern);
