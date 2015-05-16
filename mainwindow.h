@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include "dbanalyzer.h"
+#include "highlighter.h"
 
 namespace Ui {
 class MainWindow;
@@ -28,6 +29,7 @@ private:
     Ui::MainWindow *ui;
 
     DatabaseAnalyzer *database;
+    Highlighter *highlighter;
 };
 
 #endif // MAINWINDOW_H

@@ -14,8 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(appExit()));
 
     database = new DatabaseAnalyzer();
-
-   ui->treeWidget->setColumnCount(1);
+    highlighter = new Highlighter(ui->textEdit->document());
 }
 
 MainWindow::~MainWindow()
