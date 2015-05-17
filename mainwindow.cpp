@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     qDebug("MainWindow::MainWindow(QWidget*)");
 
     ui->setupUi(this);
+    ui->splitter->setStretchFactor(0, 1);
+    ui->splitter->setStretchFactor(1, 5);
 
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(createNewFile()));
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openExistingFile()));
