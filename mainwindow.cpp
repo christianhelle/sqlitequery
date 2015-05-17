@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QMessageBox>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -13,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openExistingFile()));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(appExit()));
     connect(ui->actionExecute_Query, SIGNAL(triggered()), this, SLOT(executeQuery()));
+    connect(ui->treeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(treeNodeClicked(QTreeWidgetItem*,int)));
 
     database = new DatabaseAnalyzer();
     highlighter = new Highlighter(ui->textEdit->document());
@@ -30,6 +33,7 @@ QString MainWindow::showFileDialog(QFileDialog::AcceptMode mode)
 {
     QFileDialog dialog(this);
     dialog.setAcceptMode(mode);
+    dialog.setDirectory(QDir::home());
     dialog.setFileMode(QFileDialog::AnyFile);
     dialog.setViewMode(QFileDialog::Detail);
 
@@ -78,9 +82,12 @@ void MainWindow::populateTree(DatabaseInfo info)
 
     foreach (Table table, info.tables)
     {
-        QTreeWidgetItem *tableNode = new QTreeWidgetItem(tablesRootNode);
+        QTreeWidgetItem *tableNode = new QTreeWidgetItem(tablesRootNode, NodeType::TableNode);
         tableNode->setText(0, table.name);
     }
+
+    ui->treeWidget->expandItem(dbInfoNode);
+    ui->treeWidget->expandItem(tablesRootNode);
 }
 
 void MainWindow::openExistingFile()
@@ -95,14 +102,7 @@ void MainWindow::openExistingFile()
         return;
     }
 
-    DatabaseInfo info;
-    if (!database->analyze(info))
-    {
-        qDebug("Analyze database failed");
-        return;
-    }
-
-    populateTree(info);
+    analyzeDatabase();
 }
 
 void MainWindow::appExit()
@@ -111,10 +111,70 @@ void MainWindow::appExit()
     exit(0);
 }
 
+void MainWindow::analyzeDatabase()
+{
+    qDebug("MainWindow::analyzeDatabase()");
+
+    DatabaseInfo info;
+    if (!database->analyze(info))
+    {
+        qDebug("Analyze database failed");
+        return;
+    }
+
+    populateTree(info);
+
+    this->database->close();
+}
+
 void MainWindow::executeQuery()
 {
     qDebug("MainWindow::executeQuery()");
 
-    QSqlQuery query(this->database->getDatabase());
-    query.exec(ui->textEdit->toPlainText());
+    if (!this->database->getDatabase().open())
+    {
+        qDebug("Unable to open database");
+        return;
+    }
+
+    QSqlError error;
+    QString sql = ui->textEdit->toPlainText();
+
+    QSqlDatabase db = this->database->getDatabase();
+    QSqlQuery query(db);
+
+    if (!query.exec(sql))
+    {
+        QString msg = (error = db.lastError()).isValid() ? error.text() : "Query execution failed";
+        QMessageBox::information(this, "Error", msg, QMessageBox::Ok);
+        return;
+    }
+
+    if (sql.contains("create", Qt::CaseInsensitive) || sql.contains("drop", Qt::CaseInsensitive) ||
+        sql.contains("insert", Qt::CaseInsensitive) || sql.contains("delete", Qt::CaseInsensitive))
+    {
+        analyzeDatabase();
+    }
+}
+
+void MainWindow::treeNodeClicked(QTreeWidgetItem *item, int column)
+{
+    if (item && item->type() == NodeType::TableNode)
+    {
+        qDebug("table clicked");
+
+        if (!this->database->getDatabase().open())
+        {
+            qDebug("Unable to open database");
+            return;
+        }
+
+        QSqlTableModel *model = new QSqlTableModel(0, this->database->getDatabase());
+        model->setTable(item->text(column));
+        model->setEditStrategy(QSqlTableModel::OnFieldChange);
+        model->select();
+
+        ui->tableView->setModel(model);
+        ui->tabWidget->setCurrentIndex(1);
+    }
 }
