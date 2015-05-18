@@ -65,6 +65,24 @@ void MainWindow::createNewFile()
     }
 }
 
+QString getFileSize(qint64 size)
+{
+    float num = size;
+    QStringList list;
+    list << "KB" << "MB" << "GB" << "TB";
+
+    QStringListIterator i(list);
+    QString unit("bytes");
+
+    while(num >= 1024 && i.hasNext())
+    {
+        unit = i.next();
+        num /= 1024.0;
+    }
+
+    return QString().setNum(num,'f',2) + " " + unit;
+}
+
 void MainWindow::populateTree(DatabaseInfo info)
 {
     ui->treeWidget->clear();
@@ -79,7 +97,7 @@ void MainWindow::populateTree(DatabaseInfo info)
     creationDateNode->setText(0, QString("Creation date: ").append(info.creationDate.toLocalTime().toString()));
 
     QTreeWidgetItem *sizeNode = new QTreeWidgetItem(dbInfoNode);
-    sizeNode->setText(0, QString("File size: ").append(QString::number(info.size)));
+    sizeNode->setText(0, QString("File size: ").append(getFileSize(info.size)));
 
     QTreeWidgetItem *tablesRootNode = new QTreeWidgetItem(ui->treeWidget);
     tablesRootNode->setText(0, "Tables");

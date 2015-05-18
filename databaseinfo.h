@@ -1,6 +1,8 @@
 #ifndef DATABASEINFO
 #define DATABASEINFO
 
+#include "qglobal.h"
+
 struct Column
 {
     int ordinal;
@@ -31,7 +33,7 @@ struct DatabaseInfo
     QDateTime creationDate;
     QString databaseVersion;
     bool passwordProtected;
-    unsigned int size;
+    qint64 size;
     QList<Table> tables;
 };
 
