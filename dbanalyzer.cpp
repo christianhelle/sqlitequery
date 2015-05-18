@@ -23,6 +23,15 @@ void DatabaseAnalyzer::close()
         database.close();
 }
 
+void DatabaseAnalyzer::shrink()
+{
+    if (!database.isOpen())
+        database.open();
+
+    QSqlQuery query(database);
+    query.exec("VACUUM");
+}
+
 bool DatabaseAnalyzer::open(QString filename)
 {
     qDebug("DatabaseAnalyzer::open(QString)");
@@ -85,9 +94,4 @@ void DatabaseAnalyzer::loadColumns(DatabaseInfo &info)
             qDebug() << col.ordinal << col.name << col.dataType << col.notNull;
         }
     }
-}
-
-QSqlDatabase DatabaseAnalyzer::getDatabase()
-{
-    return this->database;
 }
