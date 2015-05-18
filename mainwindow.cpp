@@ -169,24 +169,51 @@ void MainWindow::executeQuery()
         return;
     }
 
-    QSqlError error;
-    QString sql = ui->textEdit->toPlainText();
+    QStringList list(ui->textEdit->toPlainText().split(";", QString::SplitBehavior::SkipEmptyParts));
+    QStringList errors;
 
     QSqlDatabase db = this->database->getDatabase();
     QSqlQuery query(db);
 
-    if (!query.exec(sql))
+    foreach (QString sql, list)
     {
-        QString msg = (error = db.lastError()).isValid() ? error.text() : "Query execution failed";
+        QSqlError error;
+
+        if (!query.exec(sql))
+        {
+            QString msg = (error = db.lastError()).isValid() ? error.text() : "Query execution failed";
+            errors.append(msg);
+            continue;
+        }
+    }
+
+    if (errors.length() > 0)
+    {
+        analyzeDatabase();
+        QString msg;
+        foreach (QString error, errors)
+        {
+            msg += error;
+            msg += "\r\n";
+        }
+
         QMessageBox::information(this, "Error", msg, QMessageBox::Ok);
         return;
     }
 
-    if (sql.contains("create", Qt::CaseInsensitive) || sql.contains("drop", Qt::CaseInsensitive) ||
-        sql.contains("insert", Qt::CaseInsensitive) || sql.contains("delete", Qt::CaseInsensitive))
+    bool refreshTree = false;
+    foreach (QString sql, list)
     {
-        analyzeDatabase();
+        if (sql.contains("create", Qt::CaseInsensitive) || sql.contains("drop", Qt::CaseInsensitive) ||
+            sql.contains("insert", Qt::CaseInsensitive) || sql.contains("delete", Qt::CaseInsensitive))
+        {
+            refreshTree = true;
+            break;
+        }
     }
+
+    if (refreshTree)
+        analyzeDatabase();
 }
 
 void MainWindow::treeNodeClicked(QTreeWidgetItem *item, int column)
