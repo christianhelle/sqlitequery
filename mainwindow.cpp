@@ -85,7 +85,7 @@ void MainWindow::populateTree(DatabaseInfo info)
 
     foreach (Table table, info.tables)
     {
-        QTreeWidgetItem *tableNode = new QTreeWidgetItem(tablesRootNode, NodeType::TableNode);
+        QTreeWidgetItem *tableNode = new QTreeWidgetItem(tablesRootNode, QTreeWidgetItem::UserType + 1);
         tableNode->setText(0, table.name);
     }
 
@@ -162,7 +162,7 @@ void MainWindow::executeQuery()
 
 void MainWindow::treeNodeClicked(QTreeWidgetItem *item, int column)
 {
-    if (item && item->type() == NodeType::TableNode)
+    if (item && item->type() == QTreeWidgetItem::UserType + 1)
     {
         qDebug("table clicked");
 

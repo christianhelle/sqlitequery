@@ -20,13 +20,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    enum NodeType : int
-    {
-        TableNode = QTreeWidgetItem::UserType + 1,
-        ColumnNode = TableNode + 1,
-        IndexNode = ColumnNode + 1
-    };
-
 public slots:
     void createNewFile();
     void openExistingFile();
