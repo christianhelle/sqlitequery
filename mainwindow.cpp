@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openExistingFile()));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(appExit()));
     connect(ui->actionExecute_Query, SIGNAL(triggered()), this, SLOT(executeQuery()));
+    connect(ui->actionShrink, SIGNAL(triggered()), this, SLOT(shrink()));
     connect(ui->treeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(treeNodeClicked(QTreeWidgetItem*,int)));
 
     database = new DatabaseAnalyzer();
@@ -112,6 +113,16 @@ void MainWindow::appExit()
 {
     qDebug("MainWindow::appExit()");
     exit(0);
+}
+
+void MainWindow::shrink()
+{
+    QString filename = this->database->getFilename();
+    if (filename.isNull() || filename.isEmpty())
+        return;
+
+    this->database->shrink();
+    this->analyzeDatabase();
 }
 
 void MainWindow::analyzeDatabase()

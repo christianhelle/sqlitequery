@@ -116,6 +116,7 @@
     <property name="title">
      <string>Database</string>
     </property>
+    <addaction name="actionShrink"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -187,6 +188,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionShrink">
+   <property name="text">
+    <string>Shrink</string>
    </property>
   </action>
  </widget>

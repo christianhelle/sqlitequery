@@ -26,6 +26,7 @@ public slots:
     void appExit();
     void executeQuery();
     void treeNodeClicked(QTreeWidgetItem*,int);
+    void shrink();
 
 private:
     QString showFileDialog(QFileDialog::AcceptMode mode);
