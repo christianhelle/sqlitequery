@@ -211,6 +211,8 @@ void MainWindow::executeQuery()
             QSqlQueryModel *model = new QSqlQueryModel();
             model->setQuery(query);
             table->setModel(model);
+
+            ui->tabWidget->setCurrentIndex(0);
         }
     }
 
