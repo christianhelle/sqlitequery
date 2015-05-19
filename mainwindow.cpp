@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     database = new DatabaseAnalyzer();
     highlighter = new Highlighter(ui->textEdit->document());
+    tableResults = new QList<QTableView*>();
 }
 
 MainWindow::~MainWindow()
@@ -159,9 +160,25 @@ void MainWindow::analyzeDatabase()
     this->database->close();
 }
 
+void MainWindow::clearResults()
+{
+    QList<QTableView*>::iterator i;
+    for (i = this->tableResults->begin(); i != this->tableResults->end(); ++i)
+    {
+        QAbstractItemModel *model = (*i)->model();
+        if (model != Q_NULLPTR)
+            delete model;
+    }
+
+    qDeleteAll(this->tableResults->begin(), this->tableResults->end());
+    this->tableResults->clear();
+}
+
 void MainWindow::executeQuery()
 {
     qDebug("MainWindow::executeQuery()");
+
+    clearResults();
 
     if (!this->database->getDatabase().open())
     {
@@ -173,17 +190,27 @@ void MainWindow::executeQuery()
     QStringList errors;
 
     QSqlDatabase db = this->database->getDatabase();
-    QSqlQuery query(db);
 
     foreach (QString sql, list)
     {
-        QSqlError error;
+        QSqlError error;        
+        QSqlQuery query(db);
 
         if (!query.exec(sql))
         {
             QString msg = (error = db.lastError()).isValid() ? error.text() : "Query execution failed";
             errors.append(msg);
             continue;
+        }
+
+        if (sql.contains("select", Qt::CaseInsensitive))
+        {
+            QTableView *table = new QTableView(ui->splitterQueryTab);
+            this->tableResults->append(table);
+
+            QSqlQueryModel *model = new QSqlQueryModel();
+            model->setQuery(query);
+            table->setModel(model);
         }
     }
 
@@ -227,6 +254,9 @@ void MainWindow::treeNodeClicked(QTreeWidgetItem *item, int column)
             qDebug("Unable to open database");
             return;
         }
+
+        if (ui->tableView->model() != Q_NULLPTR)
+            delete ui->tableView->model();
 
         QSqlTableModel *model = new QSqlTableModel(0, this->database->getDatabase());
         model->setTable(item->text(column));

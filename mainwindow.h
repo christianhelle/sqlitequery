@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QTreeWidget>
+#include <QTableView>
 
 #include "dbanalyzer.h"
 #include "highlighter.h"
@@ -20,6 +21,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void clearResults();
 public slots:
     void createNewFile();
     void openExistingFile();
@@ -34,6 +36,7 @@ private:
 
     DatabaseAnalyzer *database;
     Highlighter *highlighter;
+    QList<QTableView*> *tableResults;
 
     void populateTree(DatabaseInfo info);
     void analyzeDatabase();
