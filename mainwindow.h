@@ -21,7 +21,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void clearResults();
 public slots:
     void createNewFile();
     void openExistingFile();
@@ -29,6 +28,7 @@ public slots:
     void executeQuery();
     void treeNodeClicked(QTreeWidgetItem*,int);
     void shrink();
+    void about();
 
 private:
     QString showFileDialog(QFileDialog::AcceptMode mode);
@@ -40,6 +40,7 @@ private:
 
     void populateTree(DatabaseInfo info);
     void analyzeDatabase();
+    void clearResults();
 };
 
 #endif // MAINWINDOW_H

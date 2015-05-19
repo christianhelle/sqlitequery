@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionExecute_Query, SIGNAL(triggered()), this, SLOT(executeQuery()));
     connect(ui->actionShrink, SIGNAL(triggered()), this, SLOT(shrink()));
     connect(ui->treeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(treeNodeClicked(QTreeWidgetItem*,int)));
+    connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
 
     database = new DatabaseAnalyzer();
     highlighter = new Highlighter(ui->textEdit->document());
@@ -267,4 +268,10 @@ void MainWindow::treeNodeClicked(QTreeWidgetItem *item, int column)
         ui->tableView->setModel(model);
         ui->tabWidget->setCurrentIndex(1);
     }
+}
+
+void MainWindow::about()
+{
+    QString text = "Database management and query analyzer tool for SQLite";
+    QMessageBox::about(this, "About", text);
 }
