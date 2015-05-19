@@ -206,7 +206,7 @@ void MainWindow::executeQuery()
             continue;
         }
 
-        if (sql.contains("select", Qt::CaseInsensitive))
+        if (query.isSelect())
         {
             QTableView *table = new QTableView(ui->splitterQueryTab);
             this->tableResults->append(table);
