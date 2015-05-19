@@ -92,17 +92,7 @@
     <property name="title">
      <string>Query</string>
     </property>
-    <widget class="QMenu" name="menuResults">
-     <property name="title">
-      <string>Results</string>
-     </property>
-     <addaction name="actionResults_as_Grid"/>
-     <addaction name="actionResults_as_Text"/>
-     <addaction name="actionResults_as_XML"/>
-     <addaction name="actionResults_as_JSON"/>
-    </widget>
     <addaction name="actionExecute_Query"/>
-    <addaction name="menuResults"/>
    </widget>
    <widget class="QMenu" name="menuDatabase">
     <property name="title">
