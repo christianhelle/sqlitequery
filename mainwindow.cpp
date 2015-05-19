@@ -186,7 +186,7 @@ void MainWindow::executeQuery()
         return;
     }
 
-    QStringList list(ui->textEdit->toPlainText().split(";", QString::SplitBehavior::SkipEmptyParts));
+    QStringList list(ui->textEdit->toPlainText().split(";", (QString::SplitBehavior) 1)); // SkipEmptyParts
     QStringList errors;
 
     QSqlDatabase db = this->database->getDatabase();
