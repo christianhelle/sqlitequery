@@ -25,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
     database = new DatabaseAnalyzer();
     highlighter = new Highlighter(ui->textEdit->document());
     tableResults = new QList<QTableView*>();
+
+    this->openExistingFile();
 }
 
 MainWindow::~MainWindow()
