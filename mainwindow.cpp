@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->splitterMain->setStretchFactor(1, 3);
     ui->splitterQueryTab->setStretchFactor(1, 1);
+    this->setWindowTitle("SQLite Query Analyzer");
 
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(createNewFile()));
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openExistingFile()));
