@@ -1,6 +1,6 @@
 #include "dbanalyzer.h"
 
-DatabaseAnalyzer::DatabaseAnalyzer()
+DbAnalyzer::DbAnalyzer()
 {
     qDebug("DatabaseAnalyzer::DatabaseAnalyzer()");
 
@@ -8,14 +8,14 @@ DatabaseAnalyzer::DatabaseAnalyzer()
     database.setHostName("localhost");
 }
 
-DatabaseAnalyzer::~DatabaseAnalyzer()
+DbAnalyzer::~DbAnalyzer()
 {
     qDebug("DatabaseAnalyzer::~DatabaseAnalyzer()");
 
     this->close();
 }
 
-void DatabaseAnalyzer::close()
+void DbAnalyzer::close()
 {
     qDebug("DatabaseAnalyzer::close()");
 
@@ -23,7 +23,7 @@ void DatabaseAnalyzer::close()
         database.close();
 }
 
-void DatabaseAnalyzer::shrink()
+void DbAnalyzer::shrink()
 {
     if (!database.isOpen())
         database.open();
@@ -32,7 +32,7 @@ void DatabaseAnalyzer::shrink()
     query.exec("VACUUM");
 }
 
-bool DatabaseAnalyzer::open(QString filename)
+bool DbAnalyzer::open(QString filename)
 {
     qDebug("DatabaseAnalyzer::open(QString)");
 
@@ -42,7 +42,7 @@ bool DatabaseAnalyzer::open(QString filename)
     return database.open();
 }
 
-bool DatabaseAnalyzer::analyze(DatabaseInfo &info)
+bool DbAnalyzer::analyze(DatabaseInfo &info)
 {
     QFileInfo file(this->filename);
 
@@ -56,7 +56,7 @@ bool DatabaseAnalyzer::analyze(DatabaseInfo &info)
     return true;
 }
 
-void DatabaseAnalyzer::loadTables(DatabaseInfo &info)
+void DbAnalyzer::loadTables(DatabaseInfo &info)
 {
     const QString sql = "SELECT * FROM sqlite_master WHERE type='table'";
     qDebug() << sql;
@@ -73,7 +73,7 @@ void DatabaseAnalyzer::loadTables(DatabaseInfo &info)
     }
 }
 
-void DatabaseAnalyzer::loadColumns(DatabaseInfo &info)
+void DbAnalyzer::loadColumns(DatabaseInfo &info)
 {
     foreach (Table table, info.tables)
     {

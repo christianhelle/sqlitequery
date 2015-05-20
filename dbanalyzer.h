@@ -4,11 +4,11 @@
 #include <QtSql>
 #include "databaseinfo.h"
 
-class DatabaseAnalyzer
+class DbAnalyzer
 {
 public:
-    DatabaseAnalyzer();
-    ~DatabaseAnalyzer();
+    DbAnalyzer();
+    ~DbAnalyzer();
 
     bool open(QString filename);
     void close();

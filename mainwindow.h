@@ -34,7 +34,7 @@ private:
     QString showFileDialog(QFileDialog::AcceptMode mode);
     Ui::MainWindow *ui;
 
-    DatabaseAnalyzer *database;
+    DbAnalyzer *database;
     Highlighter *highlighter;
     QList<QTableView*> *tableResults;
 

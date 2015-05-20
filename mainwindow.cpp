@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->treeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(treeNodeClicked(QTreeWidgetItem*,int)));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
 
-    database = new DatabaseAnalyzer();
+    database = new DbAnalyzer();
     highlighter = new Highlighter(ui->textEdit->document());
     tableResults = new QList<QTableView*>();
 
