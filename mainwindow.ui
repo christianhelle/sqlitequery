@@ -112,7 +112,7 @@
     <string>Execute Query</string>
    </property>
    <property name="shortcut">
-    <string>F5</string>
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionResults_as_Grid">
