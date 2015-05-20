@@ -1,50 +1,19 @@
 #include "dbanalyzer.h"
 
-DbAnalyzer::DbAnalyzer()
+DbAnalyzer::DbAnalyzer(Database *database)
 {
     qDebug("DatabaseAnalyzer::DatabaseAnalyzer()");
-
-    database = QSqlDatabase::addDatabase("QSQLITE");
-    database.setHostName("localhost");
+    this->database = database;
 }
 
 DbAnalyzer::~DbAnalyzer()
 {
     qDebug("DatabaseAnalyzer::~DatabaseAnalyzer()");
-
-    this->close();
-}
-
-void DbAnalyzer::close()
-{
-    qDebug("DatabaseAnalyzer::close()");
-
-    if (database.isOpen())
-        database.close();
-}
-
-void DbAnalyzer::shrink()
-{
-    if (!database.isOpen())
-        database.open();
-
-    QSqlQuery query(database);
-    query.exec("VACUUM");
-}
-
-bool DbAnalyzer::open(QString filename)
-{
-    qDebug("DatabaseAnalyzer::open(QString)");
-
-    this->close();
-    this->filename = filename;
-    database.setDatabaseName(filename);
-    return database.open();
 }
 
 bool DbAnalyzer::analyze(DatabaseInfo &info)
 {
-    QFileInfo file(this->filename);
+    QFileInfo file(this->database->getFilename());
 
     info.filename = file.fileName();
     info.size = file.size();
@@ -61,7 +30,7 @@ void DbAnalyzer::loadTables(DatabaseInfo &info)
     const QString sql = "SELECT * FROM sqlite_master WHERE type='table'";
     qDebug() << sql;
 
-    QSqlQuery query(this->database);
+    QSqlQuery query(this->database->getDatabase());
     query.exec(sql);
 
     while (query.next())
@@ -80,7 +49,7 @@ void DbAnalyzer::loadColumns(DatabaseInfo &info)
         const QString sql = "PRAGMA table_info (" + table.name + ")";
         qDebug() << sql;
 
-        QSqlQuery query(this->database);
+        QSqlQuery query(this->database->getDatabase());
         query.exec(sql);
 
         while (query.next())

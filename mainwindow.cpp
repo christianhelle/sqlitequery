@@ -22,9 +22,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->treeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(treeNodeClicked(QTreeWidgetItem*,int)));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
 
-    database = new DbAnalyzer();
-    highlighter = new Highlighter(ui->textEdit->document());
-    tableResults = new QList<QTableView*>();
+    this->database = new Database();
+    this->analyzer = new DbAnalyzer(database);
+    this->query = new DbQuery(ui->splitterQueryTab, this->database);
+    this->highlighter = new Highlighter(ui->textEdit->document());
 
     this->openExistingFile();
 }
@@ -33,7 +34,7 @@ MainWindow::~MainWindow()
 {
     qDebug("MainWindow::~MainWindow()");
 
-    delete database;
+    delete analyzer;
     delete ui;
 }
 
@@ -62,7 +63,8 @@ void MainWindow::createNewFile()
 
     QString filename = this->showFileDialog(QFileDialog::AcceptSave);
 
-    if (!database->open(filename))
+    database->setSource(filename);
+    if (!database->open())
     {
         qDebug("Unable to create file");
         return;
@@ -98,7 +100,7 @@ void MainWindow::populateTree(DatabaseInfo info)
     filenameNode->setText(0, QString("File name: ").append(info.filename));
 
     QTreeWidgetItem *creationDateNode = new QTreeWidgetItem(dbInfoNode);
-    creationDateNode->setText(0, QString("Creation date: ").append(info.creationDate.toLocalTime().toString()));
+    creationDateNode->setText(0, QString("Created on: ").append(info.creationDate.toLocalTime().toString()));
 
     QTreeWidgetItem *sizeNode = new QTreeWidgetItem(dbInfoNode);
     sizeNode->setText(0, QString("File size: ").append(getFileSize(info.size)));
@@ -122,7 +124,8 @@ void MainWindow::openExistingFile()
 
     QString filename = this->showFileDialog(QFileDialog::AcceptOpen);
 
-    if (!database->open(filename))
+    database->setSource(filename);
+    if (!database->open())
     {
         qDebug("Unable to open file");
         return;
@@ -152,7 +155,7 @@ void MainWindow::analyzeDatabase()
     qDebug("MainWindow::analyzeDatabase()");
 
     DatabaseInfo info;
-    if (!database->analyze(info))
+    if (!analyzer->analyze(info))
     {
         qDebug("Analyze database failed");
         return;
@@ -163,89 +166,29 @@ void MainWindow::analyzeDatabase()
     this->database->close();
 }
 
-void MainWindow::clearResults()
-{
-    QList<QTableView*>::iterator i;
-    for (i = this->tableResults->begin(); i != this->tableResults->end(); ++i)
-    {
-        QAbstractItemModel *model = (*i)->model();
-        if (model != Q_NULLPTR)
-            delete model;
-    }
-
-    qDeleteAll(this->tableResults->begin(), this->tableResults->end());
-    this->tableResults->clear();
-}
-
 void MainWindow::executeQuery()
 {
     qDebug("MainWindow::executeQuery()");
 
-    clearResults();
-
-    if (!this->database->getDatabase().open())
-    {
-        qDebug("Unable to open database");
-        return;
-    }
-
     QStringList list(ui->textEdit->toPlainText().split(";", (QString::SplitBehavior) 1)); // SkipEmptyParts
     QStringList errors;
 
-    QSqlDatabase db = this->database->getDatabase();
-
-    foreach (QString sql, list)
+    if (this->query->execute(list, &errors))
     {
-        QSqlError error;        
-        QSqlQuery query(db);
-
-        if (!query.exec(sql))
-        {
-            QString msg = (error = db.lastError()).isValid() ? error.text() : "Query execution failed";
-            errors.append(msg);
-            continue;
-        }
-
-        if (query.isSelect())
-        {
-            QTableView *table = new QTableView(ui->splitterQueryTab);
-            this->tableResults->append(table);
-
-            QSqlQueryModel *model = new QSqlQueryModel();
-            model->setQuery(query);
-            table->setModel(model);
-
-            ui->tabWidget->setCurrentIndex(0);
-        }
+        ui->tabWidget->setCurrentIndex(0);
     }
 
-    if (errors.length() > 0)
+    foreach (const QString sql, list)
     {
-        analyzeDatabase();
-        QString msg;
-        foreach (QString error, errors)
+        if (sql.contains("create", Qt::CaseInsensitive) ||
+            sql.contains("drop", Qt::CaseInsensitive) ||
+            sql.contains("insert", Qt::CaseInsensitive) ||
+            sql.contains("delete", Qt::CaseInsensitive))
         {
-            msg += error;
-            msg += "\r\n";
-        }
-
-        QMessageBox::information(this, "Error", msg, QMessageBox::Ok);
-        return;
-    }
-
-    bool refreshTree = false;
-    foreach (QString sql, list)
-    {
-        if (sql.contains("create", Qt::CaseInsensitive) || sql.contains("drop", Qt::CaseInsensitive) ||
-            sql.contains("insert", Qt::CaseInsensitive) || sql.contains("delete", Qt::CaseInsensitive))
-        {
-            refreshTree = true;
+            analyzeDatabase();
             break;
         }
     }
-
-    if (refreshTree)
-        analyzeDatabase();
 }
 
 void MainWindow::treeNodeClicked(QTreeWidgetItem *item, int column)
@@ -254,7 +197,7 @@ void MainWindow::treeNodeClicked(QTreeWidgetItem *item, int column)
     {
         qDebug("table clicked");
 
-        if (!this->database->getDatabase().open())
+        if (!this->database->open())
         {
             qDebug("Unable to open database");
             return;

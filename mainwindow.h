@@ -7,6 +7,7 @@
 #include <QTableView>
 
 #include "dbanalyzer.h"
+#include "dbquery.h"
 #include "highlighter.h"
 
 namespace Ui {
@@ -34,13 +35,14 @@ private:
     QString showFileDialog(QFileDialog::AcceptMode mode);
     Ui::MainWindow *ui;
 
-    DbAnalyzer *database;
+    Database *database;
+    DbAnalyzer *analyzer;
+    DbQuery *query;
     Highlighter *highlighter;
     QList<QTableView*> *tableResults;
 
     void populateTree(DatabaseInfo info);
     void analyzeDatabase();
-    void clearResults();
 };
 
 #endif // MAINWINDOW_H

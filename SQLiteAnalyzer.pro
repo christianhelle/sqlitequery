@@ -16,11 +16,15 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     dbanalyzer.cpp \
-    highlighter.cpp
+    highlighter.cpp \
+    dbquery.cpp \
+    database.cpp
 
 HEADERS  += mainwindow.h \
     dbanalyzer.h \
     databaseinfo.h \
-    highlighter.h
+    highlighter.h \
+    dbquery.h \
+    database.h
 
 FORMS    += mainwindow.ui

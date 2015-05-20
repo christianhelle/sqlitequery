@@ -3,27 +3,20 @@
 
 #include <QtSql>
 #include "databaseinfo.h"
+#include "database.h"
 
 class DbAnalyzer
 {
 public:
-    DbAnalyzer();
+    DbAnalyzer(Database *database);
     ~DbAnalyzer();
-
-    bool open(QString filename);
-    void close();
-    void shrink();
     bool analyze(DatabaseInfo &info);
+
+private:
+    Database *database;
 
     void loadTables(DatabaseInfo &info);
     void loadColumns(DatabaseInfo &info);
-
-    QSqlDatabase getDatabase() { return database; }
-    QString getFilename() { return filename; }
-
-private:
-    QSqlDatabase database;
-    QString filename;
 };
 
 #endif // DBANALYZER_H
