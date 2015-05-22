@@ -3,6 +3,7 @@
 
 #include <QMessageBox>
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -112,6 +113,21 @@ void MainWindow::populateTree(DatabaseInfo info)
     {
         QTreeWidgetItem *tableNode = new QTreeWidgetItem(tablesRootNode, QTreeWidgetItem::UserType + 1);
         tableNode->setText(0, table.name);
+
+        foreach (Column col, table.columns)
+        {
+            QTreeWidgetItem *colName = new QTreeWidgetItem(tableNode);
+            colName->setText(0, col.name);
+
+            QTreeWidgetItem *colOrdinal = new QTreeWidgetItem(colName);
+            colOrdinal->setText(0, QString("Ordinal Position: ").append(QString::number(col.ordinal)));
+
+            QTreeWidgetItem *colDataType = new QTreeWidgetItem(colName);
+            colDataType->setText(0, QString("Data Type: ").append(col.dataType));
+
+            QTreeWidgetItem *colNotNull = new QTreeWidgetItem(colName);
+            colNotNull->setText(0, QString("Allow Null: ").append(!col.notNull ? "True" : "False"));
+        }
     }
 
     ui->treeWidget->expandItem(dbInfoNode);
