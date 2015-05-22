@@ -7,8 +7,9 @@ Highlighter::Highlighter(QTextDocument *parent)
 
     keywordFormat.setForeground(Qt::darkBlue);
     keywordFormat.setFontWeight(QFont::Bold);
+
     QStringList keywordPatterns;
-    keywordPatterns << "\\bselect\\b" << "\\bfrom\\b" << "\\bwhere\\b" << "\\binsert\\b"
+    keywordPatterns << "\\bselect\\b" << "\\bfrom\\b" << "\\blimit\\b"  << "\\bwhere\\b" << "\\binsert\\b"
                     << "\\bdelete\\b" << "\\bupdate\\b" << "\\binto\\b" << "\\bvalues\\b"
                     << "\\bleft\\b" << "\\inner\\b" << "\\bjoin\\b" << "\\bright\\b"
                     << "\\bouter\\b" << "\\bunion\\b" << "\\ball\\b" << "\\bhaving\\b"
