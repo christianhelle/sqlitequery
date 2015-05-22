@@ -93,6 +93,7 @@
     <property name="title">
      <string>Database</string>
     </property>
+    <addaction name="actionRefresh"/>
     <addaction name="actionShrink"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -170,6 +171,11 @@
   <action name="actionShrink">
    <property name="text">
     <string>Shrink</string>
+   </property>
+  </action>
+  <action name="actionRefresh">
+   <property name="text">
+    <string>Refresh</string>
    </property>
   </action>
  </widget>

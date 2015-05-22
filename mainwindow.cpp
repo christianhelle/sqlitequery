@@ -22,10 +22,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionShrink, SIGNAL(triggered()), this, SLOT(shrink()));
     connect(ui->treeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(treeNodeClicked(QTreeWidgetItem*,int)));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
+    connect(ui->actionRefresh, SIGNAL(triggered()), this, SLOT(refreshDatabase()));
 
     this->database = new Database();
     this->analyzer = new DbAnalyzer(database);
     this->query = new DbQuery(ui->splitterQueryTab, this->database);
+    this->tree = new DbTree(ui->treeWidget);
     this->highlighter = new Highlighter(ui->textEdit->document());
 
     this->openExistingFile();
@@ -72,68 +74,6 @@ void MainWindow::createNewFile()
     }
 }
 
-QString getFileSize(qint64 size)
-{
-    float num = size;
-    QStringList list;
-    list << "KB" << "MB" << "GB" << "TB";
-
-    QStringListIterator i(list);
-    QString unit("bytes");
-
-    while(num >= 1024 && i.hasNext())
-    {
-        unit = i.next();
-        num /= 1024.0;
-    }
-
-    return QString().setNum(num,'f',2) + " " + unit;
-}
-
-void MainWindow::populateTree(DatabaseInfo info)
-{
-    ui->treeWidget->clear();
-
-    QTreeWidgetItem *dbInfoNode = new QTreeWidgetItem(ui->treeWidget);
-    dbInfoNode->setText(0, "Database Info");
-
-    QTreeWidgetItem *filenameNode = new QTreeWidgetItem(dbInfoNode);
-    filenameNode->setText(0, QString("File name: ").append(info.filename));
-
-    QTreeWidgetItem *creationDateNode = new QTreeWidgetItem(dbInfoNode);
-    creationDateNode->setText(0, QString("Created on: ").append(info.creationDate.toLocalTime().toString()));
-
-    QTreeWidgetItem *sizeNode = new QTreeWidgetItem(dbInfoNode);
-    sizeNode->setText(0, QString("File size: ").append(getFileSize(info.size)));
-
-    QTreeWidgetItem *tablesRootNode = new QTreeWidgetItem(ui->treeWidget);
-    tablesRootNode->setText(0, "Tables");
-
-    foreach (Table table, info.tables)
-    {
-        QTreeWidgetItem *tableNode = new QTreeWidgetItem(tablesRootNode, QTreeWidgetItem::UserType + 1);
-        tableNode->setText(0, table.name);
-
-        foreach (Column col, table.columns)
-        {
-            QTreeWidgetItem *colName = new QTreeWidgetItem(tableNode);
-            colName->setText(0, col.name);
-
-            QTreeWidgetItem *colOrdinal = new QTreeWidgetItem(colName);
-            colOrdinal->setText(0, QString("Ordinal Position: ").append(QString::number(col.ordinal)));
-
-            QTreeWidgetItem *colDataType = new QTreeWidgetItem(colName);
-            colDataType->setText(0, QString("Data Type: ").append(col.dataType));
-
-            QTreeWidgetItem *colNotNull = new QTreeWidgetItem(colName);
-            colNotNull->setText(0, QString("Allow Null: ").append(!col.notNull ? "True" : "False"));
-        }
-    }
-
-    ui->treeWidget->expandItem(dbInfoNode);
-    ui->treeWidget->expandItem(tablesRootNode);
-}
-
 void MainWindow::openExistingFile()
 {
     qDebug("MainWindow::openExistingFile()");
@@ -166,6 +106,11 @@ void MainWindow::shrink()
     this->analyzeDatabase();
 }
 
+void MainWindow::refreshDatabase()
+{
+    this->analyzeDatabase();
+}
+
 void MainWindow::analyzeDatabase()
 {
     qDebug("MainWindow::analyzeDatabase()");
@@ -177,7 +122,7 @@ void MainWindow::analyzeDatabase()
         return;
     }
 
-    populateTree(info);
+    this->tree->populateTree(info);
 
     this->database->close();
 }

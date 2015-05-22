@@ -18,13 +18,15 @@ SOURCES += main.cpp\
     dbanalyzer.cpp \
     highlighter.cpp \
     dbquery.cpp \
-    database.cpp
+    database.cpp \
+    dbtree.cpp
 
 HEADERS  += mainwindow.h \
     dbanalyzer.h \
     databaseinfo.h \
     highlighter.h \
     dbquery.h \
-    database.h
+    database.h \
+    dbtree.h
 
 FORMS    += mainwindow.ui

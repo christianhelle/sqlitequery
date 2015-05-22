@@ -30,6 +30,12 @@ void DbAnalyzer::loadTables(DatabaseInfo &info)
     const QString sql = "SELECT * FROM sqlite_master WHERE type='table'";
     qDebug() << sql;
 
+    if (!this->database->open())
+    {
+        qDebug("Unable to open database");
+        return;
+    }
+
     QSqlQuery query(this->database->getDatabase());
     query.exec(sql);
 

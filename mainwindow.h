@@ -9,6 +9,7 @@
 #include "dbanalyzer.h"
 #include "dbquery.h"
 #include "highlighter.h"
+#include "dbtree.h"
 
 namespace Ui {
 class MainWindow;
@@ -29,6 +30,7 @@ public slots:
     void executeQuery();
     void treeNodeClicked(QTreeWidgetItem*,int);
     void shrink();
+    void refreshDatabase();
     void about();
 
 private:
@@ -38,10 +40,9 @@ private:
     Database *database;
     DbAnalyzer *analyzer;
     DbQuery *query;
+    DbTree *tree;
     Highlighter *highlighter;
-    QList<QTableView*> *tableResults;
 
-    void populateTree(DatabaseInfo info);
     void analyzeDatabase();
 };
 

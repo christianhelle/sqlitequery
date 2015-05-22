@@ -1,7 +1,8 @@
 #ifndef DATABASEINFO
 #define DATABASEINFO
 
-#include "qglobal.h"
+#include <QtGlobal>
+#include <QDateTime>
 
 struct Column
 {
@@ -9,7 +10,6 @@ struct Column
     QString name;
     QString dataType;
     bool notNull;
-    //int maxLength;
 };
 
 struct Index
