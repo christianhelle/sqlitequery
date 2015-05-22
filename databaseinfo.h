@@ -9,7 +9,7 @@ struct Column
     QString name;
     QString dataType;
     bool notNull;
-    int maxLength;
+    //int maxLength;
 };
 
 struct Index
