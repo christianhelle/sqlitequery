@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     highlighter.cpp \
     dbquery.cpp \
     database.cpp \
-    dbtree.cpp
+    dbtree.cpp \
+    recentfiles.cpp
 
 HEADERS  += mainwindow.h \
     dbanalyzer.h \
@@ -27,6 +28,7 @@ HEADERS  += mainwindow.h \
     highlighter.h \
     dbquery.h \
     database.h \
-    dbtree.h
+    dbtree.h \
+    recentfiles.h
 
 FORMS    += mainwindow.ui
