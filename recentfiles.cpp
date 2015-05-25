@@ -18,3 +18,8 @@ void RecentFiles::clear()
 {
     this->files.clear();
 }
+
+QStringList RecentFiles::getList()
+{
+    return this->files;
+}

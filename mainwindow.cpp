@@ -1,8 +1,8 @@
 #include "mainwindow.h"
+#include "recentfiles.h"
 #include "ui_mainwindow.h"
 
 #include <QMessageBox>
-
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->tree = new DbTree(ui->treeWidget);
     this->highlighter = new Highlighter(ui->textEdit->document());
 
+    this->loadRecentFiles();
     this->openExistingFile();
 }
 
@@ -39,6 +40,28 @@ MainWindow::~MainWindow()
 
     delete analyzer;
     delete ui;
+}
+
+void MainWindow::loadRecentFiles()
+{
+    QMenu *menu = ui->menuFile->addMenu("Recent Files");
+
+    RecentFiles recent;
+    QStringList files = recent.getList();
+
+    if (files.length() == 0)
+        return;
+
+    foreach (const QString file, files)
+    {
+        QAction *action = menu->addAction(file);
+        connect(action, SIGNAL(triggered()), this, SLOT(openRecentFile(QString)));
+    }
+}
+
+void MainWindow::openRecentFile(const QString file)
+{
+    this->openDatabase(file);
 }
 
 QString MainWindow::showFileDialog(QFileDialog::AcceptMode mode)
@@ -64,30 +87,28 @@ void MainWindow::createNewFile()
 {
     qDebug("MainWindow::createNewFile()");
 
-    QString filename = this->showFileDialog(QFileDialog::AcceptSave);
+    this->openDatabase(this->showFileDialog(QFileDialog::AcceptSave));
+}
 
-    database->setSource(filename);
-    if (!database->open())
+void MainWindow::openDatabase(QString filename)
+{
+    qDebug("MainWindow::openDatabase(QString)");
+
+    this->database->setSource(filename);
+    if (!this->database->open())
     {
-        qDebug("Unable to create file");
+        qDebug("Unable to open file");
         return;
     }
+
+    this->analyzeDatabase();
 }
 
 void MainWindow::openExistingFile()
 {
     qDebug("MainWindow::openExistingFile()");
 
-    QString filename = this->showFileDialog(QFileDialog::AcceptOpen);
-
-    database->setSource(filename);
-    if (!database->open())
-    {
-        qDebug("Unable to open file");
-        return;
-    }
-
-    analyzeDatabase();
+    this->openDatabase(this->showFileDialog(QFileDialog::AcceptOpen));
 }
 
 void MainWindow::appExit()

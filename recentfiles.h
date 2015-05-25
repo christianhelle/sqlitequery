@@ -11,6 +11,7 @@ public:
 
     void add(QString filePath);
     void clear();
+    QStringList getList();
 
 private:
     QStringList files;

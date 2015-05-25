@@ -23,6 +23,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void loadRecentFiles();
+    void openDatabase(QString filename);
 public slots:
     void createNewFile();
     void openExistingFile();
@@ -32,6 +34,7 @@ public slots:
     void shrink();
     void refreshDatabase();
     void about();
+    void openRecentFile(const QString file);
 
 private:
     QString showFileDialog(QFileDialog::AcceptMode mode);
