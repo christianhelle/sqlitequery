@@ -2,19 +2,18 @@
 #define RECENTFILES_H
 
 #include <QStringList>
+#include <QFile>
+#include <QTextStream>
 
 class RecentFiles
 {
 public:
-    RecentFiles();
-    ~RecentFiles();
-
-    void add(QString filePath);
-    void clear();
-    QStringList getList();
+    static void add(QString filePath);
+    static void clear();
+    static QStringList getList();
 
 private:
-    QStringList files;
+    static QFile* openFile();
 };
 
 #endif // RECENTFILES_H
