@@ -44,18 +44,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::loadRecentFiles()
 {
-    QMenu *menu = ui->menuFile->addMenu("Recent Files");
-
-    RecentFiles recent;
-    QStringList files = recent.getList();
-
+    QStringList files = RecentFiles::getList();
     if (files.length() == 0)
         return;
 
+    QMenu *menu = ui->menuFile->addMenu("Recent Files");
     foreach (const QString file, files)
     {
         QAction *action = menu->addAction(file);
-        connect(action, SIGNAL(triggered()), this, SLOT(openRecentFile(QString)));
+        connect(action, SIGNAL(triggered()), this, SLOT(openRecentFile(file)));
     }
 }
 
@@ -87,7 +84,9 @@ void MainWindow::createNewFile()
 {
     qDebug("MainWindow::createNewFile()");
 
-    this->openDatabase(this->showFileDialog(QFileDialog::AcceptSave));
+    QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
+    this->openDatabase(filepath);
+    RecentFiles::add(filepath);
 }
 
 void MainWindow::openDatabase(QString filename)
@@ -108,7 +107,9 @@ void MainWindow::openExistingFile()
 {
     qDebug("MainWindow::openExistingFile()");
 
-    this->openDatabase(this->showFileDialog(QFileDialog::AcceptOpen));
+    QString filepath = this->showFileDialog(QFileDialog::AcceptOpen);
+    this->openDatabase(filepath);
+    RecentFiles::add(filepath);
 }
 
 void MainWindow::appExit()
