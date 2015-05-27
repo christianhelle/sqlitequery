@@ -30,6 +30,9 @@ MainWindow::MainWindow(QWidget *parent) :
     this->tree = new DbTree(ui->treeWidget);
     this->highlighter = new Highlighter(ui->textEdit->document());
 
+    this->recentFilesMenu = new QMenu("Recent Files");
+    ui->menuFile->insertMenu(ui->actionExit, recentFilesMenu );
+
     this->loadRecentFiles();
     this->openExistingFile();
 }
@@ -39,6 +42,10 @@ MainWindow::~MainWindow()
     qDebug("MainWindow::~MainWindow()");
 
     delete analyzer;
+    delete highlighter;
+    delete query;
+    delete tree;
+    delete recentFilesMenu;
     delete ui;
 }
 
@@ -48,10 +55,12 @@ void MainWindow::loadRecentFiles()
     if (files.length() == 0)
         return;
 
-    QMenu *menu = ui->menuFile->addMenu("Recent Files");
+    if (!this->recentFilesMenu->actions().empty())
+        this->recentFilesMenu->clear();
+
     foreach (const QString file, files)
     {
-        QAction *action = menu->addAction(file);
+        QAction *action = recentFilesMenu ->addAction(file);
         connect(action, SIGNAL(triggered()), this, SLOT(openRecentFile(file)));
     }
 }
@@ -87,6 +96,7 @@ void MainWindow::createNewFile()
     QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
     this->openDatabase(filepath);
     RecentFiles::add(filepath);
+    this->loadRecentFiles();
 }
 
 void MainWindow::openDatabase(QString filename)
@@ -110,6 +120,7 @@ void MainWindow::openExistingFile()
     QString filepath = this->showFileDialog(QFileDialog::AcceptOpen);
     this->openDatabase(filepath);
     RecentFiles::add(filepath);
+    this->loadRecentFiles();
 }
 
 void MainWindow::appExit()

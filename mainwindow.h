@@ -37,15 +37,15 @@ public slots:
     void openRecentFile(const QString file);
 
 private:
-    QString showFileDialog(QFileDialog::AcceptMode mode);
     Ui::MainWindow *ui;
-
+    QMenu *recentFilesMenu;
     Database *database;
     DbAnalyzer *analyzer;
     DbQuery *query;
     DbTree *tree;
     Highlighter *highlighter;
 
+    QString showFileDialog(QFileDialog::AcceptMode mode);
     void analyzeDatabase();
 };
 
