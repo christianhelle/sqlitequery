@@ -63,5 +63,9 @@ QStringList RecentFiles::getList()
     file->close();
     delete file;
 
-    return files;
+    QStringList list;
+    list.reserve(files.size());
+    std::reverse_copy(files.begin(), files.end(), std::back_inserter(list));
+
+    return list;
 }
