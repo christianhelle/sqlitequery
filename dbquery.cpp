@@ -34,8 +34,9 @@ bool DbQuery::execute(QStringList queryList, QStringList *errors)
 
     QSqlDatabase db = this->database->getDatabase();
 
-    foreach (const QString sql, queryList)
+    for (int i=0; i<queryList.length(); ++i)
     {
+        const QString sql = queryList.at(i);
         QSqlError error;
         QSqlQuery query(db);
 
@@ -48,7 +49,13 @@ bool DbQuery::execute(QStringList queryList, QStringList *errors)
 
         if (query.isSelect())
         {
+            QRect rect = this->widget->geometry();
+            rect.setY(rect.y() * i+1);
+
             QTableView *table = new QTableView(this->widget);
+            table->setGeometry(rect);
+            table->show();
+
             this->tableResults->append(table);
 
             QSqlQueryModel *model = new QSqlQueryModel();
