@@ -26,7 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->database = new Database();
     this->analyzer = new DbAnalyzer(database);
-    this->query = new DbQuery(ui->splitterQueryTab, this->database);
+    this->query = new DbQuery(ui->queryResultsGrid, this->database);
+
     this->tree = new DbTree(ui->treeWidget);
     this->highlighter = new Highlighter(ui->textEdit->document());
 
@@ -61,11 +62,11 @@ void MainWindow::loadRecentFiles()
     foreach (const QString file, files)
     {
         QAction *action = recentFilesMenu ->addAction(file);
-        connect(action, SIGNAL(triggered()), this, SLOT(openRecentFile(file)));
+        connect(action, SIGNAL(triggered()), this, SLOT(openRecentFile(QString)));
     }
 }
 
-void MainWindow::openRecentFile(const QString file)
+void MainWindow::openRecentFile(QString file)
 {
     this->openDatabase(file);
 }
@@ -167,10 +168,17 @@ void MainWindow::executeQuery()
     QStringList list(ui->textEdit->toPlainText().split(";", (QString::SplitBehavior) 1)); // SkipEmptyParts
     QStringList errors;
 
+    QTime time;
+    time.start();
+
     if (this->query->execute(list, &errors))
     {
         ui->tabWidget->setCurrentIndex(0);
     }
+
+    float milliseconds = (float) time.elapsed();
+    QString msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
+    ui->queryResultMessagesTextEdit->setPlainText(msg);
 
     foreach (const QString sql, list)
     {

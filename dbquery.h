@@ -18,7 +18,7 @@ public:
     bool execute(QStringList, QStringList*);
 
 private:
-    QWidget *splitterQueryTab;
+    QWidget *widget;
     QList<QTableView*> *tableResults;
     Database *database;
 

@@ -1,8 +1,8 @@
 #include "dbquery.h"
 
-DbQuery::DbQuery(QWidget *splitterQueryTab, Database *database)
+DbQuery::DbQuery(QWidget *widget, Database *database)
 {
-    this->splitterQueryTab = splitterQueryTab;
+    this->widget = widget;
     this->database = database;
     tableResults = new QList<QTableView*>();
 }
@@ -48,7 +48,7 @@ bool DbQuery::execute(QStringList queryList, QStringList *errors)
 
         if (query.isSelect())
         {
-            QTableView *table = new QTableView(this->splitterQueryTab);
+            QTableView *table = new QTableView(this->widget);
             this->tableResults->append(table);
 
             QSqlQueryModel *model = new QSqlQueryModel();

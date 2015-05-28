@@ -45,6 +45,27 @@
             <enum>Qt::Vertical</enum>
            </property>
            <widget class="QTextEdit" name="textEdit"/>
+           <widget class="QTabWidget" name="queryResultTab">
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <widget class="QWidget" name="queryResultsGrid">
+             <attribute name="title">
+              <string>Results</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_4"/>
+            </widget>
+            <widget class="QWidget" name="queryResultMessagesTab">
+             <attribute name="title">
+              <string>Messages</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_3">
+              <item row="0" column="0">
+               <widget class="QPlainTextEdit" name="queryResultMessagesTextEdit"/>
+              </item>
+             </layout>
+            </widget>
+           </widget>
           </widget>
          </item>
         </layout>
@@ -70,7 +91,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
