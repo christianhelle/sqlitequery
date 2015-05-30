@@ -34,7 +34,7 @@ public slots:
     void shrink();
     void refreshDatabase();
     void about();
-    void openRecentFile(QString file);
+    void openRecentFile();
 
 private:
     Ui::MainWindow *ui;

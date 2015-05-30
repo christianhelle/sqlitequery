@@ -62,12 +62,14 @@ void MainWindow::loadRecentFiles()
     foreach (const QString file, files)
     {
         QAction *action = recentFilesMenu ->addAction(file);
-        connect(action, SIGNAL(triggered()), this, SLOT(openRecentFile(QString)));
+        action->setObjectName(file);
+        connect(action, SIGNAL(triggered(bool)), this, SLOT(openRecentFile()));
     }
 }
 
-void MainWindow::openRecentFile(QString file)
+void MainWindow::openRecentFile()
 {
+    QString file = sender()->objectName();
     this->openDatabase(file);
 }
 
