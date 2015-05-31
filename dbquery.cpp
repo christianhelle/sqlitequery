@@ -5,10 +5,17 @@ DbQuery::DbQuery(QWidget *widget, Database *database)
     this->widget = widget;
     this->database = database;
     tableResults = new QList<QTableView*>();
+
+    this->container = new QWidget(this->widget);
+    this->scrollArea = new QScrollArea(this->widget);
+    this->scrollArea->setGeometry(this->widget->geometry());
+    this->scrollArea->setWidget(container);
 }
 
 void DbQuery::clearResults()
 {
+    this->container->setGeometry(this->widget->geometry());
+
     QList<QTableView*>::iterator i;
     for (i = this->tableResults->begin(); i != this->tableResults->end(); ++i)
     {
@@ -32,9 +39,19 @@ bool DbQuery::execute(QStringList queryList, QStringList *errors)
         return false;
     }
 
+    QRect widgetRect = this->widget->geometry();
+    int yOffset = 0;
+    const int width = widgetRect.width();
+    const int height = widgetRect.height();
+
+    int count = queryList.length();
+    QRect newParentRect = this->widget->geometry();
+    newParentRect.setHeight(newParentRect.height() * count);
+    this->container->setGeometry(newParentRect);
+
     QSqlDatabase db = this->database->getDatabase();
 
-    for (int i=0; i<queryList.length(); ++i)
+    for (int i=0; i<count; ++i)
     {
         const QString sql = queryList.at(i);
         QSqlError error;
@@ -49,10 +66,10 @@ bool DbQuery::execute(QStringList queryList, QStringList *errors)
 
         if (query.isSelect())
         {
-            QRect rect = this->widget->geometry();
-            rect.setY(rect.y() * i+1);
-
-            QTableView *table = new QTableView(this->widget);
+            if (i > 0)
+                yOffset += height;
+            QRect rect = QRect(0, yOffset, width, height);
+            QTableView *table = new QTableView(this->container);
             table->setGeometry(rect);
             table->show();
 

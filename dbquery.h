@@ -2,6 +2,8 @@
 #define DBQUERY_H
 
 #include <QWidget>
+#include <QScrollArea>
+#include <QVBoxLayout>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
@@ -19,6 +21,8 @@ public:
 
 private:
     QWidget *widget;
+    QScrollArea *scrollArea;
+    QWidget *container;
     QList<QTableView*> *tableResults;
     Database *database;
 
