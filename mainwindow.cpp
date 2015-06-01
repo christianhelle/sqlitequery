@@ -167,7 +167,7 @@ void MainWindow::executeQuery()
 {
     qDebug("MainWindow::executeQuery()");
 
-    QStringList list(ui->textEdit->toPlainText().split(";", (QString::SplitBehavior) 1)); // SkipEmptyParts
+    QStringList list(ui->textEdit->toPlainText().split(";", QString::SkipEmptyParts));
     QStringList errors;
 
     QTime time;
