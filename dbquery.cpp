@@ -44,16 +44,16 @@ bool DbQuery::execute(QStringList queryList, QStringList *errors)
     const int width = widgetRect.width();
     const int height = widgetRect.height();
 
-    int count = queryList.length();
-    QRect newParentRect = this->widget->geometry();
-    newParentRect.setHeight(newParentRect.height() * count);
-    this->container->setGeometry(newParentRect);
-
     QSqlDatabase db = this->database->getDatabase();
+    const QString empty;
+    int count = 0;
 
-    for (int i=0; i<count; ++i)
+    for (int i=0; i<queryList.length(); ++i)
     {
-        const QString sql = queryList.at(i);
+        const QString sql = queryList.at(i).trimmed().replace('\n', empty, Qt::CaseInsensitive);
+        if (sql == empty)
+            continue;
+
         QSqlError error;
         QSqlQuery query(db);
 
@@ -74,12 +74,17 @@ bool DbQuery::execute(QStringList queryList, QStringList *errors)
             table->show();
 
             this->tableResults->append(table);
+            count++;
 
             QSqlQueryModel *model = new QSqlQueryModel();
             model->setQuery(query);
             table->setModel(model);
         }
     }
+
+    QRect newParentRect = this->widget->geometry();
+    newParentRect.setHeight(newParentRect.height() * count);
+    this->container->setGeometry(newParentRect);
 
     if (errors->length() > 0)
     {
