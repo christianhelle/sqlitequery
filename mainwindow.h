@@ -30,7 +30,8 @@ public slots:
     void openExistingFile();
     void appExit();
     void executeQuery();
-    void treeNodeClicked(QTreeWidgetItem*,int);
+    void treeNodeChanged(QTreeWidgetItem*,int);
+    void treeNodeChanged(QTreeWidgetItem*,QTreeWidgetItem*);
     void shrink();
     void refreshDatabase();
     void about();

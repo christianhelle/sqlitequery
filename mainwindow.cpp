@@ -20,7 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(appExit()));
     connect(ui->actionExecute_Query, SIGNAL(triggered()), this, SLOT(executeQuery()));
     connect(ui->actionShrink, SIGNAL(triggered()), this, SLOT(shrink()));
-    connect(ui->treeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(treeNodeClicked(QTreeWidgetItem*,int)));
+    connect(ui->treeWidget, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this, SLOT(treeNodeChanged(QTreeWidgetItem*,int)));
+    connect(ui->treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(treeNodeChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui->actionRefresh, SIGNAL(triggered()), this, SLOT(refreshDatabase()));
 
@@ -195,11 +196,16 @@ void MainWindow::executeQuery()
     }
 }
 
-void MainWindow::treeNodeClicked(QTreeWidgetItem *item, int column)
+void MainWindow::treeNodeChanged(QTreeWidgetItem *item, QTreeWidgetItem *previous)
+{
+    treeNodeChanged(item, 0);
+}
+
+void MainWindow::treeNodeChanged(QTreeWidgetItem *item, int column)
 {
     if (item && item->type() == QTreeWidgetItem::UserType + 1)
     {
-        qDebug("table clicked");
+        qDebug("table selected");
 
         if (!this->database->open())
         {
