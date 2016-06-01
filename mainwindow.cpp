@@ -222,6 +222,7 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item, int column)
         model->select();
 
         ui->tableView->setModel(model);
+        ui->tableView->setSortingEnabled(true);
         ui->tabWidget->setCurrentIndex(1);
     }
 }
