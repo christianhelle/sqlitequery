@@ -10,6 +10,7 @@
 #include "dbquery.h"
 #include "highlighter.h"
 #include "dbtree.h"
+#include "dbanalyzertask.h"
 
 namespace Ui {
 class MainWindow;
@@ -41,8 +42,6 @@ private:
     Ui::MainWindow *ui;
     QMenu *recentFilesMenu;
     Database *database;
-    DbAnalyzer *analyzer;
-    DbQuery *query;
     DbTree *tree;
     Highlighter *highlighter;
 

@@ -26,8 +26,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionRefresh, SIGNAL(triggered()), this, SLOT(refreshDatabase()));
 
     this->database = new Database();
-    this->analyzer = new DbAnalyzer(database);
-    this->query = new DbQuery(ui->queryResultsGrid, this->database);
 
     this->tree = new DbTree(ui->treeWidget);
     this->highlighter = new Highlighter(ui->textEdit->document());
@@ -43,9 +41,7 @@ MainWindow::~MainWindow()
 {
     qDebug("MainWindow::~MainWindow()");
 
-    delete analyzer;
     delete highlighter;
-    delete query;
     delete tree;
     delete recentFilesMenu;
     delete ui;
@@ -152,16 +148,8 @@ void MainWindow::analyzeDatabase()
 {
     qDebug("MainWindow::analyzeDatabase()");
 
-    DatabaseInfo info;
-    if (!analyzer->analyze(info))
-    {
-        qDebug("Analyze database failed");
-        return;
-    }
-
-    this->tree->populateTree(info);
-
-    this->database->close();
+    DbAnalyzerTask *task = new DbAnalyzerTask(this->database, this->tree);
+    QThreadPool::globalInstance()->start(task);
 }
 
 void MainWindow::executeQuery()
@@ -174,7 +162,8 @@ void MainWindow::executeQuery()
     QTime time;
     time.start();
 
-    if (this->query->execute(list, &errors))
+    DbQuery *query = new DbQuery(ui->queryResultsGrid, this->database);
+    if (query->execute(list, &errors))
     {
         ui->tabWidget->setCurrentIndex(0);
     }
@@ -194,6 +183,7 @@ void MainWindow::executeQuery()
             break;
         }
     }
+    delete query;
 }
 
 void MainWindow::treeNodeChanged(QTreeWidgetItem *item, QTreeWidgetItem *previous)
