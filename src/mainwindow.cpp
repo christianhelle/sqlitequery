@@ -140,39 +140,63 @@ void MainWindow::analyzeDatabase() const {
     QThreadPool::globalInstance()->start(task);
 }
 
-void MainWindow::executeQuery() const {
+class DbQueryExecuteTask : public QRunnable
+{
+private:
+    Ui_MainWindow *ui;
+    const MainWindow *mainWindow;
+    QStringList list;
+
+public:
+    DbQueryExecuteTask(Ui_MainWindow *ui, const MainWindow *instance)
+    {
+        this->ui = ui;
+        this->mainWindow = instance;
+        list = QStringList(ui->textEdit->toPlainText().split(";", Qt::SkipEmptyParts));
+    }
+
+    void run() override
+    {
+        emit ui->queryResultMessagesTextEdit->setPlainText("Executing query...");
+
+        QElapsedTimer time;
+        time.start();
+
+        QStringList errors;
+        auto *query = new DbQuery(ui->queryResultsGrid, this->mainWindow->getDatabase());
+        if (query->execute(list, &errors))
+        {
+            emit ui->tabWidget->setCurrentIndex(0);
+	        emit ui->queryResultTab->setCurrentIndex(0);
+        }
+        
+    	const auto milliseconds = static_cast<double>(time.elapsed());
+    	const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
+        emit ui->queryResultMessagesTextEdit->setPlainText(msg);
+
+        foreach (const QString sql, list)
+        {
+            if (sql.contains("create", Qt::CaseInsensitive) ||
+                sql.contains("drop", Qt::CaseInsensitive) ||
+                sql.contains("insert", Qt::CaseInsensitive) ||
+                sql.contains("delete", Qt::CaseInsensitive))
+            {
+	            emit ui->queryResultTab->setCurrentIndex(1);
+                mainWindow->analyzeDatabase();
+                break;
+            }
+        }
+
+        delete query;
+    }
+};
+
+void MainWindow::executeQuery() const
+{
     qDebug("MainWindow::executeQuery()");
 
-    QStringList list(ui->textEdit->toPlainText().split(";", Qt::SkipEmptyParts));
-    QStringList errors;
-
-    QElapsedTimer time;
-    time.start();
-
-    DbQuery *query = new DbQuery(ui->queryResultsGrid, this->database);
-    if (query->execute(list, &errors))
-    {
-        ui->tabWidget->setCurrentIndex(0);
-        ui->queryResultTab->setCurrentIndex(0);
-    }
-
-    const auto milliseconds = static_cast<double>(time.elapsed());
-    const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
-    ui->queryResultMessagesTextEdit->setPlainText(msg);
-
-    foreach (const QString sql, list)
-    {
-        if (sql.contains("create", Qt::CaseInsensitive) ||
-            sql.contains("drop", Qt::CaseInsensitive) ||
-            sql.contains("insert", Qt::CaseInsensitive) ||
-            sql.contains("delete", Qt::CaseInsensitive))
-        {
-            ui->queryResultTab->setCurrentIndex(1);
-            analyzeDatabase();
-            break;
-        }
-    }
-    delete query;
+    DbQueryExecuteTask *task = new DbQueryExecuteTask(this->ui, this);
+    QThreadPool::globalInstance()->start(task);
 }
 
 void MainWindow::treeNodeChanged(const QTreeWidgetItem *item) const {

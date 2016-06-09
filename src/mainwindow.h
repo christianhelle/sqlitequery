@@ -22,10 +22,14 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    ~MainWindow() override;
 
     void loadRecentFiles() const;
     void openDatabase(const QString &filename) const;
+
+    Database* getDatabase() const { return database; }
+    void analyzeDatabase() const;
+
 public slots:
     void createNewFile();
     void openExistingFile();
@@ -47,7 +51,6 @@ private:
     Highlighter *highlighter;
 
     QString showFileDialog(QFileDialog::AcceptMode mode);
-    void analyzeDatabase() const;
 };
 
 #endif // MAINWINDOW_H
