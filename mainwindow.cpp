@@ -152,38 +152,59 @@ void MainWindow::analyzeDatabase()
     QThreadPool::globalInstance()->start(task);
 }
 
+class DbQueryExecuteTask : public QRunnable
+{
+private:
+    Ui_MainWindow *ui;
+    MainWindow *mainWindow;
+    QStringList list;
+
+public:
+    DbQueryExecuteTask(Ui_MainWindow *ui, MainWindow *instance)
+    {
+        this->ui = ui;
+        this->mainWindow = instance;
+        list = QStringList(ui->textEdit->toPlainText().split(";", QString::SkipEmptyParts));
+    }
+
+    void run()
+    {
+        QTime time;
+        time.start();
+
+        QStringList errors;
+        DbQuery *query = new DbQuery(ui->queryResultsGrid, this->mainWindow->getDatabase());
+        if (query->execute(list, &errors))
+        {
+            emit ui->tabWidget->setCurrentIndex(0);
+        }
+
+        float milliseconds = (float) time.elapsed();
+        QString msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
+        emit ui->queryResultMessagesTextEdit->setPlainText(msg);
+
+        foreach (const QString sql, list)
+        {
+            if (sql.contains("create", Qt::CaseInsensitive) ||
+                sql.contains("drop", Qt::CaseInsensitive) ||
+                sql.contains("insert", Qt::CaseInsensitive) ||
+                sql.contains("delete", Qt::CaseInsensitive))
+            {
+                mainWindow->analyzeDatabase();
+                break;
+            }
+        }
+
+        delete query;
+    }
+};
+
 void MainWindow::executeQuery()
 {
     qDebug("MainWindow::executeQuery()");
 
-    QStringList list(ui->textEdit->toPlainText().split(";", QString::SkipEmptyParts));
-    QStringList errors;
-
-    QTime time;
-    time.start();
-
-    DbQuery *query = new DbQuery(ui->queryResultsGrid, this->database);
-    if (query->execute(list, &errors))
-    {
-        ui->tabWidget->setCurrentIndex(0);
-    }
-
-    float milliseconds = (float) time.elapsed();
-    QString msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
-    ui->queryResultMessagesTextEdit->setPlainText(msg);
-
-    foreach (const QString sql, list)
-    {
-        if (sql.contains("create", Qt::CaseInsensitive) ||
-            sql.contains("drop", Qt::CaseInsensitive) ||
-            sql.contains("insert", Qt::CaseInsensitive) ||
-            sql.contains("delete", Qt::CaseInsensitive))
-        {
-            analyzeDatabase();
-            break;
-        }
-    }
-    delete query;
+    DbQueryExecuteTask *task = new DbQueryExecuteTask(this->ui, this);
+    QThreadPool::globalInstance()->start(task);
 }
 
 void MainWindow::treeNodeChanged(QTreeWidgetItem *item, QTreeWidgetItem *previous)

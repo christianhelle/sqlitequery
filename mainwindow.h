@@ -26,6 +26,10 @@ public:
 
     void loadRecentFiles();
     void openDatabase(QString filename);
+
+    Database* getDatabase() { return database; }
+    void analyzeDatabase();
+
 public slots:
     void createNewFile();
     void openExistingFile();
@@ -46,7 +50,6 @@ private:
     Highlighter *highlighter;
 
     QString showFileDialog(QFileDialog::AcceptMode mode);
-    void analyzeDatabase();
 };
 
 #endif // MAINWINDOW_H
