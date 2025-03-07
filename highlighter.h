@@ -3,6 +3,7 @@
 
 #include <QSyntaxHighlighter>
 #include <QTextCharFormat>
+#include <QRegularExpression>
 
 class Highlighter : public QSyntaxHighlighter
 {
@@ -17,13 +18,13 @@ protected:
 private:
     struct HighlightingRule
     {
-        QRegExp pattern;
+        QRegularExpression pattern;
         QTextCharFormat format;
     };
     QVector<HighlightingRule> highlightingRules;
 
-    QRegExp commentStartExpression;
-    QRegExp commentEndExpression;
+    QRegularExpression commentStartExpression;
+    QRegularExpression commentEndExpression;
 
     QTextCharFormat keywordFormat;
     QTextCharFormat classFormat;
