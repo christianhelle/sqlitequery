@@ -16,6 +16,9 @@ Here are some screenshots of SQLiteQuery in action:
 ![Insert query](images/query-insert.png)
 ![Select query](images/query-select.png)
 ![Table data editing](images/table-data.png)
+
+### Dark Mode
+
 ![Dark Mode Insert query](images/dark-query-insert.png)
 ![Dark Mode Select query](images/dark-query-select.png)
 ![Dark Mode Table data editing](images/dark-table-data.png)
