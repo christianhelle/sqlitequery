@@ -14,6 +14,8 @@ It provides an intuitive interface for executing queries and direct table editin
 
 Here are some screenshots of SQLiteQuery in action:
 
+## Windows
+
 ![Insert query](images/query-insert.png)
 ![Select query](images/query-select.png)
 ![Table data editing](images/table-data.png)
