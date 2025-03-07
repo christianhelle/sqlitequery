@@ -168,7 +168,7 @@ void MainWindow::executeQuery()
 {
     qDebug("MainWindow::executeQuery()");
 
-    QTime time;
+    QElapsedTimer time;
     time.start();
 
     QStringList errors;
