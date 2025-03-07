@@ -1,7 +1,8 @@
 # SQLite Query Analyzer
 
-SQLite Query Analyzer is a lightweight and efficient desktop utility designed to simplify the process of managing SQLite databases. 
-It provides an intuitive interface for executing queries, managing connections, and handling results, making database operations seamless and straightforward.
+SQLite Query Analyzer is a lightweight and efficient desktop utility designed to simplify the process of managing SQLite databases.
+
+It provides an intuitive interface for executing queries and direct table editing, making database operations seamless and straightforward.
 
 ## Features
 
