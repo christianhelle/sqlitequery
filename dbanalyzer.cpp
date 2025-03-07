@@ -17,7 +17,7 @@ bool DbAnalyzer::analyze(DatabaseInfo &info)
 
     info.filename = file.fileName();
     info.size = file.size();
-    info.creationDate = file.created();
+    info.creationDate = file.birthTime();
 
     loadTables(info);
     loadColumns(info);
