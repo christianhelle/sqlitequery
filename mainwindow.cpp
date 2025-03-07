@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionExecute_Query, SIGNAL(triggered()), this, SLOT(executeQuery()));
     connect(ui->actionShrink, SIGNAL(triggered()), this, SLOT(shrink()));
     connect(ui->treeWidget, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this, SLOT(treeNodeChanged(QTreeWidgetItem*,int)));
-    connect(ui->treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this, SLOT(treeNodeChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    connect(ui->treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*)), this, SLOT(treeNodeChanged(QTreeWidgetItem*)));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui->actionRefresh, SIGNAL(triggered()), this, SLOT(refreshDatabase()));
 
@@ -191,7 +191,7 @@ void MainWindow::executeQuery()
     }
 }
 
-void MainWindow::treeNodeChanged(QTreeWidgetItem *item, QTreeWidgetItem *previous)
+void MainWindow::treeNodeChanged(QTreeWidgetItem *item)
 {
     treeNodeChanged(item, 0);
 }
