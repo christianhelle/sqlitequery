@@ -17,8 +17,10 @@ jobs:
         version: '6.8.2'
     - name: QMake
       run: qmake
+      working-directory: src
     - name: Make
       run: make
+      working-directory: src
   
   mac:
     runs-on: macos-latest
@@ -30,8 +32,10 @@ jobs:
         version: '6.8.2'
     - name: QMake
       run: qmake
+      working-directory: src
     - name: Make
       run: make
+      working-directory: src
   
   windows:
     runs-on: windows-latest
@@ -43,5 +47,7 @@ jobs:
         version: '6.8.2'
     - name: QMake
       run: qmake
+      working-directory: src
     - name: Make
       run: make
+      working-directory: src
