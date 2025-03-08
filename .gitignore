@@ -1,3 +1,8 @@
 SQLiteAnalyzer.pro.user
 build
 src/build
+*.o
+.qmake.stash
+*.app
+moc_*
+ui_mainwindow.h
