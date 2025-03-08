@@ -49,9 +49,6 @@ jobs:
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.8.2'
-    - name: QMake
-      run: qmake
-      working-directory: src
     - name: Make
       run: make
       working-directory: src
