@@ -51,6 +51,9 @@ jobs:
         version: '6.8.2'
         host: 'windows'
         target: 'desktop'
+    - name: QMake
+      run: qmake
+      working-directory: src
     - name: Make
       run: make
       working-directory: src
