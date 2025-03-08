@@ -23,6 +23,7 @@ jobs:
       working-directory: src
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
+      working-directory: src
       with:
         name: SQLite Query Analyzer (Linux)
         path: |
@@ -44,6 +45,7 @@ jobs:
       working-directory: src
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
+      working-directory: src
       with:
         name: SQLite QuerAnalyzer (MacOS)
         path: |
@@ -65,6 +67,7 @@ jobs:
       working-directory: src
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
+      working-directory: src
       with:
         name: SQLite QuerAnalyzer (Windows)
         path: |
