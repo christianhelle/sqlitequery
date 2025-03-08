@@ -7,28 +7,6 @@ on:
     branches: [ "master" ]
 
 jobs:
-  ubuntu:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v4
-      with:
-        version: '6.8.2'
-    - name: QMake
-      run: qmake
-      working-directory: src
-    - name: Make
-      run: make
-      working-directory: src
-    - name: Publish artifacts
-      uses: actions/upload-artifact@v4
-      working-directory: src
-      with:
-        name: SQLite Query Analyzer (Linux)
-        path: |
-          *.app
-  
   mac:
     runs-on: macos-latest
     steps:
@@ -45,12 +23,24 @@ jobs:
       working-directory: src
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
-      working-directory: src
       with:
         name: SQLite QuerAnalyzer (MacOS)
         path: |
-          *.app
-  
+          src/*.app
+  ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: '6.8.2'
+    - name: QMake
+      run: qmake
+      working-directory: src
+    - name: Make
+      run: make
+      working-directory: src
   windows:
     runs-on: windows-latest
     steps:
@@ -65,10 +55,3 @@ jobs:
     - name: Make
       run: make
       working-directory: src
-    - name: Publish artifacts
-      uses: actions/upload-artifact@v4
-      working-directory: src
-      with:
-        name: SQLite QuerAnalyzer (Windows)
-        path: |
-          *.app
