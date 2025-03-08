@@ -49,6 +49,8 @@ jobs:
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.8.2'
+        host: 'windows'
+        target: 'desktop'
     - name: Make
       run: make
       working-directory: src
