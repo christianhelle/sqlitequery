@@ -25,7 +25,8 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: SQLite Query Analyzer (Linux)
-        path: *.app
+        path: |
+          *.app
   
   mac:
     runs-on: macos-latest
@@ -45,7 +46,8 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: SQLite QuerAnalyzer (MacOS)
-        path: *.app
+        path: |
+          *.app
   
   windows:
     runs-on: windows-latest
@@ -65,4 +67,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: SQLite QuerAnalyzer (Windows)
-        path: *.app
+        path: |
+          *.app
