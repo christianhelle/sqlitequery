@@ -37,7 +37,7 @@ bool DbQuery::execute(QString sql, QStringList *errors)
     if (query.isSelect())
     {
         QSqlQueryModel *model = new QSqlQueryModel();
-        model->setQuery(query);
+        model->setQuery(sql);
         tableView->setModel(model);
     }
 
