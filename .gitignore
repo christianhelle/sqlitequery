@@ -6,3 +6,7 @@ src/build
 *.app
 moc_*
 ui_mainwindow.h
+src/release
+src/debug
+src/.qtc_clangd
+src/Makefile*
