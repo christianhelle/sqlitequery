@@ -12,6 +12,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = "SQLite Query Analyzer"
 TEMPLATE = app
 
+CONFIG   += static
 
 SOURCES += main.cpp\
         mainwindow.cpp \
