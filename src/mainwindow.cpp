@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->menuFile->insertMenu(ui->actionExit, recentFilesMenu );
 
     this->loadRecentFiles();
-    this->openExistingFile();
+    // this->openExistingFile();
 }
 
 MainWindow::~MainWindow()
