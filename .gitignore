@@ -10,3 +10,4 @@ src/release
 src/debug
 src/.qtc_clangd
 src/Makefile*
+src/recents
