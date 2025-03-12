@@ -80,7 +80,7 @@ jobs:
       - name: Build
         working-directory: ${{ runner.temp }}\build
         run: |
-          qmake -r ${{ github.workspace }}\SQLiteAnalyzer.pro
+          qmake -r ${{ github.workspace }}\src\SQLiteAnalyzer.pro
           ${{ runner.temp }}\jom\jom -j2
           cd release
           windeployqt --qmldir ${{ github.workspace }} SQLiteQueryAnalyzer.exe --pdb --release --compiler-runtime
