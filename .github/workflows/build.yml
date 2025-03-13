@@ -98,13 +98,13 @@ jobs:
       - name: Zip build
         working-directory: ${{ runner.temp }}
         run: |
-          7z a SQLiteQueryAnalyzer_Windows.zip ${{ github.workspace }}\src\build\release\* -r
+          7z a SQLiteQueryAnalyzer_Windows.zip ${{ github.workspace }}\src\build\Release\* -r
               
       - name: Publish Build
         uses: actions/upload-artifact@master
         with:
           name: SQLiteQuerAnalyzer_Windows_${{ github.run_number }}.zip
-          path: ${{ runner.temp }}\SQLiteQuerAnalyzer_Windows.zip
+          path: ${{ runner.temp }}\SQLiteQueryAnalyzer_Windows.zip
 
       - name: Inno Setup
         working-directory: ${{ github.workspace }}\src
@@ -114,5 +114,5 @@ jobs:
       - name: Publish Installer
         uses: actions/upload-artifact@master
         with:
-          name: SQLiteQuerAnalyzer_Windows_Installer_${{ github.run_number }}.zip
-          path: ${{ github.workspace }}\src\Artifacts\SQLiteQueryAnalyzerSetup.exe
+          name: SQLiteQuerAnalyzer_Windows_Installer_${{ github.run_number }}.exe
+          path: ${{ github.workspace }}\src\Artifacts\SQLiteQueryAnalyzer-Setup.exe
