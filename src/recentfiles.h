@@ -8,12 +8,13 @@
 class RecentFiles
 {
 public:
-    static void add(QString filePath);
+    static void add(const QString &filePath);
     static void clear();
     static QStringList getList();
 
 private:
     static QFile* openFile();
+    static QString getRecentsFilePath();
 };
 
 #endif // RECENTFILES_H

@@ -1,8 +1,11 @@
 #include "recentfiles.h"
 
+#include <qstandardpaths.h>
+
 QFile* RecentFiles::openFile()
 {
-    QFile *file = new QFile("recents");
+    QString filePath = RecentFiles::getRecentsFilePath();
+    QFile *file = new QFile(filePath);
     if (!file->open(QIODevice::ReadWrite | QIODevice::Text))
     {
         qDebug("Unable to open file");
@@ -13,9 +16,15 @@ QFile* RecentFiles::openFile()
     return file;
 }
 
-void RecentFiles::add(QString filepath)
+QString RecentFiles::getRecentsFilePath()
 {
-    if (filepath == "")
+    return QStandardPaths::writableLocation(QStandardPaths::HomeLocation)
+        + "/recents";
+}
+
+void RecentFiles::add(const QString &filepath)
+{
+    if (filepath.isEmpty())
         return;
 
     QStringList files = RecentFiles::getList();
@@ -38,7 +47,7 @@ void RecentFiles::add(QString filepath)
 
 void RecentFiles::clear()
 {
-    QFile("recents").deleteLater();
+    QFile(getRecentsFilePath()).deleteLater();
 }
 
 QStringList RecentFiles::getList()
