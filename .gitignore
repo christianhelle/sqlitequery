@@ -11,3 +11,6 @@ src/debug
 src/.qtc_clangd
 src/Makefile*
 src/recents
+src/.idea
+src/cmake-build-debug
+.vscode/settings.json
