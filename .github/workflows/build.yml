@@ -41,7 +41,7 @@ jobs:
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: SQLiteQuerAnalyzer_MacOS_${{ env.VERSION }}
+        name: SQLiteQuerAnalyzer_MacOS_v${{ env.VERSION }}
         path: |
           src/*.app
 
@@ -106,7 +106,7 @@ jobs:
       - name: Publish Build
         uses: actions/upload-artifact@master
         with:
-          name: SQLiteQuerAnalyzer_Windows_${{ env.VERSION }}.zip
+          name: SQLiteQuerAnalyzer_Windows_v${{ env.VERSION }}.zip
           path: ${{ runner.temp }}\SQLiteQueryAnalyzer_Windows.zip
 
       - name: Inno Setup
@@ -117,5 +117,5 @@ jobs:
       - name: Publish Installer
         uses: actions/upload-artifact@master
         with:
-          name: SQLiteQuerAnalyzer_Windows_Installer_${{ env.VERSION }}.exe
+          name: SQLiteQuerAnalyzer_Windows_Installer_v${{ env.VERSION }}.exe
           path: ${{ github.workspace }}\src\Artifacts\SQLiteQueryAnalyzer-Setup.exe
