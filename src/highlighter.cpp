@@ -58,23 +58,25 @@ bool Highlighter::isDarkMode()
 
 void Highlighter::highlightBlock(const QString &text)
 {
-    for (const HighlightingRule &rule : std::as_const(highlightingRules)) {
-        QRegularExpressionMatchIterator matchIterator = rule.pattern.globalMatch(text);
+    for (const auto &[pattern, format] : std::as_const(highlightingRules)) {
+        QRegularExpressionMatchIterator matchIterator = pattern.globalMatch(text);
         while (matchIterator.hasNext()) {
             QRegularExpressionMatch match = matchIterator.next();
-            setFormat(match.capturedStart(), match.capturedLength(), rule.format);
+            setFormat(static_cast<int>(match.capturedStart()),
+                static_cast<int>(match.capturedLength()),
+                      format);
         }
     }
     setCurrentBlockState(0);
 
-    int startIndex = 0;
+    qsizetype startIndex = 0;
     if (previousBlockState() != 1)
         startIndex = text.indexOf(commentStartExpression);
 
     while (startIndex >= 0) {
         QRegularExpressionMatch match = commentEndExpression.match(text, startIndex);
-        int endIndex = match.capturedStart();
-        int commentLength = 0;
+        const qsizetype endIndex = match.capturedStart();
+        qsizetype commentLength = 0;
         if (endIndex == -1) {
             setCurrentBlockState(1);
             commentLength = text.length() - startIndex;
@@ -82,8 +84,7 @@ void Highlighter::highlightBlock(const QString &text)
             commentLength = endIndex - startIndex
                             + match.capturedLength();
         }
-        setFormat(startIndex, commentLength, multiLineCommentFormat);
+        setFormat(static_cast<int>(startIndex), static_cast<int>(commentLength), multiLineCommentFormat);
         startIndex = text.indexOf(commentStartExpression, startIndex + commentLength);
     }
 }
-
