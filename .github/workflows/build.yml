@@ -46,6 +46,19 @@ jobs:
     runs-on:  windows-2019
     steps:
       - uses: actions/checkout@v4
+
+      - name: Update Version Number (Qt Project)
+        shell: pwsh
+        run: |
+          $version = (Get-Content -Path src/SQLiteAnalyzer.pro -Raw) -replace 'VERSION = .*', 'VERSION = $env:GITHUB_RUN_NUMBER'
+          $version | Set-Content -Path src/SQLiteAnalyzer.pro
+
+      - name: Update Version Number (Inno Setup)
+        shell: pwsh
+        run: |
+          $version = (Get-Content -Path src/setup.iss -Raw) -replace 'AppVersion= .*', 'AppVersion = $env:GITHUB_RUN_NUMBER'
+          $version | Set-Content -Path src/setup.iss
+
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
