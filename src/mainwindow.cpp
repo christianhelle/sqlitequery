@@ -115,6 +115,7 @@ void MainWindow::openDatabase(QString filename)
     }
 
     this->analyzeDatabase();
+    RecentFiles::add(filename);
 }
 
 void MainWindow::openExistingFile()
