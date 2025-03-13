@@ -2,9 +2,9 @@ name: build
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+
+env:
+  VERSION: '0.1.${{ github.run_number }}'
 
 jobs:
 
@@ -40,14 +40,27 @@ jobs:
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: SQLiteQuerAnalyzer_MacOS
+        name: SQLiteQuerAnalyzer_MacOS_v${{ env.VERSION }}
         path: |
           src/*.app
 
   windows:
-    runs-on:  windows-2019
+    runs-on:  windows-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Update Version Number (Qt Project)
+        shell: pwsh
+        run: |
+          $version = (Get-Content -Path src/SQLiteAnalyzer.pro -Raw) -replace 'VERSION = .*', 'VERSION = ${{ env.VERSION }}'
+          $version | Set-Content -Path src/SQLiteAnalyzer.pro
+
+      - name: Update Version Number (Inno Setup)
+        shell: pwsh
+        run: |
+          $version = (Get-Content -Path src/setup.iss -Raw) -replace 'AppVersion= .*', 'AppVersion = ${{ env.VERSION }}'
+          $version | Set-Content -Path src/setup.iss
+
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
@@ -78,24 +91,30 @@ jobs:
           arch: x64
 
       - name: Build
-        working-directory: ${{ runner.temp }}\build
-        run: |
-          qmake -r ${{ github.workspace }}\src\SQLiteAnalyzer.pro
-          ${{ runner.temp }}\jom\jom -j2
-          cd release
-          windeployqt --qmldir ${{ github.workspace }} SQLiteQueryAnalyzer.exe --pdb --release --compiler-runtime
-          copy C:\Windows\System32\concrt140.dll . 
-          copy C:\Windows\System32\vccorlib140.dll .
-          copy C:\Windows\System32\msvcp140.dll .
-          copy C:\Windows\System32\vcruntime140.dll .
+        working-directory: ${{ github.workspace }}\src
+        run: |          
+          cmake . -DCMAKE_PREFIX_PATH=${{ runner.temp }}\Qt\6.8.2\msvc2022_64 -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" -B build
+          cmake --build build --config Release
+          ${{ runner.temp }}\Qt\6.8.2\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
               
       - name: Zip build
         working-directory: ${{ runner.temp }}
         run: |
-          7z a SQLiteQueryAnalyzer_Windows.zip ${{ runner.temp }}\build\* -r
+          7z a SQLiteQueryAnalyzer_Windows.zip ${{ github.workspace }}\src\build\Release\* -r
               
-      - name: (10) Save build artifact
+      - name: Publish Build
         uses: actions/upload-artifact@master
         with:
-          name: SQLiteQuerAnalyzer_Windows.zip
-          path: ${{ runner.temp }}\SQLiteQuerAnalyzer_Windows.zip
+          name: SQLiteQuerAnalyzer_Windows_v${{ env.VERSION }}.zip
+          path: ${{ runner.temp }}\SQLiteQueryAnalyzer_Windows.zip
+
+      - name: Inno Setup
+        working-directory: ${{ github.workspace }}\src
+        run: |
+          ..\deps\innosetup\ISCC.exe setup.iss
+
+      - name: Publish Installer
+        uses: actions/upload-artifact@master
+        with:
+          name: SQLiteQuerAnalyzer_Windows_Installer_v${{ env.VERSION }}.exe
+          path: ${{ github.workspace }}\src\Artifacts\SQLiteQueryAnalyzer-Setup.exe

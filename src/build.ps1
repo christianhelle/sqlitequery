@@ -6,3 +6,4 @@ cmake --build build --config Release
 # mkdir .\release\bin
 # Move-Item .\release\SQLiteQueryAnalyzer.exe .\release\bin
 C:\Qt\6.8.2\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
+../deps/innosetup/ISCC.exe setup.iss
