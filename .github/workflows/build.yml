@@ -90,14 +90,10 @@ jobs:
 
       - name: Build
         working-directory: ${{ github.workspace }}\src
-        run: |
-          qmake -r SQLiteAnalyzer.pro
-          ${{ runner.temp }}\jom\jom -j2
-          windeployqt --qmldir ${{ github.workspace }} ${{ github.workspace }}\src\build\release\SQLiteQueryAnalyzer.exe --pdb --release --compiler-runtime
-          copy C:\Windows\System32\concrt140.dll . 
-          copy C:\Windows\System32\vccorlib140.dll .
-          copy C:\Windows\System32\msvcp140.dll .
-          copy C:\Windows\System32\vcruntime140.dll .
+        run: |          
+          cmake . -DCMAKE_PREFIX_PATH=${{ runner.temp }}\Qt\6.8.2\msvc2022_64 -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" -B build
+          cmake --build build --config Release
+          ${{ runner.temp }}\Qt\6.8.2\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
               
       - name: Zip build
         working-directory: ${{ runner.temp }}
