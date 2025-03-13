@@ -4,6 +4,9 @@
 #include <QSyntaxHighlighter>
 #include <QTextCharFormat>
 #include <QRegularExpression>
+#include <QGuiApplication>
+#include <QPalette>
+#include <QStyleHints>
 
 class Highlighter : public QSyntaxHighlighter
 {
@@ -22,6 +25,8 @@ private:
         QTextCharFormat format;
     };
     QVector<HighlightingRule> highlightingRules;
+
+    static bool isDarkMode();
 
     QRegularExpression commentStartExpression;
     QRegularExpression commentEndExpression;

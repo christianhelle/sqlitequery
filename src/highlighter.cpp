@@ -5,7 +5,7 @@ Highlighter::Highlighter(QTextDocument *parent)
 {
     HighlightingRule rule;
 
-    keywordFormat.setForeground(Qt::darkBlue);
+    keywordFormat.setForeground(isDarkMode() ? Qt::cyan : Qt::darkBlue);
     keywordFormat.setFontWeight(QFont::Bold);
 
     QStringList keywordPatterns;
@@ -17,37 +17,43 @@ Highlighter::Highlighter(QTextDocument *parent)
                     << "\\bhaving\\b" << "\\bin\\b" << "\\bcreate\\b" << "\\bdrop\\b" << "\\btable\\b";
 
     foreach (const QString &pattern, keywordPatterns) {
-        rule.pattern = QRegularExpression(pattern);
+        rule.pattern = QRegularExpression(pattern, QRegularExpression::CaseInsensitiveOption);
         rule.format = keywordFormat;
         highlightingRules.append(rule);
     }
 
     classFormat.setFontWeight(QFont::Bold);
-    classFormat.setForeground(Qt::darkMagenta);
+    classFormat.setForeground(isDarkMode() ? Qt::white : Qt::darkMagenta);
     rule.pattern = QRegularExpression("\\bQ[A-Za-z]+\\b");
     rule.format = classFormat;
     highlightingRules.append(rule);
 
-    singleLineCommentFormat.setForeground(Qt::red);
+    singleLineCommentFormat.setForeground(isDarkMode() ? Qt::green :Qt::red);
     rule.pattern = QRegularExpression("//[^\n]*");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
     multiLineCommentFormat.setForeground(Qt::red);
 
-    quotationFormat.setForeground(Qt::darkGreen);
+    quotationFormat.setForeground(isDarkMode() ? Qt::green : Qt::darkGreen);
     rule.pattern = QRegularExpression("\".*\"");
     rule.format = quotationFormat;
     highlightingRules.append(rule);
 
     functionFormat.setFontItalic(true);
-    functionFormat.setForeground(Qt::blue);
+    functionFormat.setForeground(isDarkMode() ? Qt::white : Qt::blue);
     rule.pattern = QRegularExpression("\\b[A-Za-z0-9_]+(?=\\()");
     rule.format = functionFormat;
     highlightingRules.append(rule);
 
     commentStartExpression = QRegularExpression(QStringLiteral("/\\*"));
     commentEndExpression = QRegularExpression(QStringLiteral("\\*/"));
+}
+
+bool Highlighter::isDarkMode()
+{
+    const auto scheme = QGuiApplication::styleHints()->colorScheme();
+    return scheme == Qt::ColorScheme::Dark;
 }
 
 void Highlighter::highlightBlock(const QString &text)
