@@ -8,8 +8,7 @@
 #include <QPalette>
 #include <QStyleHints>
 
-class Highlighter : public QSyntaxHighlighter
-{
+class Highlighter : public QSyntaxHighlighter {
     Q_OBJECT
 
 public:
@@ -19,11 +18,11 @@ protected:
     void highlightBlock(const QString &text) Q_DECL_OVERRIDE;
 
 private:
-    struct HighlightingRule
-    {
+    struct HighlightingRule {
         QRegularExpression pattern;
         QTextCharFormat format;
     };
+
     QVector<HighlightingRule> highlightingRules;
 
     static bool isDarkMode();

@@ -4,10 +4,8 @@
 
 #include <QMessageBox>
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
-{    
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
+                                          ui(new Ui::MainWindow) {
     qDebug("MainWindow::MainWindow(QWidget*)");
 
     ui->setupUi(this);
@@ -20,8 +18,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(appExit()));
     connect(ui->actionExecute_Query, SIGNAL(triggered()), this, SLOT(executeQuery()));
     connect(ui->actionShrink, SIGNAL(triggered()), this, SLOT(shrink()));
-    connect(ui->treeWidget, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this, SLOT(treeNodeChanged(QTreeWidgetItem*,int)));
-    connect(ui->treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*)), this, SLOT(treeNodeChanged(QTreeWidgetItem*)));
+    connect(ui->treeWidget, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this,
+            SLOT(treeNodeChanged(QTreeWidgetItem*,int)));
+    connect(ui->treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*)), this,
+            SLOT(treeNodeChanged(QTreeWidgetItem*)));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui->actionRefresh, SIGNAL(triggered()), this, SLOT(refreshDatabase()));
 
@@ -33,14 +33,13 @@ MainWindow::MainWindow(QWidget *parent) :
     this->highlighter = new Highlighter(ui->textEdit->document());
 
     this->recentFilesMenu = new QMenu("Recent Files");
-    ui->menuFile->insertMenu(ui->actionExit, recentFilesMenu );
+    ui->menuFile->insertMenu(ui->actionExit, recentFilesMenu);
 
     this->loadRecentFiles();
     // this->openExistingFile();
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     qDebug("MainWindow::~MainWindow()");
 
     delete analyzer;
@@ -51,8 +50,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::loadRecentFiles()
-{
+void MainWindow::loadRecentFiles() {
     QStringList files = RecentFiles::getList();
     if (files.length() == 0)
         return;
@@ -60,30 +58,26 @@ void MainWindow::loadRecentFiles()
     if (!this->recentFilesMenu->actions().empty())
         this->recentFilesMenu->clear();
 
-    foreach (const QString file, files)
-    {
-        QAction *action = recentFilesMenu ->addAction(file);
+    foreach(const QString file, files) {
+        QAction *action = recentFilesMenu->addAction(file);
         action->setObjectName(file);
         connect(action, SIGNAL(triggered(bool)), this, SLOT(openRecentFile()));
     }
 }
 
-void MainWindow::openRecentFile()
-{
+void MainWindow::openRecentFile() {
     QString file = sender()->objectName();
     this->openDatabase(file);
 }
 
-QString MainWindow::showFileDialog(QFileDialog::AcceptMode mode)
-{
+QString MainWindow::showFileDialog(QFileDialog::AcceptMode mode) {
     QFileDialog dialog(this);
     dialog.setAcceptMode(mode);
     dialog.setDirectory(QDir::home());
     dialog.setFileMode(QFileDialog::AnyFile);
     dialog.setViewMode(QFileDialog::Detail);
 
-    if (dialog.exec())
-    {
+    if (dialog.exec()) {
         QStringList files = dialog.selectedFiles();
         if (files.length())
             return files.first();
@@ -93,8 +87,7 @@ QString MainWindow::showFileDialog(QFileDialog::AcceptMode mode)
     return Q_NULLPTR;
 }
 
-void MainWindow::createNewFile()
-{
+void MainWindow::createNewFile() {
     qDebug("MainWindow::createNewFile()");
 
     QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
@@ -103,13 +96,11 @@ void MainWindow::createNewFile()
     this->loadRecentFiles();
 }
 
-void MainWindow::openDatabase(QString filename)
-{
+void MainWindow::openDatabase(QString filename) {
     qDebug("MainWindow::openDatabase(QString)");
 
     this->database->setSource(filename);
-    if (!this->database->open())
-    {
+    if (!this->database->open()) {
         qDebug("Unable to open file");
         return;
     }
@@ -118,8 +109,7 @@ void MainWindow::openDatabase(QString filename)
     RecentFiles::add(filename);
 }
 
-void MainWindow::openExistingFile()
-{
+void MainWindow::openExistingFile() {
     qDebug("MainWindow::openExistingFile()");
 
     QString filepath = this->showFileDialog(QFileDialog::AcceptOpen);
@@ -128,14 +118,12 @@ void MainWindow::openExistingFile()
     this->loadRecentFiles();
 }
 
-void MainWindow::appExit()
-{
+void MainWindow::appExit() {
     qDebug("MainWindow::appExit()");
     exit(0);
 }
 
-void MainWindow::shrink()
-{
+void MainWindow::shrink() {
     QString filename = this->database->getFilename();
     if (filename.isNull() || filename.isEmpty())
         return;
@@ -144,18 +132,15 @@ void MainWindow::shrink()
     this->analyzeDatabase();
 }
 
-void MainWindow::refreshDatabase()
-{
+void MainWindow::refreshDatabase() {
     this->analyzeDatabase();
 }
 
-void MainWindow::analyzeDatabase()
-{
+void MainWindow::analyzeDatabase() {
     qDebug("MainWindow::analyzeDatabase()");
 
     DatabaseInfo info;
-    if (!analyzer->analyze(info))
-    {
+    if (!analyzer->analyze(info)) {
         qDebug("Analyze database failed");
         return;
     }
@@ -165,8 +150,7 @@ void MainWindow::analyzeDatabase()
     this->database->close();
 }
 
-void MainWindow::executeQuery()
-{
+void MainWindow::executeQuery() {
     qDebug("MainWindow::executeQuery()");
 
     QElapsedTimer time;
@@ -174,8 +158,7 @@ void MainWindow::executeQuery()
 
     QStringList errors;
     QString sql = ui->textEdit->toPlainText();
-    if (this->query->execute(sql, &errors))
-    {
+    if (this->query->execute(sql, &errors)) {
         ui->tabWidget->setCurrentIndex(0);
     }
 
@@ -186,25 +169,20 @@ void MainWindow::executeQuery()
     if (sql.contains("create", Qt::CaseInsensitive) ||
         sql.contains("drop", Qt::CaseInsensitive) ||
         sql.contains("insert", Qt::CaseInsensitive) ||
-        sql.contains("delete", Qt::CaseInsensitive))
-    {
+        sql.contains("delete", Qt::CaseInsensitive)) {
         analyzeDatabase();
     }
 }
 
-void MainWindow::treeNodeChanged(QTreeWidgetItem *item)
-{
+void MainWindow::treeNodeChanged(QTreeWidgetItem *item) {
     treeNodeChanged(item, 0);
 }
 
-void MainWindow::treeNodeChanged(QTreeWidgetItem *item, int column)
-{
-    if (item && item->type() == QTreeWidgetItem::UserType + 1)
-    {
+void MainWindow::treeNodeChanged(QTreeWidgetItem *item, int column) {
+    if (item && item->type() == QTreeWidgetItem::UserType + 1) {
         qDebug("table selected");
 
-        if (!this->database->open())
-        {
+        if (!this->database->open()) {
             qDebug("Unable to open database");
             return;
         }
@@ -223,8 +201,7 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item, int column)
     }
 }
 
-void MainWindow::about()
-{
+void MainWindow::about() {
     QString text = "Database management and query analyzer tool for SQLite";
     QMessageBox::about(this, "About", text);
 }

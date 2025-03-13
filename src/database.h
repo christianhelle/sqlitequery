@@ -4,14 +4,18 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 
-class Database
-{
+class Database {
 public:
     Database();
+
     ~Database();
+
     void setSource(QString filename);
+
     bool open();
+
     void close();
+
     void shrink();
 
     QSqlDatabase getDatabase() { return database; }
