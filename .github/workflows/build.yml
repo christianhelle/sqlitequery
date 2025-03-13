@@ -38,7 +38,7 @@ jobs:
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: SQLiteQuerAnalyzer_MacOS
+        name: SQLiteQuerAnalyzer_MacOS_${{ github.run_number }}
         path: |
           src/*.app
 
@@ -50,13 +50,13 @@ jobs:
       - name: Update Version Number (Qt Project)
         shell: pwsh
         run: |
-          $version = (Get-Content -Path src/SQLiteAnalyzer.pro -Raw) -replace 'VERSION = .*', 'VERSION = $env:GITHUB_RUN_NUMBER'
+          $version = (Get-Content -Path src/SQLiteAnalyzer.pro -Raw) -replace 'VERSION = .*', 'VERSION = ${{ github.run_number }}'
           $version | Set-Content -Path src/SQLiteAnalyzer.pro
 
       - name: Update Version Number (Inno Setup)
         shell: pwsh
         run: |
-          $version = (Get-Content -Path src/setup.iss -Raw) -replace 'AppVersion= .*', 'AppVersion = $env:GITHUB_RUN_NUMBER'
+          $version = (Get-Content -Path src/setup.iss -Raw) -replace 'AppVersion= .*', 'AppVersion = ${{ github.run_number }}'
           $version | Set-Content -Path src/setup.iss
 
       - name: Install Qt
@@ -108,7 +108,7 @@ jobs:
       - name: Publish Build
         uses: actions/upload-artifact@master
         with:
-          name: SQLiteQuerAnalyzer_Windows.zip
+          name: SQLiteQuerAnalyzer_Windows_${{ github.run_number }}.zip
           path: ${{ runner.temp }}\SQLiteQuerAnalyzer_Windows.zip
 
       - name: Inno Setup
@@ -119,5 +119,5 @@ jobs:
       - name: Publish Installer
         uses: actions/upload-artifact@master
         with:
-          name: SQLiteQuerAnalyzer_Windows_Installer.zip
+          name: SQLiteQuerAnalyzer_Windows_Installer_${{ github.run_number }}.zip
           path: ${{ github.workspace }}\src\Artifacts\SQLiteQueryAnalyzerSetup.exe
