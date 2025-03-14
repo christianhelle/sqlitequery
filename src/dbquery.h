@@ -10,18 +10,20 @@
 #include <QSqlQueryModel>
 #include <QTableView>
 #include <QMessageBox>
-#include <QStackedWidget>
 
 #include "database.h"
 
 class DbQuery
 {
 public:
-    DbQuery(QTableView*, Database*);
-    bool execute(QString, QStringList*);
+    DbQuery(QWidget*, Database*);
+    bool execute(QStringList, QStringList*);
 
 private:
-    QTableView *tableView;
+    QWidget *widget;
+    QScrollArea *scrollArea;
+    QWidget *container;
+    QList<QTableView*> *tableResults;
     Database *database;
 
     void clearResults();

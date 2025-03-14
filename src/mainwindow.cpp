@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     this->database = new Database();
     this->analyzer = new DbAnalyzer(database);
-    this->query = new DbQuery(ui->queryResultsTableView, this->database);
+    this->query = new DbQuery(ui->queryResultsGrid, this->database);
 
     this->tree = new DbTree(ui->treeWidget);
     this->highlighter = new Highlighter(ui->textEdit->document());
@@ -154,12 +154,14 @@ void MainWindow::analyzeDatabase() {
 void MainWindow::executeQuery() {
     qDebug("MainWindow::executeQuery()");
 
+    QStringList list(ui->textEdit->toPlainText().split(";", QString::SkipEmptyParts));
+    QStringList errors;
+
     QElapsedTimer time;
     time.start();
 
-    QStringList errors;
-    QString sql = ui->textEdit->toPlainText();
-    if (this->query->execute(sql, &errors)) {
+    if (this->query->execute(list, &errors))
+    {
         ui->tabWidget->setCurrentIndex(0);
     }
 
@@ -167,11 +169,16 @@ void MainWindow::executeQuery() {
     QString msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
     ui->queryResultMessagesTextEdit->setPlainText(msg);
 
-    if (sql.contains("create", Qt::CaseInsensitive) ||
-        sql.contains("drop", Qt::CaseInsensitive) ||
-        sql.contains("insert", Qt::CaseInsensitive) ||
-        sql.contains("delete", Qt::CaseInsensitive)) {
-        analyzeDatabase();
+    foreach (const QString sql, list)
+    {
+        if (sql.contains("create", Qt::CaseInsensitive) ||
+            sql.contains("drop", Qt::CaseInsensitive) ||
+            sql.contains("insert", Qt::CaseInsensitive) ||
+            sql.contains("delete", Qt::CaseInsensitive))
+        {
+            analyzeDatabase();
+            break;
+        }
     }
 }
 

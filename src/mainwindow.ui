@@ -53,11 +53,7 @@
              <attribute name="title">
               <string>Results</string>
              </attribute>
-             <layout class="QGridLayout" name="gridLayout_4">
-              <item row="0" column="0">
-               <widget class="QTableView" name="queryResultsTableView"/>
-              </item>
-             </layout>
+             <layout class="QGridLayout" name="gridLayout_4"/>
             </widget>
             <widget class="QWidget" name="queryResultMessagesTab">
              <attribute name="title">
