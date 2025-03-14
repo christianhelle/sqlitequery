@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QStandardPaths>
+#include <settings.h>
 
 class RecentFiles {
 public:

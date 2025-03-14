@@ -13,8 +13,7 @@ QFile *RecentFiles::openFile() {
 }
 
 QString RecentFiles::getRecentsFilePath() {
-    return QStandardPaths::writableLocation(QStandardPaths::HomeLocation)
-           + "/recents";
+    return Settings::getSettingsFolder() + "/.recents";
 }
 
 void RecentFiles::add(const QString &filepath) {
