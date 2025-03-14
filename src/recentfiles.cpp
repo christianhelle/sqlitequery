@@ -1,5 +1,7 @@
 #include "recentfiles.h"
 
+#include <qoperatingsystemversion.h>
+
 QFile *RecentFiles::openFile() {
     const QString filePath = RecentFiles::getRecentsFilePath();
     const auto file = new QFile(filePath);
@@ -16,12 +18,18 @@ QString RecentFiles::getRecentsFilePath() {
     return Settings::getSettingsFolder() + "/.recents";
 }
 
+QString RecentFiles::sanitize(const QString &filepath) {
+    return QOperatingSystemVersion::currentType() != QOperatingSystemVersion::Windows
+               ? QString(filepath).replace('\\', '/')
+               : QString(filepath).replace('/', '\\');
+}
+
 void RecentFiles::add(const QString &filepath) {
     if (filepath.isEmpty())
         return;
 
-    const QStringList files = RecentFiles::getList();
-    if (files.contains(filepath, Qt::CaseInsensitive))
+    const auto native_path = sanitize(filepath);
+    if (getList().contains(native_path, Qt::CaseInsensitive))
         return;
 
     QFile *file = openFile();
@@ -30,7 +38,7 @@ void RecentFiles::add(const QString &filepath) {
 
     if (file->seek(file->size())) {
         QTextStream out(file);
-        out << filepath << "\n";
+        out << native_path << "\n";
     }
 
     file->close();
