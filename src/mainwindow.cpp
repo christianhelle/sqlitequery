@@ -203,6 +203,7 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item, int column) {
 
 void MainWindow::about() {
     const QString text = "SQLite Query Analyzer\n"
+                         "Version: " + QApplication::applicationVersion() + "\n"
                          "Copyright (c) Christian Resma Helle 2015\n"
                          "All rights reserved.\n\n"
                          "Description:\n"
