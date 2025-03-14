@@ -15,3 +15,4 @@ src/.idea
 src/cmake-build-debug
 .vscode/settings.json
 src/Artifacts
+.DS_Store
