@@ -17,7 +17,7 @@ class DbQuery
 {
 public:
     DbQuery(QWidget*, Database*);
-    bool execute(QStringList, QStringList*);
+    bool execute(const QStringList &, QStringList*) const;
 
 private:
     QWidget *widget;
@@ -26,7 +26,7 @@ private:
     QList<QTableView*> *tableResults;
     Database *database;
 
-    void clearResults();
+    void clearResults() const;
 };
 
 #endif // DBQUERY_H

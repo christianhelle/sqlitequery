@@ -12,24 +12,21 @@ DbQuery::DbQuery(QWidget *widget, Database *database)
     this->scrollArea->setWidget(container);
 }
 
-void DbQuery::clearResults()
-{
+void DbQuery::clearResults() const {
     this->container->setGeometry(this->widget->geometry());
 
     QList<QTableView*>::iterator i;
     for (i = this->tableResults->begin(); i != this->tableResults->end(); ++i)
     {
-        QAbstractItemModel *model = (*i)->model();
-        if (model != Q_NULLPTR)
-            delete model;
+        const QAbstractItemModel *model = (*i)->model();
+        delete model;
     }
 
     qDeleteAll(this->tableResults->begin(), this->tableResults->end());
     this->tableResults->clear();
 }
 
-bool DbQuery::execute(QStringList queryList, QStringList *errors)
-{
+bool DbQuery::execute(const QStringList &queryList, QStringList *errors) const {
     this->clearResults();
 
     if (!this->database->open())
@@ -44,21 +41,20 @@ bool DbQuery::execute(QStringList queryList, QStringList *errors)
     const int width = widgetRect.width();
     const int height = widgetRect.height();
 
-    QSqlDatabase db = this->database->getDatabase();
+    const QSqlDatabase db = this->database->getDatabase();
     const QString empty;
     int count = 0;
 
     for (int i=0; i<queryList.length(); ++i)
     {
         const QString sql = queryList.at(i).trimmed().replace('\n', empty, Qt::CaseInsensitive);
-        if (sql == empty)
+        if (sql.isEmpty())
             continue;
 
-        QSqlError error;
         QSqlQuery query(db);
-
         if (!query.exec(sql))
         {
+            QSqlError error;
             QString msg = (error = db.lastError()).isValid() ? error.text() : "Query execution failed";
             errors->append(msg);
             continue;
@@ -68,17 +64,17 @@ bool DbQuery::execute(QStringList queryList, QStringList *errors)
         {
             if (i > 0)
                 yOffset += height;
-            QRect rect = QRect(0, yOffset, width, height);
-            QTableView *table = new QTableView(this->container);
+            auto rect = QRect(0, yOffset, width, height);
+            const auto table = new QTableView(this->container);
             table->setGeometry(rect);
             table->show();
 
             this->tableResults->append(table);
             count++;
 
-            QSqlQueryModel *model = new QSqlQueryModel();
-            model->setQuery(query);
-            table->setModel(model);
+            auto model = QSqlQueryModel();
+            model.setQuery(sql);
+            table->setModel(&model);
         }
     }
 
@@ -86,7 +82,7 @@ bool DbQuery::execute(QStringList queryList, QStringList *errors)
     newParentRect.setHeight(newParentRect.height() * count);
     this->container->setGeometry(newParentRect);
 
-    if (errors->length() > 0)
+    if (!errors->empty())
     {
         QString msg;
         for (int i=0; i<errors->length(); ++i)
