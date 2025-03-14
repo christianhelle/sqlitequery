@@ -12,6 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Update Version in code
+      shell: pwsh
+      run: |
+        $version = (Get-Content -Path src/main.cpp -Raw) -replace '#define VERSION "1.0.0"', '#define VERSION "${{ env.VERSION }}"'
+        $version | Set-Content -Path src/main.cpp
+        cat src/main.cpp
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
@@ -27,6 +33,11 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Update Version in code
+      shell: pwsh
+      run: |
+        $version = (Get-Content -Path src/main.cpp -Raw) -replace '#define VERSION "1.0.0"', '#define VERSION "${{ env.VERSION }}"'
+        $version | Set-Content -Path src/main.cpp
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
@@ -52,14 +63,20 @@ jobs:
       - name: Update Version Number (Qt Project)
         shell: pwsh
         run: |
-          $version = (Get-Content -Path src/SQLiteAnalyzer.pro -Raw) -replace 'VERSION = .*', 'VERSION = ${{ env.VERSION }}'
+          $version = (Get-Content -Path src/SQLiteAnalyzer.pro -Raw) -replace 'VERSION = 1.0.0', 'VERSION = ${{ env.VERSION }}'
           $version | Set-Content -Path src/SQLiteAnalyzer.pro
 
       - name: Update Version Number (Inno Setup)
         shell: pwsh
         run: |
-          $version = (Get-Content -Path src/setup.iss -Raw) -replace 'AppVersion= .*', 'AppVersion = ${{ env.VERSION }}'
+          $version = (Get-Content -Path src/setup.iss -Raw) -replace 'AppVersion = 1.0.0', 'AppVersion = ${{ env.VERSION }}'
           $version | Set-Content -Path src/setup.iss
+
+      - name: Update Version in code
+        shell: pwsh
+        run: |
+          $version = (Get-Content -Path src/main.cpp -Raw) -replace '#define VERSION "1.0.0"', '#define VERSION "${{ env.VERSION }}"'
+          $version | Set-Content -Path src/main.cpp
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4

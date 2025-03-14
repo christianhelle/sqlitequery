@@ -203,6 +203,12 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item, int column) {
 }
 
 void MainWindow::about() {
-    QString text = "Database management and query analyzer tool for SQLite";
+    const QString text = "SQLite Query Analyzer\n"
+                         "Version: " + QApplication::applicationVersion() + "\n"
+                         "Copyright (c) Christian Resma Helle 2015\n"
+                         "All rights reserved.\n\n"
+                         "Description:\n"
+                         "A fast and lightweight cross-platform GUI tool "
+                         "for querying and manipulating SQLite databases.";
     QMessageBox::about(this, "About", text);
 }
