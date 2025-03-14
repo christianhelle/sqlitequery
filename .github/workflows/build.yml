@@ -12,6 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Update Version in code
+      shell: pwsh
+      run: |
+        $version = (Get-Content -Path src/main.cpp -Raw) -replace '#define VERSION = .*', '#define VERSION = ${{ env.VERSION }}'
+        $version | Set-Content -Path src/main.cpp
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
@@ -27,6 +32,11 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Update Version in code
+      shell: pwsh
+      run: |
+        $version = (Get-Content -Path src/main.cpp -Raw) -replace '#define VERSION = .*', '#define VERSION = ${{ env.VERSION }}'
+        $version | Set-Content -Path src/main.cpp
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
@@ -60,6 +70,12 @@ jobs:
         run: |
           $version = (Get-Content -Path src/setup.iss -Raw) -replace 'AppVersion= .*', 'AppVersion = ${{ env.VERSION }}'
           $version | Set-Content -Path src/setup.iss
+
+      - name: Update Version in code
+        shell: pwsh
+        run: |
+          $version = (Get-Content -Path src/main.cpp -Raw) -replace '#define VERSION = .*', '#define VERSION = ${{ env.VERSION }}'
+          $version | Set-Content -Path src/main.cpp
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
