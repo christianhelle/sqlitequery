@@ -12,7 +12,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = "SQLiteQueryAnalyzer"
 TEMPLATE = app
 VERSION = 1.0.0.0
-RC_ICONS = icon.ico
+RC_ICONS = resources/icon.ico
+ICON = resources/icon.icns
 
 SOURCES += main.cpp\
         mainwindow.cpp \
