@@ -23,19 +23,20 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void loadRecentFiles();
-    void openDatabase(QString filename);
+    void loadRecentFiles() const;
+    void openDatabase(const QString &filename) const;
 public slots:
     void createNewFile();
     void openExistingFile();
-    void appExit();
-    void executeQuery();
-    void treeNodeChanged(QTreeWidgetItem*,int);
-    void treeNodeChanged(QTreeWidgetItem*);
-    void shrink();
-    void refreshDatabase();
+
+    static void appExit();
+    void executeQuery() const;
+    void treeNodeChanged(const QTreeWidgetItem*,int) const;
+    void treeNodeChanged(const QTreeWidgetItem*) const;
+    void shrink() const;
+    void refreshDatabase() const;
     void about();
-    void openRecentFile();
+    void openRecentFile() const;
 
 private:
     Ui::MainWindow *ui;
@@ -47,7 +48,7 @@ private:
     Highlighter *highlighter;
 
     QString showFileDialog(QFileDialog::AcceptMode mode);
-    void analyzeDatabase();
+    void analyzeDatabase() const;
 };
 
 #endif // MAINWINDOW_H
