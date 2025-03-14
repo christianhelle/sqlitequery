@@ -17,6 +17,7 @@ jobs:
       run: |
         $version = (Get-Content -Path src/main.cpp -Raw) -replace '#define VERSION = .*', '#define VERSION = ${{ env.VERSION }}'
         $version | Set-Content -Path src/main.cpp
+        cat src/main.cpp
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
