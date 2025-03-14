@@ -163,10 +163,11 @@ void MainWindow::executeQuery() const {
     if (this->query->execute(list, &errors))
     {
         ui->tabWidget->setCurrentIndex(0);
+        ui->queryResultTab->setCurrentIndex(0);
     }
 
-    float milliseconds = (float) time.elapsed();
-    QString msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
+    const auto milliseconds = static_cast<double>(time.elapsed());
+    const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
     ui->queryResultMessagesTextEdit->setPlainText(msg);
 
     foreach (const QString sql, list)
@@ -176,6 +177,7 @@ void MainWindow::executeQuery() const {
             sql.contains("insert", Qt::CaseInsensitive) ||
             sql.contains("delete", Qt::CaseInsensitive))
         {
+            ui->queryResultTab->setCurrentIndex(1);
             analyzeDatabase();
             break;
         }
