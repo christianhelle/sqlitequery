@@ -27,7 +27,7 @@ DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=.\Artifacts
 OutputBaseFilename=SQLiteQueryAnalyzer-Setup
-SetupIconFile={#MyAppIcon}
+SetupIconFile=resources\{#MyAppIcon}
 Compression=lzma
 SolidCompression=yes
 ChangesAssociations=yes
@@ -38,7 +38,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Files]
 Source: ".\build\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
-Source: "icon.ico"; DestDir: "{app}"; DestName: "icon.ico"
+Source: "resources\icon.ico"; DestDir: "{app}"; DestName: "icon.ico"
 
 [Icons]
 Name: "{commondesktop}\SQLite Query Analyzer"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; IconFilename: "{app}\{#MyAppIcon}"; Tasks: DesktopIcon
