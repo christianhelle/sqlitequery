@@ -8,11 +8,11 @@ on:
       - '!.github/workflows/changelog.yml'
       - '!src/**/*'
     branches:
-      - 'main' 
+      - 'master' 
 
 jobs:
   changelog:
-    if: github.ref == 'refs/heads/main' && github.repository == 'christianhelle/sqlitequery'
+    if: github.ref == 'refs/heads/master' && github.repository == 'christianhelle/sqlitequery'
     runs-on: ubuntu-latest
     steps:
       - name: 🛒 Checkout repository
