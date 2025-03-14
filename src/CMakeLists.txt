@@ -15,6 +15,8 @@ find_package(Qt${QT_VERSION_MAJOR} OPTIONAL_COMPONENTS Widgets)
 qt_standard_project_setup()
 
 qt_add_executable(SQLiteQueryAnalyzer WIN32 MACOSX_BUNDLE
+    ${app_icon_resource_windows}
+    ${app_icon_macos}
     database.cpp database.h
     databaseinfo.h
     dbanalyzer.cpp dbanalyzer.h
@@ -24,8 +26,6 @@ qt_add_executable(SQLiteQueryAnalyzer WIN32 MACOSX_BUNDLE
     main.cpp
     mainwindow.cpp mainwindow.h mainwindow.ui
     recentfiles.cpp recentfiles.h
-    ${app_icon_resource_windows}
-    ${app_icon_macos}
     settings.cpp settings.h
 )
 target_link_libraries(SQLiteQueryAnalyzer PRIVATE
