@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     this->database = new Database();
     this->analyzer = new DbAnalyzer(database);
-    this->query = new DbQuery(ui->queryResultsTableView, this->database);
+    this->query = new DbQuery(ui->queryResultsGrid, this->database);
 
     this->tree = new DbTree(ui->treeWidget);
     this->highlighter = new Highlighter(ui->textEdit->document());
@@ -51,9 +51,9 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::loadRecentFiles() {
+void MainWindow::loadRecentFiles() const {
     QStringList files = RecentFiles::getList();
-    if (files.length() == 0)
+    if (files.empty())
         return;
 
     if (!this->recentFilesMenu->actions().empty())
@@ -66,8 +66,8 @@ void MainWindow::loadRecentFiles() {
     }
 }
 
-void MainWindow::openRecentFile() {
-    QString file = sender()->objectName();
+void MainWindow::openRecentFile() const {
+    const QString file = sender()->objectName();
     this->openDatabase(file);
 }
 
@@ -91,13 +91,13 @@ QString MainWindow::showFileDialog(QFileDialog::AcceptMode mode) {
 void MainWindow::createNewFile() {
     qDebug("MainWindow::createNewFile()");
 
-    QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
+    const QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
     this->openDatabase(filepath);
     RecentFiles::add(filepath);
     this->loadRecentFiles();
 }
 
-void MainWindow::openDatabase(QString filename) {
+void MainWindow::openDatabase(const QString &filename) const {
     qDebug("MainWindow::openDatabase(QString)");
 
     this->database->setSource(filename);
@@ -124,8 +124,8 @@ void MainWindow::appExit() {
     exit(0);
 }
 
-void MainWindow::shrink() {
-    QString filename = this->database->getFilename();
+void MainWindow::shrink() const {
+    const QString filename = this->database->getFilename();
     if (filename.isNull() || filename.isEmpty())
         return;
 
@@ -133,11 +133,11 @@ void MainWindow::shrink() {
     this->analyzeDatabase();
 }
 
-void MainWindow::refreshDatabase() {
+void MainWindow::refreshDatabase() const {
     this->analyzeDatabase();
 }
 
-void MainWindow::analyzeDatabase() {
+void MainWindow::analyzeDatabase() const {
     qDebug("MainWindow::analyzeDatabase()");
 
     DatabaseInfo info;
@@ -151,35 +151,44 @@ void MainWindow::analyzeDatabase() {
     this->database->close();
 }
 
-void MainWindow::executeQuery() {
+void MainWindow::executeQuery() const {
     qDebug("MainWindow::executeQuery()");
+
+    QStringList list(ui->textEdit->toPlainText().split(";", Qt::SkipEmptyParts));
+    QStringList errors;
 
     QElapsedTimer time;
     time.start();
 
-    QStringList errors;
-    QString sql = ui->textEdit->toPlainText();
-    if (this->query->execute(sql, &errors)) {
+    if (this->query->execute(list, &errors))
+    {
         ui->tabWidget->setCurrentIndex(0);
+        ui->queryResultTab->setCurrentIndex(0);
     }
 
-    float milliseconds = (float) time.elapsed();
-    QString msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
+    const auto milliseconds = static_cast<double>(time.elapsed());
+    const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
     ui->queryResultMessagesTextEdit->setPlainText(msg);
 
-    if (sql.contains("create", Qt::CaseInsensitive) ||
-        sql.contains("drop", Qt::CaseInsensitive) ||
-        sql.contains("insert", Qt::CaseInsensitive) ||
-        sql.contains("delete", Qt::CaseInsensitive)) {
-        analyzeDatabase();
+    foreach (const QString sql, list)
+    {
+        if (sql.contains("create", Qt::CaseInsensitive) ||
+            sql.contains("drop", Qt::CaseInsensitive) ||
+            sql.contains("insert", Qt::CaseInsensitive) ||
+            sql.contains("delete", Qt::CaseInsensitive))
+        {
+            ui->queryResultTab->setCurrentIndex(1);
+            analyzeDatabase();
+            break;
+        }
     }
 }
 
-void MainWindow::treeNodeChanged(QTreeWidgetItem *item) {
+void MainWindow::treeNodeChanged(const QTreeWidgetItem *item) const {
     treeNodeChanged(item, 0);
 }
 
-void MainWindow::treeNodeChanged(QTreeWidgetItem *item, int column) {
+void MainWindow::treeNodeChanged(const QTreeWidgetItem *item, const int column) const {
     if (item && item->type() == QTreeWidgetItem::UserType + 1) {
         qDebug("table selected");
 
@@ -191,7 +200,7 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item, int column) {
         if (ui->tableView->model() != Q_NULLPTR)
             delete ui->tableView->model();
 
-        QSqlTableModel *model = new QSqlTableModel(0, this->database->getDatabase());
+        auto *model = new QSqlTableModel(nullptr, this->database->getDatabase());
         model->setTable(item->text(column));
         model->setEditStrategy(QSqlTableModel::OnFieldChange);
         model->select();
