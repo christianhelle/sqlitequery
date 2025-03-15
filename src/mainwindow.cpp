@@ -198,6 +198,7 @@ void MainWindow::executeQuery() const
     qDebug("MainWindow::executeQuery()");
 
     ui->queryResultTab->setCurrentIndex(1);
+    ui->actionExecute_Query->setEnabled(false);
     ui->queryResultMessagesTextEdit->setPlainText("Executing query...");
 
     DbQueryExecuteTask *task = new DbQueryExecuteTask(this->ui, this);
