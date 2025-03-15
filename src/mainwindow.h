@@ -10,6 +10,7 @@
 #include "dbquery.h"
 #include "highlighter.h"
 #include "dbtree.h"
+#include "dbanalyzertask.h"
 
 namespace Ui {
 class MainWindow;
@@ -21,10 +22,14 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    ~MainWindow() override;
 
     void loadRecentFiles() const;
     void openDatabase(const QString &filename) const;
+
+    Database* getDatabase() const { return database; }
+    void analyzeDatabase() const;
+
 public slots:
     void createNewFile();
     void openExistingFile();
@@ -42,13 +47,10 @@ private:
     Ui::MainWindow *ui;
     QMenu *recentFilesMenu;
     Database *database;
-    DbAnalyzer *analyzer;
-    DbQuery *query;
     DbTree *tree;
     Highlighter *highlighter;
 
     QString showFileDialog(QFileDialog::AcceptMode mode);
-    void analyzeDatabase() const;
 };
 
 #endif // MAINWINDOW_H
