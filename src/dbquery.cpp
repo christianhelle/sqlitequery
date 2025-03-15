@@ -8,12 +8,13 @@ DbQuery::DbQuery(QWidget *widget, Database *database)
 
     this->container = new QWidget(this->widget);
     this->scrollArea = new QScrollArea(this->widget);
-    this->scrollArea->setGeometry(this->widget->geometry());
-    this->scrollArea->setWidget(container);
 }
 
 void DbQuery::clearResults() const {
     this->container->setGeometry(this->widget->geometry());
+    this->scrollArea->setGeometry(this->widget->geometry());
+    this->scrollArea->setWidget(container);
+    this->container->show();
 
     QList<QTableView*>::iterator i;
     for (i = this->tableResults->begin(); i != this->tableResults->end(); ++i)
@@ -64,17 +65,18 @@ bool DbQuery::execute(const QStringList &queryList, QStringList *errors) const {
         {
             if (i > 0)
                 yOffset += height;
-            auto rect = QRect(0, yOffset, width, height);
-            const auto table = new QTableView(this->container);
+            QRect rect = QRect(0, yOffset, width, height);
+            QTableView *table = new QTableView(this->container);
             table->setGeometry(rect);
             table->show();
 
             this->tableResults->append(table);
             count++;
 
-            auto model = QSqlQueryModel();
-            model.setQuery(sql);
-            table->setModel(&model);
+            auto *model = new QSqlQueryModel();
+            model->setQuery(sql);
+            table->setModel(model);
+            table->repaint();
         }
     }
 
