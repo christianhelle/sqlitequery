@@ -48,12 +48,15 @@ jobs:
     - name: Make
       run: make
       working-directory: src
+    - name: macdeployqt
+      working-directory: src
+      run: macdeployqt SQLiteQueryAnalyzer.app -dmg
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
       with:
         name: SQLiteQuerAnalyzer_MacOS_v${{ env.VERSION }}
         path: |
-          src/*.app
+          src/*.dmg
 
   windows:
     runs-on:  windows-latest
