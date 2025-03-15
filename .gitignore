@@ -16,3 +16,9 @@ src/cmake-build-debug
 .vscode/settings.json
 src/Artifacts
 .DS_Store
+src/.qt
+src/CMakeFiles
+src/SQLiteQueryAnalyzer_autogen
+*.dmg
+src/cmake_install.cmake
+src/CMakeCache.txt
