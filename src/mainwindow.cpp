@@ -142,10 +142,10 @@ void MainWindow::analyzeDatabase() const {
 
 class DbQueryExecuteTask : public QRunnable
 {
-private:
     Ui_MainWindow *ui;
     const MainWindow *mainWindow;
     QStringList list;
+    DbQuery* query;
 
 public:
     DbQueryExecuteTask(Ui_MainWindow *ui, const MainWindow *instance)
@@ -153,6 +153,13 @@ public:
         this->ui = ui;
         this->mainWindow = instance;
         list = QStringList(ui->textEdit->toPlainText().split(";", Qt::SkipEmptyParts));
+        query = new DbQuery(ui->queryResultsGrid, this->mainWindow->getDatabase());
+    }
+
+    ~DbQueryExecuteTask() override
+    {
+        delete query;
+        emit ui->actionExecute_Query->setEnabled(true);
     }
 
     void run() override
@@ -161,7 +168,6 @@ public:
         time.start();
 
         QStringList errors;
-        auto *query = new DbQuery(ui->queryResultsGrid, this->mainWindow->getDatabase());
         if (query->execute(list, &errors))
         {
             emit ui->tabWidget->setCurrentIndex(0);
@@ -184,8 +190,6 @@ public:
                 break;
             }
         }
-
-        delete query;
     }
 };
 
