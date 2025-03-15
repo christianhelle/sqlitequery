@@ -15,13 +15,13 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
+class MainWindow final : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
 
     void loadRecentFiles() const;
     void openDatabase(const QString &filename) const;
@@ -31,8 +31,8 @@ public slots:
 
     static void appExit();
     void executeQuery() const;
-    void treeNodeChanged(const QTreeWidgetItem*,int) const;
-    void treeNodeChanged(const QTreeWidgetItem*) const;
+    void treeNodeChanged(QTreeWidgetItem *, int) const;
+    void treeNodeChanged(QTreeWidgetItem *) const;
     void shrink() const;
     void refreshDatabase() const;
     void about();
