@@ -1,7 +1,6 @@
 #ifndef DBQUERY_H
 #define DBQUERY_H
 
-#include <QObject>
 #include <QWidget>
 #include <QScrollArea>
 #include <QVBoxLayout>
@@ -14,7 +13,7 @@
 
 #include "database.h"
 
-class DbQuery : QObject
+class DbQuery
 {
 public:
     DbQuery(QWidget*, Database*);

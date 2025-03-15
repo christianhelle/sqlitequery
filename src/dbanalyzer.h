@@ -1,12 +1,11 @@
 #ifndef DBANALYZER_H
 #define DBANALYZER_H
 
-#include <QObject>
 #include <QtSql>
 #include "databaseinfo.h"
 #include "database.h"
 
-class DbAnalyzer : QObject
+class DbAnalyzer
 {
 public:
     DbAnalyzer(Database *database);
