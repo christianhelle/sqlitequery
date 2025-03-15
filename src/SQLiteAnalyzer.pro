@@ -23,8 +23,7 @@ SOURCES += main.cpp\
     database.cpp \
     dbtree.cpp \
     recentfiles.cpp \
-    settings.cpp \    
-    dbanalyzertask.cpp
+    settings.cpp
 
 HEADERS  += mainwindow.h \
     dbanalyzer.h \
@@ -34,7 +33,6 @@ HEADERS  += mainwindow.h \
     database.h \
     dbtree.h \
     recentfiles.h \
-    settings.h \
-    dbanalyzertask.h
+    settings.h
 
 FORMS    += mainwindow.ui

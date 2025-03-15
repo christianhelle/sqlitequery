@@ -27,7 +27,6 @@ qt_add_executable(SQLiteQueryAnalyzer WIN32 MACOSX_BUNDLE
     mainwindow.cpp mainwindow.h mainwindow.ui
     recentfiles.cpp recentfiles.h
     settings.cpp settings.h
-    dbanalyzertask.cpp dbanalyzertask.h
 )
 target_link_libraries(SQLiteQueryAnalyzer PRIVATE
     Qt::Core
