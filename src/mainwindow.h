@@ -31,8 +31,8 @@ public slots:
 
     static void appExit();
     void executeQuery() const;
-    void treeNodeChanged(const QTreeWidgetItem*,int) const;
-    void treeNodeChanged(const QTreeWidgetItem*) const;
+    void treeNodeChanged(QTreeWidgetItem *, int) const;
+    void treeNodeChanged(QTreeWidgetItem *) const;
     void shrink() const;
     void refreshDatabase() const;
     void about();

@@ -184,11 +184,11 @@ void MainWindow::executeQuery() const {
     }
 }
 
-void MainWindow::treeNodeChanged(const QTreeWidgetItem *item) const {
+void MainWindow::treeNodeChanged(QTreeWidgetItem *item) const {
     treeNodeChanged(item, 0);
 }
 
-void MainWindow::treeNodeChanged(const QTreeWidgetItem *item, const int column) const {
+void MainWindow::treeNodeChanged(QTreeWidgetItem *item, const int column) const {
     if (item && item->type() == QTreeWidgetItem::UserType + 1) {
         qDebug("table selected");
 
