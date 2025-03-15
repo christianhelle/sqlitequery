@@ -157,8 +157,6 @@ public:
 
     void run() override
     {
-        emit ui->queryResultMessagesTextEdit->setPlainText("Executing query...");
-
         QElapsedTimer time;
         time.start();
 
@@ -194,6 +192,9 @@ public:
 void MainWindow::executeQuery() const
 {
     qDebug("MainWindow::executeQuery()");
+
+    ui->queryResultTab->setCurrentIndex(1);
+    ui->queryResultMessagesTextEdit->setPlainText("Executing query...");
 
     DbQueryExecuteTask *task = new DbQueryExecuteTask(this->ui, this);
     QThreadPool::globalInstance()->start(task);
