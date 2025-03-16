@@ -1,3 +1,5 @@
+[![build](https://github.com/christianhelle/sqlitequery/actions/workflows/build.yml/badge.svg)](https://github.com/christianhelle/sqlitequery/actions/workflows/build.yml)
+
 # SQLite Query Analyzer
 
 SQLite Query Analyzer is a lightweight and efficient desktop utility designed to simplify the process of managing SQLite databases.
