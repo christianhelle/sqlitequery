@@ -14,7 +14,7 @@ It provides an intuitive interface for executing queries and direct table editin
 
 ## Screenshots
 
-Here are some screenshots of SQLiteQuery in action:
+Here are some screenshots of SQLite Query Analyzer in action:
 
 ## Windows
 
