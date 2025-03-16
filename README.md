@@ -28,6 +28,12 @@ Here are some screenshots of SQLiteQuery in action:
 ![Dark Mode Select query](images/dark-query-select.png)
 ![Dark Mode Table data editing](images/dark-table-data.png)
 
+## Linux (Ubuntu)
+
+![Dark Mode Insert query](images/linux-dark-query-insert.png)
+![Dark Mode Select query](images/linux-dark-query-select.png)
+![Dark Mode Table data editing](images/linux-dark-table-data.png)
+
 ## Building
 
 ### Prerequisites
