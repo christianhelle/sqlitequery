@@ -21,9 +21,6 @@ Here are some screenshots of SQLiteQuery in action:
 ![Insert query](images/query-insert.png)
 ![Select query](images/query-select.png)
 ![Table data editing](images/table-data.png)
-
-### Dark Mode
-
 ![Dark Mode Insert query](images/dark-query-insert.png)
 ![Dark Mode Select query](images/dark-query-select.png)
 ![Dark Mode Table data editing](images/dark-table-data.png)
@@ -33,9 +30,6 @@ Here are some screenshots of SQLiteQuery in action:
 ![Insert query](images/linux-query-insert.png)
 ![Select query](images/linux-query-select.png)
 ![Table data editing](images/linux-table-data.png)
-
-### Dark Mode
-
 ![Dark Mode Insert query](images/linux-dark-query-insert.png)
 ![Dark Mode Select query](images/linux-dark-query-select.png)
 ![Dark Mode Table data editing](images/linux-dark-table-data.png)
