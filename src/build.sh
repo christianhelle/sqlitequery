@@ -1,4 +1,4 @@
 #!/bin/bash
-qmake SQLiteAnalyzer.pro
-make
+cmake .
+cmake --build . --config Release
 macdeployqt SQLiteQueryAnalyzer.app -dmg
