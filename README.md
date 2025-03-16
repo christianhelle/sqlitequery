@@ -25,6 +25,15 @@ Here are some screenshots of SQLite Query Analyzer in action:
 ![Dark Mode Select query](images/dark-query-select.png)
 ![Dark Mode Table data editing](images/dark-table-data.png)
 
+## MacOS
+
+![Insert query](images/mac-query-insert.png)
+![Select query](images/mac-query-select.png)
+![Table data editing](images/mac-table-data.png)
+![Dark Mode Insert query](images/mac-dark-query-insert.png)
+![Dark Mode Select query](images/mac-dark-query-select.png)
+![Dark Mode Table data editing](images/mac-dark-table-data.png)
+
 ## Linux (Ubuntu)
 
 ![Insert query](images/linux-query-insert.png)
