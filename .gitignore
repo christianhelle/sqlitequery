@@ -22,3 +22,4 @@ src/SQLiteQueryAnalyzer_autogen
 *.dmg
 src/cmake_install.cmake
 src/CMakeCache.txt
+src/SQLiteQueryAnalyzer
