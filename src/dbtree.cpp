@@ -15,14 +15,14 @@ void DbTree::clear() {
     //    this->treeNodes->clear();
 }
 
-QString getFileSize(qint64 size) {
-    float num = size;
+QString getFileSize(const qint64 size) {
     QStringList list;
     list << "KB" << "MB" << "GB" << "TB";
 
     QStringListIterator i(list);
     QString unit("bytes");
 
+    auto num = static_cast<float>(size);
     while (num >= 1024 && i.hasNext()) {
         unit = i.next();
         num /= 1024.0;
