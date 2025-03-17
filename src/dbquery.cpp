@@ -23,10 +23,8 @@ void DbQuery::clearResults() const {
     this->scrollArea->setWidget(container);
     this->container->show();
 
-    QList<QTableView*>::iterator i;
-    for (i = this->tableResults->begin(); i != this->tableResults->end(); ++i)
-    {
-        const QAbstractItemModel *model = (*i)->model();
+    for (const auto &tableResult: *this->tableResults) {
+        const QAbstractItemModel *model = tableResult->model();
         delete model;
     }
 
