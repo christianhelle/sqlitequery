@@ -100,7 +100,7 @@ bool DbQuery::execute(const QStringList &queryList, QStringList *errors) const {
             msg += "\r\n";
         }
 
-        QMessageBox::information(0, "Error", msg, QMessageBox::Ok);
+        QMessageBox::information(nullptr, "Error", msg, QMessageBox::Ok);
         return false;
     }
 
