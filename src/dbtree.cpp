@@ -9,10 +9,10 @@ DbTree::~DbTree() {
     this->clear();
 }
 
-void DbTree::clear() {
+void DbTree::clear() const {
+    qDeleteAll(this->treeNodes->begin(), this->treeNodes->end());
+    this->treeNodes->clear();
     this->tree->clear();
-    //    qDeleteAll(this->treeNodes->begin(), this->treeNodes->end());
-    //    this->treeNodes->clear();
 }
 
 QString getFileSize(const qint64 size) {

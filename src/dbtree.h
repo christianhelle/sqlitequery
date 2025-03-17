@@ -12,7 +12,7 @@ public:
 
     ~DbTree();
 
-    void clear();
+    void clear() const;
 
     void populateTree(const DatabaseInfo& info);
 
