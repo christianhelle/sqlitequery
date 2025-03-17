@@ -55,8 +55,9 @@ QStringList RecentFiles::getList() {
 
     if (QTextStream in(file.get()); in.seek(0)) {
         while (!in.atEnd()) {
-            if (QString line = in.readLine(); !files.contains(line, Qt::CaseInsensitive))
+            if (QString line = in.readLine(); !files.contains(line, Qt::CaseInsensitive) && QFile::exists(line)) {
                 files.append(line);
+            }
         }
     }
 
