@@ -18,11 +18,11 @@ public:
     void shrink();
 
     QSqlDatabase getDatabase() { return database; }
-    QString getFilename() { return filename; }
+    QString getFilename() { return source; }
 
 private:
     QSqlDatabase database;
-    QString filename;
+    QString source;
 };
 
 #endif // DATABASE_H
