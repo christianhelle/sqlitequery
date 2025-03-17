@@ -7,18 +7,18 @@
 
 class DbAnalyzer {
 public:
-    DbAnalyzer(Database *database);
+    explicit DbAnalyzer(Database *database);
 
     ~DbAnalyzer();
 
-    bool analyze(DatabaseInfo &info);
+    bool analyze(DatabaseInfo &info) const;
 
 private:
     Database *database;
 
-    void loadTables(DatabaseInfo &info);
+    void loadTables(DatabaseInfo &info) const;
 
-    void loadColumns(DatabaseInfo &info);
+    void loadColumns(DatabaseInfo &info) const;
 };
 
 #endif // DBANALYZER_H

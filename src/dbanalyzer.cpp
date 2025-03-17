@@ -9,7 +9,7 @@ DbAnalyzer::~DbAnalyzer() {
     qDebug("DatabaseAnalyzer::~DatabaseAnalyzer()");
 }
 
-bool DbAnalyzer::analyze(DatabaseInfo &info) {
+bool DbAnalyzer::analyze(DatabaseInfo &info) const {
     QFileInfo file(this->database->getFilename());
 
     info.filename = file.fileName();
@@ -22,7 +22,7 @@ bool DbAnalyzer::analyze(DatabaseInfo &info) {
     return true;
 }
 
-void DbAnalyzer::loadTables(DatabaseInfo &info) {
+void DbAnalyzer::loadTables(DatabaseInfo &info) const {
     const QString sql = "SELECT * FROM sqlite_master WHERE type='table'";
     qDebug() << sql;
 
@@ -42,7 +42,7 @@ void DbAnalyzer::loadTables(DatabaseInfo &info) {
     }
 }
 
-void DbAnalyzer::loadColumns(DatabaseInfo &info) {
+void DbAnalyzer::loadColumns(DatabaseInfo &info) const {
     for (int i = 0; i < info.tables.length(); ++i) {
         const QString sql = "PRAGMA table_info (" + info.tables[i].name + ")";
         qDebug() << sql;
