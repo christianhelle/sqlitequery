@@ -12,8 +12,6 @@ public:
     static QStringList getList();
 
 private:
-    static QFile *openFile();
-
     static QString getRecentsFilePath();
 
     static QString sanitize(const QString &filepath);
