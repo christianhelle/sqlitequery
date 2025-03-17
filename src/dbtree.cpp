@@ -22,7 +22,7 @@ QString getFileSize(const qint64 size) {
     QStringListIterator i(list);
     QString unit("bytes");
 
-    auto num = static_cast<float>(size);
+    auto num = static_cast<double>(size);
     while (num >= 1024 && i.hasNext()) {
         unit = i.next();
         num /= 1024.0;
