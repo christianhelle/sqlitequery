@@ -10,7 +10,7 @@ public:
 
     ~Database();
 
-    void setSource(QString filename);
+    void setSource(const QString &filename);
 
     bool open();
 
