@@ -1,20 +1,19 @@
 #ifndef DBTREE_H
 #define DBTREE_H
 
-#include <QWidget>
 #include <QTreeWidget>
 
 #include "databaseinfo.h"
 
 class DbTree {
 public:
-    DbTree(QTreeWidget *);
+    explicit DbTree(QTreeWidget *);
 
     ~DbTree();
 
     void clear() const;
 
-    void populateTree(const DatabaseInfo& info);
+    void populateTree(const DatabaseInfo& info) const;
 
 private:
     QTreeWidget *tree;
