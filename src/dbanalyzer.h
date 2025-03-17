@@ -1,7 +1,6 @@
 #ifndef DBANALYZER_H
 #define DBANALYZER_H
 
-#include <QtSql>
 #include "databaseinfo.h"
 #include "database.h"
 

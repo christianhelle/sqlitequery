@@ -1,5 +1,8 @@
 #include "settings.h"
 
+#include <QStandardPaths>
+#include <QDir>
+
 void Settings::init() {
     const auto path = getSettingsFolder();
     if (const QDir dir(path); !dir.exists()) {

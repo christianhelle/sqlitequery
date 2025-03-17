@@ -1,4 +1,5 @@
 #include "database.h"
+#include <QSqlDatabase>
 
 Database::Database() {
     qDebug("Database::Database()");

@@ -4,9 +4,7 @@
 #include <QSyntaxHighlighter>
 #include <QTextCharFormat>
 #include <QRegularExpression>
-#include <QGuiApplication>
 #include <QPalette>
-#include <QStyleHints>
 
 class Highlighter : public QSyntaxHighlighter {
     Q_OBJECT

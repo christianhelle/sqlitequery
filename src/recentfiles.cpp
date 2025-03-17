@@ -1,6 +1,11 @@
 #include "recentfiles.h"
+#include "settings.h"
 
-#include <qoperatingsystemversion.h>
+#include <QOperatingSystemVersion>
+#include <QStringList>
+#include <QFile>
+#include <QTextStream>
+#include <QStandardPaths>
 
 QFile *RecentFiles::openFile() {
     const QString filePath = RecentFiles::getRecentsFilePath();

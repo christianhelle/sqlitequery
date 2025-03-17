@@ -1,4 +1,11 @@
 #include "dbquery.h"
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QSqlQueryModel>
+#include <QMessageBox>
 
 DbQuery::DbQuery(QWidget *widget, Database *database)
 {

@@ -3,8 +3,6 @@
 
 #include <QMainWindow>
 #include <QFileDialog>
-#include <QTreeWidget>
-#include <QTableView>
 
 #include "dbanalyzer.h"
 #include "dbquery.h"
