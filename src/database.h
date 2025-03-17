@@ -17,8 +17,8 @@ public:
 
     void shrink();
 
-    QSqlDatabase getDatabase() { return database; }
-    QString getFilename() { return source; }
+    [[nodiscard]] QSqlDatabase getDatabase() const { return database; }
+    [[nodiscard]] QString getFilename() const { return source; }
 
 private:
     QSqlDatabase database;
