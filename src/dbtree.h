@@ -14,7 +14,7 @@ public:
 
     void clear();
 
-    void populateTree(DatabaseInfo info);
+    void populateTree(const DatabaseInfo& info);
 
 private:
     QTreeWidget *tree;

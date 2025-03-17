@@ -31,7 +31,7 @@ QString getFileSize(const qint64 size) {
     return QString().setNum(num, 'f', 2) + " " + unit;
 }
 
-void DbTree::populateTree(DatabaseInfo info) {
+void DbTree::populateTree(const DatabaseInfo& info) {
     this->clear();
 
     QTreeWidgetItem *dbInfoNode = new QTreeWidgetItem(this->tree);
