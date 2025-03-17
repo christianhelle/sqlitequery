@@ -5,17 +5,19 @@
 #include "databaseinfo.h"
 #include "database.h"
 
-class DbAnalyzer
-{
+class DbAnalyzer {
 public:
     DbAnalyzer(Database *database);
+
     ~DbAnalyzer();
+
     bool analyze(DatabaseInfo &info);
 
 private:
     Database *database;
 
     void loadTables(DatabaseInfo &info);
+
     void loadColumns(DatabaseInfo &info);
 };
 

@@ -4,31 +4,27 @@
 #include <QtGlobal>
 #include <QDateTime>
 
-struct Column
-{
+struct Column {
     int ordinal;
     QString name;
     QString dataType;
     bool notNull;
 };
 
-struct Index
-{
+struct Index {
     QString name;
     QString column;
     bool unique;
     bool clustered;
 };
 
-struct Table
-{
+struct Table {
     QString name;
     QList<Column> columns;
     QList<Index> indexes;
 };
 
-struct DatabaseInfo
-{
+struct DatabaseInfo {
     QString filename;
     QDateTime creationDate;
     QString databaseVersion;
@@ -38,4 +34,3 @@ struct DatabaseInfo
 };
 
 #endif // DATABASEINFO
-

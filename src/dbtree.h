@@ -6,17 +6,19 @@
 
 #include "databaseinfo.h"
 
-class DbTree
-{
+class DbTree {
 public:
-    DbTree(QTreeWidget*);
+    DbTree(QTreeWidget *);
+
     ~DbTree();
+
     void clear();
+
     void populateTree(DatabaseInfo info);
 
 private:
     QTreeWidget *tree;
-    QList<QTreeWidgetItem*> *treeNodes;
+    QList<QTreeWidgetItem *> *treeNodes;
 };
 
 #endif // DBTREE_H

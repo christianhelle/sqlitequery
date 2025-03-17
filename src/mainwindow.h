@@ -12,30 +12,40 @@
 #include "dbtree.h"
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
-class MainWindow final : public QMainWindow
-{
+class MainWindow final : public QMainWindow {
     Q_OBJECT
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
+
     ~MainWindow() override;
 
     void loadRecentFiles() const;
+
     void openDatabase(const QString &filename) const;
+
 public slots:
     void createNewFile();
+
     void openExistingFile();
 
     static void appExit();
+
     void executeQuery() const;
+
     void treeNodeChanged(QTreeWidgetItem *, int) const;
+
     void treeNodeChanged(QTreeWidgetItem *) const;
+
     void shrink() const;
+
     void refreshDatabase() const;
+
     void about();
+
     void openRecentFile() const;
 
 private:
@@ -48,6 +58,7 @@ private:
     Highlighter *highlighter;
 
     QString showFileDialog(QFileDialog::AcceptMode mode);
+
     void analyzeDatabase() const;
 };
 
