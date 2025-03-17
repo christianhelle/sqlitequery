@@ -44,8 +44,8 @@ void DbAnalyzer::loadTables(DatabaseInfo &info) const {
 }
 
 void DbAnalyzer::loadColumns(DatabaseInfo &info) const {
-    for (int i = 0; i < info.tables.length(); ++i) {
-        const QString sql = "PRAGMA table_info (" + info.tables[i].name + ")";
+    for (auto &table: info.tables) {
+        const QString sql = "PRAGMA table_info (" + table.name + ")";
         qDebug() << sql;
 
         QSqlQuery query(this->database->getDatabase());
@@ -57,7 +57,7 @@ void DbAnalyzer::loadColumns(DatabaseInfo &info) const {
             col.name = query.value("name").toString();
             col.dataType = query.value("type").toString();
             col.notNull = query.value("notnull").toBool();
-            info.tables[i].columns.append(col);
+            table.columns.append(col);
             qDebug() << col.ordinal << col.name << col.dataType << col.notNull;
         }
     }
