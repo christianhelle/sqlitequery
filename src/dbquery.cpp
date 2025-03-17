@@ -1,10 +1,16 @@
 #include "dbquery.h"
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QSqlQueryModel>
+#include <QMessageBox>
 
-DbQuery::DbQuery(QWidget *widget, Database *database)
-{
+DbQuery::DbQuery(QWidget *widget, Database *database) {
     this->widget = widget;
     this->database = database;
-    tableResults = new QList<QTableView*>();
+    tableResults = new QList<QTableView *>();
 
     this->container = new QWidget(this->widget);
     this->scrollArea = new QScrollArea(this->widget);
@@ -16,10 +22,8 @@ void DbQuery::clearResults() const {
     this->scrollArea->setWidget(container);
     this->container->show();
 
-    QList<QTableView*>::iterator i;
-    for (i = this->tableResults->begin(); i != this->tableResults->end(); ++i)
-    {
-        const QAbstractItemModel *model = (*i)->model();
+    for (const auto &tableResult: *this->tableResults) {
+        const QAbstractItemModel *model = tableResult->model();
         delete model;
     }
 
@@ -30,8 +34,7 @@ void DbQuery::clearResults() const {
 bool DbQuery::execute(const QStringList &queryList, QStringList *errors) const {
     this->clearResults();
 
-    if (!this->database->open())
-    {
+    if (!this->database->open()) {
         const QString msg = "Unable to open database";
         errors->append(msg);
         return false;
@@ -46,23 +49,20 @@ bool DbQuery::execute(const QStringList &queryList, QStringList *errors) const {
     const QString empty;
     int count = 0;
 
-    for (int i=0; i<queryList.length(); ++i)
-    {
+    for (int i = 0; i < queryList.length(); ++i) {
         const QString sql = queryList.at(i).trimmed().replace('\n', empty, Qt::CaseInsensitive);
         if (sql.isEmpty())
             continue;
 
         QSqlQuery query(db);
-        if (!query.exec(sql))
-        {
+        if (!query.exec(sql)) {
             QSqlError error;
             QString msg = (error = db.lastError()).isValid() ? error.text() : "Query execution failed";
             errors->append(msg);
             continue;
         }
 
-        if (query.isSelect())
-        {
+        if (query.isSelect()) {
             if (i > 0)
                 yOffset += height;
             QRect rect = QRect(0, yOffset, width, height);
@@ -84,19 +84,16 @@ bool DbQuery::execute(const QStringList &queryList, QStringList *errors) const {
     newParentRect.setHeight(newParentRect.height() * count);
     this->container->setGeometry(newParentRect);
 
-    if (!errors->empty())
-    {
+    if (!errors->empty()) {
         QString msg;
-        for (int i=0; i<errors->length(); ++i)
-        {
-            msg += errors->at(i);
+        for (const auto &error: *errors) {
+            msg += error;
             msg += "\r\n";
         }
 
-        QMessageBox::information(0, "Error", msg, QMessageBox::Ok);
+        QMessageBox::information(nullptr, "Error", msg, QMessageBox::Ok);
         return false;
     }
 
     return true;
 }
-

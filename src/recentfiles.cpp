@@ -1,18 +1,10 @@
 #include "recentfiles.h"
+#include "settings.h"
 
-#include <qoperatingsystemversion.h>
-
-QFile *RecentFiles::openFile() {
-    const QString filePath = RecentFiles::getRecentsFilePath();
-    const auto file = new QFile(filePath);
-    if (!file->open(QIODevice::ReadWrite | QIODevice::Text)) {
-        qDebug("Unable to open file");
-        delete file;
-        return Q_NULLPTR;
-    }
-
-    return file;
-}
+#include <QOperatingSystemVersion>
+#include <QStringList>
+#include <QFile>
+#include <QTextStream>
 
 QString RecentFiles::getRecentsFilePath() {
     return Settings::getSettingsFolder() + "/.recents";
@@ -32,17 +24,19 @@ void RecentFiles::add(const QString &filepath) {
     if (getList().contains(native_path, Qt::CaseInsensitive))
         return;
 
-    QFile *file = openFile();
-    if (file == Q_NULLPTR)
+    const QString filePath = RecentFiles::getRecentsFilePath();
+    const auto file = std::make_unique<QFile>(filePath);
+    if (!file->open(QIODevice::ReadWrite | QIODevice::Text)) {
+        qDebug("Unable to open file");
         return;
+    }
 
     if (file->seek(file->size())) {
-        QTextStream out(file);
+        QTextStream out(file.get());
         out << native_path << "\n";
     }
 
     file->close();
-    delete file;
 }
 
 void RecentFiles::clear() {
@@ -52,11 +46,14 @@ void RecentFiles::clear() {
 QStringList RecentFiles::getList() {
     QStringList files;
 
-    QFile *file = openFile();
-    if (file == Q_NULLPTR)
+    const QString filePath = RecentFiles::getRecentsFilePath();
+    const auto file = std::make_unique<QFile>(filePath);
+    if (!file->open(QIODevice::ReadWrite | QIODevice::Text)) {
+        qDebug("Unable to open file");
         return files;
+    }
 
-    if (QTextStream in(file); in.seek(0)) {
+    if (QTextStream in(file.get()); in.seek(0)) {
         while (!in.atEnd()) {
             if (QString line = in.readLine(); !files.contains(line, Qt::CaseInsensitive))
                 files.append(line);
@@ -64,7 +61,6 @@ QStringList RecentFiles::getList() {
     }
 
     file->close();
-    delete file;
 
     QStringList list;
     list.reserve(files.size());

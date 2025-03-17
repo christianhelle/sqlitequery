@@ -1,8 +1,12 @@
 #include "mainwindow.h"
 #include "recentfiles.h"
 #include "ui_mainwindow.h"
+#include "settings.h"
 
 #include <QMessageBox>
+#include <QSqlTableModel>
+#include <QTreeWidget>
+#include <QTableView>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
                                           ui(new Ui::MainWindow) {
@@ -32,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     this->tree = new DbTree(ui->treeWidget);
     this->highlighter = new Highlighter(ui->textEdit->document());
 
+    // ReSharper disable once CppDFAMemoryLeak - By design
     this->recentFilesMenu = new QMenu("Recent Files");
     ui->menuFile->insertMenu(ui->actionExit, recentFilesMenu);
 
@@ -160,8 +165,7 @@ void MainWindow::executeQuery() const {
     QElapsedTimer time;
     time.start();
 
-    if (this->query->execute(list, &errors))
-    {
+    if (this->query->execute(list, &errors)) {
         ui->tabWidget->setCurrentIndex(0);
         ui->queryResultTab->setCurrentIndex(0);
     }
@@ -170,13 +174,11 @@ void MainWindow::executeQuery() const {
     const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
     ui->queryResultMessagesTextEdit->setPlainText(msg);
 
-    foreach (const QString sql, list)
-    {
+    foreach(const QString sql, list) {
         if (sql.contains("create", Qt::CaseInsensitive) ||
             sql.contains("drop", Qt::CaseInsensitive) ||
             sql.contains("insert", Qt::CaseInsensitive) ||
-            sql.contains("delete", Qt::CaseInsensitive))
-        {
+            sql.contains("delete", Qt::CaseInsensitive)) {
             ui->queryResultTab->setCurrentIndex(1);
             analyzeDatabase();
             break;

@@ -1,7 +1,6 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
-#include <QSqlDatabase>
 #include <QSqlQuery>
 
 class Database {
@@ -10,7 +9,7 @@ public:
 
     ~Database();
 
-    void setSource(QString filename);
+    void setSource(const QString &filename);
 
     bool open();
 
@@ -18,12 +17,12 @@ public:
 
     void shrink();
 
-    QSqlDatabase getDatabase() { return database; }
-    QString getFilename() { return filename; }
+    [[nodiscard]] QSqlDatabase getDatabase() const { return database; }
+    [[nodiscard]] QString getFilename() const { return source; }
 
 private:
     QSqlDatabase database;
-    QString filename;
+    QString source;
 };
 
 #endif // DATABASE_H

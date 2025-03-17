@@ -15,39 +15,39 @@ find_package(Qt${QT_VERSION_MAJOR} OPTIONAL_COMPONENTS Widgets)
 qt_standard_project_setup()
 
 qt_add_executable(SQLiteQueryAnalyzer WIN32 MACOSX_BUNDLE
-    ${app_icon_resource_windows}
-    ${app_icon_macos}
-    database.cpp database.h
-    databaseinfo.h
-    dbanalyzer.cpp dbanalyzer.h
-    dbquery.cpp dbquery.h
-    dbtree.cpp dbtree.h
-    highlighter.cpp highlighter.h
-    main.cpp
-    mainwindow.cpp mainwindow.h mainwindow.ui
-    recentfiles.cpp recentfiles.h
-    settings.cpp settings.h
+        ${app_icon_resource_windows}
+        ${app_icon_macos}
+        database.cpp database.h
+        databaseinfo.h
+        dbanalyzer.cpp dbanalyzer.h
+        dbquery.cpp dbquery.h
+        dbtree.cpp dbtree.h
+        highlighter.cpp highlighter.h
+        main.cpp
+        mainwindow.cpp mainwindow.h mainwindow.ui
+        recentfiles.cpp recentfiles.h
+        settings.cpp settings.h
 )
 target_link_libraries(SQLiteQueryAnalyzer PRIVATE
-    Qt::Core
-    Qt::Gui
-    Qt::Sql
+        Qt::Core
+        Qt::Gui
+        Qt::Sql
 )
 
-if((QT_VERSION_MAJOR GREATER 4))
+if ((QT_VERSION_MAJOR GREATER 4))
     target_link_libraries(SQLiteQueryAnalyzer PRIVATE
-        Qt::Widgets
+            Qt::Widgets
     )
-endif()
+endif ()
 
 install(TARGETS SQLiteQueryAnalyzer
-    BUNDLE DESTINATION .
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        BUNDLE DESTINATION .
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 qt_generate_deploy_app_script(
-    TARGET SQLiteQueryAnalyzer
-    FILENAME_VARIABLE deploy_script
-    NO_UNSUPPORTED_PLATFORM_ERROR
+        TARGET SQLiteQueryAnalyzer
+        FILENAME_VARIABLE deploy_script
+        NO_UNSUPPORTED_PLATFORM_ERROR
 )
 install(SCRIPT ${deploy_script})

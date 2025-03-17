@@ -1,4 +1,5 @@
 #include "database.h"
+#include <QSqlDatabase>
 
 Database::Database() {
     qDebug("Database::Database()");
@@ -13,10 +14,10 @@ Database::~Database() {
     this->close();
 }
 
-void Database::setSource(QString filename) {
+void Database::setSource(const QString &filename) {
     qDebug("Database::setSource(QString)");
 
-    this->filename = filename;
+    this->source = filename;
     database.setDatabaseName(filename);
 }
 

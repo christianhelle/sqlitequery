@@ -1,4 +1,6 @@
 #include "highlighter.h"
+#include <QGuiApplication>
+#include <QStyleHints>
 
 Highlighter::Highlighter(QTextDocument *parent)
     : QSyntaxHighlighter(parent) {

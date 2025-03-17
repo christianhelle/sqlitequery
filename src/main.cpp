@@ -4,16 +4,14 @@
 #define VERSION "1.0.0"
 
 int main(int argc, char *argv[]) {
-    QApplication a(argc, argv);
-    a.setApplicationVersion(VERSION);
+    QApplication app(argc, argv);
+    QApplication::setApplicationVersion(VERSION);
 
-    MainWindow w;
-
-    QStringList args = a.arguments();
-    if (args.length() > 1) {
-        w.openDatabase(args.takeAt(1));
+    MainWindow window;
+    if (QStringList args = QApplication::arguments(); args.length() > 1) {
+        window.openDatabase(args.takeAt(1));
     }
 
-    w.show();
-    return a.exec();
+    window.show();
+    return QApplication::exec();
 }
