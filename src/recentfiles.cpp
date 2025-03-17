@@ -17,23 +17,27 @@ QString RecentFiles::sanitize(const QString &filepath) {
 }
 
 void RecentFiles::add(const QString &filepath) {
-    if (filepath.isEmpty())
+    if (filepath.isEmpty() || !QFile::exists(filepath))
         return;
 
+    auto files = getList();
     const auto native_path = sanitize(filepath);
-    if (getList().contains(native_path, Qt::CaseInsensitive))
+    if (files.contains(native_path, Qt::CaseInsensitive)) {
+        qDebug("Duplicate entry");
         return;
+    }
+    files.append(native_path);
 
-    const QString filePath = RecentFiles::getRecentsFilePath();
-    const auto file = std::make_unique<QFile>(filePath);
-    if (!file->open(QIODevice::ReadWrite | QIODevice::Text)) {
+    const QString recentsFilePath = RecentFiles::getRecentsFilePath();
+    const auto file = std::make_unique<QFile>(recentsFilePath);
+    if (!file->open(QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate)) {
         qDebug("Unable to open file");
         return;
     }
 
-    if (file->seek(file->size())) {
-        QTextStream out(file.get());
-        out << native_path << "\n";
+    QTextStream out(file.get());
+    for (const auto &path: files) {
+        out << path << "\n";
     }
 
     file->close();
@@ -55,8 +59,9 @@ QStringList RecentFiles::getList() {
 
     if (QTextStream in(file.get()); in.seek(0)) {
         while (!in.atEnd()) {
-            if (QString line = in.readLine(); !files.contains(line, Qt::CaseInsensitive) && QFile::exists(line)) {
-                files.append(line);
+            if (const auto path = sanitize(in.readLine());
+                !files.contains(path, Qt::CaseInsensitive) && QFile::exists(path)) {
+                files.append(path);
             }
         }
     }
