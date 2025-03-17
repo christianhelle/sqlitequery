@@ -92,9 +92,8 @@ bool DbQuery::execute(const QStringList &queryList, QStringList *errors) const {
     if (!errors->empty())
     {
         QString msg;
-        for (int i=0; i<errors->length(); ++i)
-        {
-            msg += errors->at(i);
+        for (const auto &error: *errors) {
+            msg += error;
             msg += "\r\n";
         }
 
