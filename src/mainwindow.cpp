@@ -113,6 +113,11 @@ void MainWindow::openDatabase(const QString &filename) const {
 
     this->analyzeDatabase();
     RecentFiles::add(filename);
+
+    this->query->clearResults();
+    ui->queryResultMessagesTextEdit->clear();
+    ui->tabWidget->setCurrentIndex(0);
+    ui->textEdit->clear();
 }
 
 void MainWindow::openExistingFile() {
