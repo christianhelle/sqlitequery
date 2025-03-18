@@ -12,14 +12,14 @@ public:
 
     bool execute(const QStringList &, QStringList *) const;
 
+    void clearResults() const;
+
 private:
     QWidget *widget;
     QScrollArea *scrollArea;
     QWidget *container;
     QList<QTableView *> *tableResults;
     Database *database;
-
-    void clearResults() const;
 };
 
 #endif // DBQUERY_H
