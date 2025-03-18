@@ -118,6 +118,11 @@ void MainWindow::openDatabase(const QString &filename) const {
     ui->queryResultMessagesTextEdit->clear();
     ui->tabWidget->setCurrentIndex(0);
     ui->textEdit->clear();
+
+    if (ui->tableView->model() != Q_NULLPTR) {
+        std::make_unique<QSqlTableModel>(ui->tableView->model());
+        ui->tableView->setModel(Q_NULLPTR);
+    }
 }
 
 void MainWindow::openExistingFile() {
