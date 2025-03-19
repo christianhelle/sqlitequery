@@ -1,4 +1,4 @@
 #!/bin/bash
-cmake .
-cmake --build . --config Release
-macdeployqt SQLiteQueryAnalyzer.app -dmg
+cmake . -B build
+cmake --build build --config Release
+macdeployqt build/SQLiteQueryAnalyzer.app -dmg
