@@ -10,9 +10,12 @@ public:
         : info(std::move(info)) {
     }
 
+    QString exportSchema() const;
 
 private:
     DatabaseInfo info;
+
+    static bool isInternalTable(const Table &table);
 };
 
 
