@@ -116,6 +116,7 @@
     </property>
     <addaction name="actionRefresh"/>
     <addaction name="actionShrink"/>
+    <addaction name="actionScript_Schema"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -197,6 +198,11 @@
   <action name="actionRefresh">
    <property name="text">
     <string>Refresh</string>
+   </property>
+  </action>
+  <action name="actionScript_Schema">
+   <property name="text">
+    <string>Script Schema</string>
    </property>
   </action>
  </widget>

@@ -2,6 +2,7 @@
 #include "recentfiles.h"
 #include "ui_mainwindow.h"
 #include "settings.h"
+#include "dbexport.h"
 
 #include <QMessageBox>
 #include <QSqlTableModel>
@@ -22,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(appExit()));
     connect(ui->actionExecute_Query, SIGNAL(triggered()), this, SLOT(executeQuery()));
     connect(ui->actionShrink, SIGNAL(triggered()), this, SLOT(shrink()));
+    connect(ui->actionScript_Schema, SIGNAL(triggered()), this, SLOT(scriptSchema()));
     connect(ui->treeWidget, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this,
             SLOT(treeNodeChanged(QTreeWidgetItem*,int)));
     connect(ui->treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*)), this,
@@ -194,6 +196,14 @@ void MainWindow::executeQuery() const {
             break;
         }
     }
+}
+
+void MainWindow::scriptSchema() const {
+    DatabaseInfo info;
+    analyzer->analyze(info);
+    const auto exporter = std::make_unique<DbExport>(info);
+    const auto schema = exporter->exportSchema();
+    ui->textEdit->setPlainText(schema);
 }
 
 void MainWindow::treeNodeChanged(QTreeWidgetItem *item) const {
