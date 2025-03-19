@@ -118,6 +118,7 @@
     <addaction name="actionRefresh"/>
     <addaction name="actionShrink"/>
     <addaction name="actionScript_Schema"/>
+    <addaction name="actionScript_Data"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -212,6 +213,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionScript_Data">
+   <property name="text">
+    <string>Script Data</string>
    </property>
   </action>
  </widget>
