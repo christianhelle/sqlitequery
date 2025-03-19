@@ -3,12 +3,15 @@
 
 #include <QtGlobal>
 #include <QDateTime>
+#include <qsqlquery.h>
 
 struct Column {
     int ordinal;
     QString name;
     QString dataType;
     bool notNull;
+    QString defaultValue;
+    bool primaryKey;
 };
 
 struct Index {
