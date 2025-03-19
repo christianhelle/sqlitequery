@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     // ReSharper disable once CppDFAMemoryLeak - By design
     this->recentFilesMenu = new QMenu("Recent Files");
-    ui->menuFile->insertMenu(ui->actionExit, recentFilesMenu);
+    ui->menuFile->insertMenu(ui->actionSave, recentFilesMenu);
 
     Settings::init();
     this->loadRecentFiles();
