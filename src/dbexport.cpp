@@ -1,5 +1,7 @@
 #include "dbexport.h"
 
+#include <QFile>
+
 QString DbExport::exportSchema() const {
     QStringList createTableScripts;
     for (const auto &table: this->info.tables) {
@@ -23,6 +25,18 @@ QString DbExport::exportSchema() const {
     }
 
     return createTableScripts.join("\n\n");
+}
+
+void DbExport::exportSchemaToFile(const QString &filename) const {
+    const auto sql = this->exportSchema();
+    if (sql.isEmpty())
+        return;
+    const auto file = std::make_unique<QFile>(filename);
+    if (file->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+        QTextStream out(file.get());
+        out << sql;
+        file->close();
+    }
 }
 
 bool DbExport::isInternalTable(const Table &table) {

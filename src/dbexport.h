@@ -11,6 +11,7 @@ public:
     }
 
     QString exportSchema() const;
+    void exportSchemaToFile(const QString &filename) const;
 
 private:
     DatabaseInfo info;
