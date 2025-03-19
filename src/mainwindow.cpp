@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(createNewFile()));
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openExistingFile()));
+    connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveSql()));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(appExit()));
     connect(ui->actionExecute_Query, SIGNAL(triggered()), this, SLOT(executeQuery()));
     connect(ui->actionShrink, SIGNAL(triggered()), this, SLOT(shrink()));
@@ -78,7 +79,7 @@ void MainWindow::openRecentFile() const {
     this->openDatabase(file);
 }
 
-QString MainWindow::showFileDialog(QFileDialog::AcceptMode mode) {
+QString MainWindow::showFileDialog(const QFileDialog::AcceptMode mode) {
     QFileDialog dialog(this);
     dialog.setAcceptMode(mode);
     dialog.setDirectory(QDir::home());
@@ -204,6 +205,19 @@ void MainWindow::scriptSchema() const {
     const auto exporter = std::make_unique<DbExport>(info);
     const auto schema = exporter->exportSchema();
     ui->textEdit->setPlainText(schema);
+}
+
+void MainWindow::saveSql() {
+    const auto sql = ui->textEdit->toPlainText();
+    if (sql.isEmpty())
+        return;
+    const QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
+    const auto file = std::make_unique<QFile>(filepath);
+    if (file->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+        QTextStream out(file.get());
+        out << sql;
+        file->close();
+    }
 }
 
 void MainWindow::treeNodeChanged(QTreeWidgetItem *item) const {
