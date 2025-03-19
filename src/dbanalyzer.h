@@ -12,12 +12,12 @@ public:
 
     bool analyze(DatabaseInfo &info) const;
 
-private:
-    Database *database;
-
     void loadTables(DatabaseInfo &info) const;
 
     void loadColumns(DatabaseInfo &info) const;
+
+private:
+    Database *database;
 };
 
 #endif // DBANALYZER_H

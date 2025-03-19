@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QSplitter" name="splitterMain">
       <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+       <enum>Qt::Orientation::Horizontal</enum>
       </property>
       <widget class="QTreeWidget" name="treeWidget">
        <attribute name="headerVisible">
@@ -42,7 +42,7 @@
          <item row="0" column="0">
           <widget class="QSplitter" name="splitterQueryTab">
            <property name="orientation">
-            <enum>Qt::Vertical</enum>
+            <enum>Qt::Orientation::Vertical</enum>
            </property>
            <widget class="QTextEdit" name="textEdit"/>
            <widget class="QTabWidget" name="queryResultTab">
@@ -91,7 +91,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>33</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -100,6 +100,7 @@
     </property>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
     <addaction name="separator"/>
@@ -116,6 +117,7 @@
     </property>
     <addaction name="actionRefresh"/>
     <addaction name="actionShrink"/>
+    <addaction name="actionScript_Schema"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -134,7 +136,7 @@
     <string>Execute Query</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+R</string>
+    <string>F5</string>
    </property>
   </action>
   <action name="actionResults_as_Grid">
@@ -197,6 +199,19 @@
   <action name="actionRefresh">
    <property name="text">
     <string>Refresh</string>
+   </property>
+  </action>
+  <action name="actionScript_Schema">
+   <property name="text">
+    <string>Script Schema</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
  </widget>

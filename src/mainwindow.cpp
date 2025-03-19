@@ -2,6 +2,7 @@
 #include "recentfiles.h"
 #include "ui_mainwindow.h"
 #include "settings.h"
+#include "dbexport.h"
 
 #include <QMessageBox>
 #include <QSqlTableModel>
@@ -19,9 +20,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(createNewFile()));
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openExistingFile()));
+    connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveSql()));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(appExit()));
     connect(ui->actionExecute_Query, SIGNAL(triggered()), this, SLOT(executeQuery()));
     connect(ui->actionShrink, SIGNAL(triggered()), this, SLOT(shrink()));
+    connect(ui->actionScript_Schema, SIGNAL(triggered()), this, SLOT(scriptSchema()));
     connect(ui->treeWidget, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this,
             SLOT(treeNodeChanged(QTreeWidgetItem*,int)));
     connect(ui->treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*)), this,
@@ -38,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     // ReSharper disable once CppDFAMemoryLeak - By design
     this->recentFilesMenu = new QMenu("Recent Files");
-    ui->menuFile->insertMenu(ui->actionExit, recentFilesMenu);
+    ui->menuFile->insertMenu(ui->actionSave, recentFilesMenu);
 
     Settings::init();
     this->loadRecentFiles();
@@ -76,7 +79,7 @@ void MainWindow::openRecentFile() const {
     this->openDatabase(file);
 }
 
-QString MainWindow::showFileDialog(QFileDialog::AcceptMode mode) {
+QString MainWindow::showFileDialog(const QFileDialog::AcceptMode mode) {
     QFileDialog dialog(this);
     dialog.setAcceptMode(mode);
     dialog.setDirectory(QDir::home());
@@ -193,6 +196,27 @@ void MainWindow::executeQuery() const {
             analyzeDatabase();
             break;
         }
+    }
+}
+
+void MainWindow::scriptSchema() const {
+    DatabaseInfo info;
+    analyzer->analyze(info);
+    const auto exporter = std::make_unique<DbExport>(info);
+    const auto schema = exporter->exportSchema();
+    ui->textEdit->setPlainText(schema);
+}
+
+void MainWindow::saveSql() {
+    const auto sql = ui->textEdit->toPlainText();
+    if (sql.isEmpty())
+        return;
+    const QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
+    const auto file = std::make_unique<QFile>(filepath);
+    if (file->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+        QTextStream out(file.get());
+        out << sql;
+        file->close();
     }
 }
 
