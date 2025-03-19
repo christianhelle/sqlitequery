@@ -100,6 +100,7 @@
     </property>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
     <addaction name="separator"/>
@@ -203,6 +204,14 @@
   <action name="actionScript_Schema">
    <property name="text">
     <string>Script Schema</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
  </widget>
