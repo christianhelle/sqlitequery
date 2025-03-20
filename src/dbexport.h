@@ -11,9 +11,13 @@ public:
         : info(std::move(info)) {
     }
 
-    QString exportSchema() const;
+    [[nodiscard]] QString exportSchema() const;
 
     void exportSchemaToFile(const QString &filename) const;
+
+    static QStringList getColumnDefinitions(const Table &table);
+
+    [[nodiscard]] QStringList getColumnValueDefinitions(const Table &table, const QSqlQuery &query) const;
 
     void exportDataToFile(const Database *database, const QString & filename) const;
 
