@@ -77,6 +77,14 @@ void DbTree::populateTree(const DatabaseInfo& info) const {
             const auto colNotNull = new QTreeWidgetItem(colName);
             colNotNull->setText(0, QString("Allow Null: ").append(!col.notNull ? "True" : "False"));
             this->treeNodes->prepend(colNotNull);
+
+            const auto colPrimaryKey = new QTreeWidgetItem(colName);
+            colPrimaryKey->setText(0, QString("Is Primary Key: ").append(col.primaryKey ? "True" : "False"));
+            this->treeNodes->prepend(colPrimaryKey);
+
+            const auto defaultValue = new QTreeWidgetItem(colName);
+            defaultValue->setText(0, QString("Default Value: ").append(col.defaultValue));
+            this->treeNodes->prepend(defaultValue);
         }
     }
 
