@@ -73,7 +73,9 @@ QStringList DbExport::getColumnValueDefinitions(const Table &table, const QSqlQu
     return valueDefinitions;
 }
 
-void DbExport::exportDataToFile(const Database *database, const QString &filename) const {
+void DbExport::exportDataToFile(const Database *database,
+                                const QString &filename,
+                                const bool *cancel) const {
     const auto file = std::make_unique<QFile>(filename);
     if (!file->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
         return;
@@ -91,6 +93,9 @@ void DbExport::exportDataToFile(const Database *database, const QString &filenam
             const auto values = getColumnValueDefinitions(table, query).join(", ");
             out << "INSERT INTO " << table.name << "(" << columns << ") ";
             out << "VALUES (" << values << ");\n";
+            if (cancel && *cancel) {
+                break;
+            }
         }
         out << "\n";
     }

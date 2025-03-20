@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(ui->actionShrink, SIGNAL(triggered()), this, SLOT(shrink()));
     connect(ui->actionScript_Schema, SIGNAL(triggered()), this, SLOT(scriptSchema()));
     connect(ui->actionScript_Data, SIGNAL(triggered()), this, SLOT(scriptData()));
+    connect(ui->actionCancel, SIGNAL(triggered()), this, SLOT(cancel()));
     connect(ui->treeWidget, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this,
             SLOT(treeNodeChanged(QTreeWidgetItem*,int)));
     connect(ui->treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*)), this,
@@ -237,6 +238,15 @@ void MainWindow::scriptSchema() const {
     ui->textEdit->setPlainText(schema);
 }
 
+void MainWindow::setEnabledActions(const bool enabled) {
+    ui->actionShrink->setEnabled(enabled);
+    ui->actionScript_Data->setEnabled(enabled);
+    ui->actionExecute_Query->setEnabled(enabled);
+    ui->actionScript_Schema->setEnabled(enabled);
+    ui->actionCancel->setVisible(!enabled);
+    this->dataExportInProgress = !enabled;
+}
+
 void MainWindow::scriptData() {
     const QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
     if (filepath.isEmpty())
@@ -244,24 +254,25 @@ void MainWindow::scriptData() {
 
     DatabaseInfo info;
     analyzer->analyze(info);
-    ui->actionScript_Data->setEnabled(false);
-    ui->actionExecute_Query->setEnabled(false);
-    this->dataExportInProgress = true;
+    this->setEnabledActions(false);
+    this->cancelExport = false;
 
-    auto future = QtConcurrent::run([this, info, filepath]()
-        {
-            const auto exporter = std::make_unique<DbExport>(info);
-            exporter->exportDataToFile(database, filepath);
-        })
-        .then([this]()
-        {
-            runInMainThread( [this]()
-            {
-                ui->actionScript_Data->setEnabled(true);
-                ui->actionExecute_Query->setEnabled(true);
-                this->dataExportInProgress = false;
-            });
+    auto future = QtConcurrent::run([this, info, filepath]() {
+        const auto exporter = std::make_unique<DbExport>(info);
+        exporter->exportDataToFile(database, filepath, &cancelExport);
+    });
+    future.then([this]() {
+        runInMainThread([this]() {
+            this->setEnabledActions(true);
+            if (this->cancelExport)
+                ui->queryResultMessagesTextEdit->setPlainText("Data export cancelled");
+            this->cancelExport = false;
         });
+    });
+}
+
+void MainWindow::cancel() {
+    this->cancelExport = true;
 }
 
 void MainWindow::saveSql() {

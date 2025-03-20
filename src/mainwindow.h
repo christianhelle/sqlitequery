@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QFileDialog>
+#include <qfuturewatcher.h>
 
 #include "dbanalyzer.h"
 #include "dbquery.h"
@@ -36,7 +37,11 @@ public slots:
 
     void scriptSchema() const;
 
+    void setEnabledActions(bool);
+
     void scriptData();
+
+    void cancel();
 
     void saveSql();
 
@@ -61,6 +66,7 @@ private:
     DbTree *tree;
     Highlighter *highlighter;
     bool dataExportInProgress = false;
+    bool cancelExport;
 
     QString showFileDialog(QFileDialog::AcceptMode mode);
 
