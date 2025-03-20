@@ -101,6 +101,7 @@ QString MainWindow::showFileDialog(const QFileDialog::AcceptMode mode) {
 void MainWindow::createNewFile() {
     if (this->dataExportInProgress) {
         ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
+        ui->queryResultTab->setCurrentIndex(1);
         return;
     }
 
@@ -113,6 +114,7 @@ void MainWindow::createNewFile() {
 void MainWindow::openDatabase(const QString &filename) const {
     if (this->dataExportInProgress) {
         ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
+        ui->queryResultTab->setCurrentIndex(1);
         return;
     }
 
@@ -139,6 +141,7 @@ void MainWindow::openDatabase(const QString &filename) const {
 void MainWindow::openExistingFile() {
     if (this->dataExportInProgress) {
         ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
+        ui->queryResultTab->setCurrentIndex(1);
         return;
     }
     QString filepath = this->showFileDialog(QFileDialog::AcceptOpen);
@@ -154,6 +157,7 @@ void MainWindow::appExit() {
 void MainWindow::shrink() const {
     if (this->dataExportInProgress) {
         ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
+        ui->queryResultTab->setCurrentIndex(1);
         return;
     }
     const QString filename = this->database->getFilename();
@@ -171,6 +175,7 @@ void MainWindow::refreshDatabase() const {
 void MainWindow::analyzeDatabase() const {
     if (this->dataExportInProgress) {
         ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
+        ui->queryResultTab->setCurrentIndex(1);
         return;
     }
 
@@ -188,6 +193,7 @@ void MainWindow::analyzeDatabase() const {
 void MainWindow::executeQuery() const {
     if (this->dataExportInProgress) {
         ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
+        ui->queryResultTab->setCurrentIndex(1);
         return;
     }
 
@@ -221,6 +227,7 @@ void MainWindow::executeQuery() const {
 void MainWindow::scriptSchema() const {
     if (this->dataExportInProgress) {
         ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
+        ui->queryResultTab->setCurrentIndex(1);
         return;
     }
     DatabaseInfo info;
@@ -277,6 +284,7 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item) const {
 void MainWindow::treeNodeChanged(QTreeWidgetItem *item, const int column) const {
     if (this->dataExportInProgress) {
         ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
+        ui->queryResultTab->setCurrentIndex(1);
         return;
     }
     if (item && item->type() == QTreeWidgetItem::UserType + 1) {
