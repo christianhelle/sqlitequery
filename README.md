@@ -6,7 +6,6 @@
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=christianhelle_sqlitequery&metric=bugs)](https://sonarcloud.io/summary/new_code?id=christianhelle_sqlitequery)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=christianhelle_sqlitequery&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=christianhelle_sqlitequery)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=christianhelle_sqlitequery&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=christianhelle_sqlitequery)
-
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=christianhelle_sqlitequery&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=christianhelle_sqlitequery)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=christianhelle_sqlitequery&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=christianhelle_sqlitequery)
 
