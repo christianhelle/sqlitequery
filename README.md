@@ -11,6 +11,8 @@ It provides an intuitive interface for executing queries and direct table editin
 - Cross platform
 - Easy-to-use interface for executing SQL queries
 - Fast table data editing
+- Export database schema as CREATE TABLE statements
+- Export data as INSERT statements
 
 ## Screenshots
 
