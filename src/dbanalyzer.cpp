@@ -41,9 +41,16 @@ void DbAnalyzer::loadTables(DatabaseInfo &info) const {
         info.tables.append(table);
         qDebug() << table.name;
     }
+
+    database->close();
 }
 
 void DbAnalyzer::loadColumns(DatabaseInfo &info) const {
+    if (!this->database->open()) {
+        qDebug("Unable to open database");
+        return;
+    }
+
     for (auto &table: info.tables) {
         const QString sql = "PRAGMA table_info (" + table.name + ")";
         qDebug() << sql;
