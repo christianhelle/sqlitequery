@@ -70,9 +70,10 @@ void DbExport::exportDataToFile(const Database * database, const QString &filena
                     values[value] = column.dataType;
                 }
                 QStringList valueDefinitions;
-                for (const auto &value: values.keys()) {
+                auto keys = values.keys();
+                for (const auto &value : std::as_const(keys)) {
                     bool isText = false;
-                    for (const auto type: textTypes) {
+                    for (const auto &type : textTypes) {
                         if (values[value].contains(type, Qt::CaseInsensitive)) {
                             isText = true;
                             break;
