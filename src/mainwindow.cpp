@@ -238,6 +238,7 @@ void MainWindow::scriptData() {
     DatabaseInfo info;
     analyzer->analyze(info);
     ui->actionScript_Data->setEnabled(false);
+    ui->actionExecute_Query->setEnabled(false);
     this->dataExportInProgress = true;
 
     auto future = QtConcurrent::run([this, info, filepath]()
@@ -250,6 +251,7 @@ void MainWindow::scriptData() {
             runInMainThread( [this]()
             {
                 ui->actionScript_Data->setEnabled(true);
+                ui->actionExecute_Query->setEnabled(true);
                 this->dataExportInProgress = false;
             });
         });
