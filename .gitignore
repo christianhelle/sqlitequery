@@ -23,3 +23,7 @@ src/SQLiteQueryAnalyzer_autogen
 src/cmake_install.cmake
 src/CMakeCache.txt
 src/SQLiteQueryAnalyzer
+src/.cmake
+src/.ninja*
+src/build.ninja
+src/Testing

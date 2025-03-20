@@ -19,7 +19,7 @@ public:
 
     [[nodiscard]] QStringList getColumnValueDefinitions(const Table &table, const QSqlQuery &query) const;
 
-    void exportDataToFile(const Database *database, const QString & filename) const;
+    void exportDataToFile(const Database *database, const QString &filename, const bool *cancel) const;
 
 private:
     DatabaseInfo info;

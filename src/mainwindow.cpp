@@ -8,6 +8,7 @@
 #include <QSqlTableModel>
 #include <QTreeWidget>
 #include <QTableView>
+#include <QtConcurrent/QtConcurrent>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
                                           ui(new Ui::MainWindow) {
@@ -26,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(ui->actionShrink, SIGNAL(triggered()), this, SLOT(shrink()));
     connect(ui->actionScript_Schema, SIGNAL(triggered()), this, SLOT(scriptSchema()));
     connect(ui->actionScript_Data, SIGNAL(triggered()), this, SLOT(scriptData()));
+    connect(ui->actionCancel, SIGNAL(triggered()), this, SLOT(cancel()));
     connect(ui->treeWidget, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this,
             SLOT(treeNodeChanged(QTreeWidgetItem*,int)));
     connect(ui->treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*)), this,
@@ -98,7 +100,11 @@ QString MainWindow::showFileDialog(const QFileDialog::AcceptMode mode) {
 }
 
 void MainWindow::createNewFile() {
-    qDebug("MainWindow::createNewFile()");
+    if (this->dataExportInProgress) {
+        ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
+        ui->queryResultTab->setCurrentIndex(1);
+        return;
+    }
 
     const QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
     this->openDatabase(filepath);
@@ -107,7 +113,11 @@ void MainWindow::createNewFile() {
 }
 
 void MainWindow::openDatabase(const QString &filename) const {
-    qDebug("MainWindow::openDatabase(QString)");
+    if (this->dataExportInProgress) {
+        ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
+        ui->queryResultTab->setCurrentIndex(1);
+        return;
+    }
 
     this->database->setSource(filename);
     if (!this->database->open()) {
@@ -130,8 +140,11 @@ void MainWindow::openDatabase(const QString &filename) const {
 }
 
 void MainWindow::openExistingFile() {
-    qDebug("MainWindow::openExistingFile()");
-
+    if (this->dataExportInProgress) {
+        ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
+        ui->queryResultTab->setCurrentIndex(1);
+        return;
+    }
     QString filepath = this->showFileDialog(QFileDialog::AcceptOpen);
     this->openDatabase(filepath);
     RecentFiles::add(filepath);
@@ -139,11 +152,15 @@ void MainWindow::openExistingFile() {
 }
 
 void MainWindow::appExit() {
-    qDebug("MainWindow::appExit()");
     exit(0);
 }
 
 void MainWindow::shrink() const {
+    if (this->dataExportInProgress) {
+        ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
+        ui->queryResultTab->setCurrentIndex(1);
+        return;
+    }
     const QString filename = this->database->getFilename();
     if (filename.isNull() || filename.isEmpty())
         return;
@@ -157,7 +174,11 @@ void MainWindow::refreshDatabase() const {
 }
 
 void MainWindow::analyzeDatabase() const {
-    qDebug("MainWindow::analyzeDatabase()");
+    if (this->dataExportInProgress) {
+        ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
+        ui->queryResultTab->setCurrentIndex(1);
+        return;
+    }
 
     DatabaseInfo info;
     if (!analyzer->analyze(info)) {
@@ -171,7 +192,11 @@ void MainWindow::analyzeDatabase() const {
 }
 
 void MainWindow::executeQuery() const {
-    qDebug("MainWindow::executeQuery()");
+    if (this->dataExportInProgress) {
+        ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
+        ui->queryResultTab->setCurrentIndex(1);
+        return;
+    }
 
     QStringList list(ui->textEdit->toPlainText().split(";", Qt::SkipEmptyParts));
     QStringList errors;
@@ -201,6 +226,11 @@ void MainWindow::executeQuery() const {
 }
 
 void MainWindow::scriptSchema() const {
+    if (this->dataExportInProgress) {
+        ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
+        ui->queryResultTab->setCurrentIndex(1);
+        return;
+    }
     DatabaseInfo info;
     analyzer->analyze(info);
     const auto exporter = std::make_unique<DbExport>(info);
@@ -208,12 +238,41 @@ void MainWindow::scriptSchema() const {
     ui->textEdit->setPlainText(schema);
 }
 
+void MainWindow::setEnabledActions(const bool enabled) {
+    ui->actionShrink->setEnabled(enabled);
+    ui->actionScript_Data->setEnabled(enabled);
+    ui->actionExecute_Query->setEnabled(enabled);
+    ui->actionScript_Schema->setEnabled(enabled);
+    ui->actionCancel->setVisible(!enabled);
+    this->dataExportInProgress = !enabled;
+}
+
 void MainWindow::scriptData() {
+    const QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
+    if (filepath.isEmpty())
+        return;
+
     DatabaseInfo info;
     analyzer->analyze(info);
-    const QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
-    const auto exporter = std::make_unique<DbExport>(info);
-    exporter->exportDataToFile(database, filepath);
+    this->setEnabledActions(false);
+    this->cancelExport = false;
+
+    auto future = QtConcurrent::run([this, info, filepath]() {
+        const auto exporter = std::make_unique<DbExport>(info);
+        exporter->exportDataToFile(database, filepath, &cancelExport);
+    });
+    future.then([this]() {
+        runInMainThread([this]() {
+            this->setEnabledActions(true);
+            if (this->cancelExport)
+                ui->queryResultMessagesTextEdit->setPlainText("Data export cancelled");
+            this->cancelExport = false;
+        });
+    });
+}
+
+void MainWindow::cancel() {
+    this->cancelExport = true;
 }
 
 void MainWindow::saveSql() {
@@ -234,6 +293,11 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item) const {
 }
 
 void MainWindow::treeNodeChanged(QTreeWidgetItem *item, const int column) const {
+    if (this->dataExportInProgress) {
+        ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
+        ui->queryResultTab->setCurrentIndex(1);
+        return;
+    }
     if (item && item->type() == QTreeWidgetItem::UserType + 1) {
         qDebug("table selected");
 

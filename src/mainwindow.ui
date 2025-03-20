@@ -119,6 +119,7 @@
     <addaction name="actionShrink"/>
     <addaction name="actionScript_Schema"/>
     <addaction name="actionScript_Data"/>
+    <addaction name="actionCancel"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -218,6 +219,14 @@
   <action name="actionScript_Data">
    <property name="text">
     <string>Script Data</string>
+   </property>
+  </action>
+  <action name="actionCancel">
+   <property name="text">
+    <string>Cancel</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
  </widget>
