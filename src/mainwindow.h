@@ -60,10 +60,19 @@ private:
     DbQuery *query;
     DbTree *tree;
     Highlighter *highlighter;
+    bool dataExportInProgress = false;
 
     QString showFileDialog(QFileDialog::AcceptMode mode);
 
     void analyzeDatabase() const;
+
+    template<typename F>
+    void runInMainThread(F&& fun)
+    {
+        QObject tmp;
+        QObject::connect(&tmp, &QObject::destroyed, qApp, std::forward<F>(fun),
+                         Qt::QueuedConnection);
+    }
 };
 
 #endif // MAINWINDOW_H
