@@ -11,7 +11,7 @@ QString DbExport::exportSchema() const {
         QString createTableScript = QString("CREATE TABLE %1 (").arg(table.name);
         QStringList columnDefinitions;
         for (const auto &column: table.columns) {
-            QString columnDefinition = QString("\n  %1 %2").arg(column.name).arg(column.dataType);
+            QString columnDefinition = QString("\n  %1 %2").arg(column.name, column.dataType);
             if (column.primaryKey) {
                 columnDefinition += " PRIMARY KEY";
             }
