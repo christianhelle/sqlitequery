@@ -36,6 +36,8 @@ public slots:
 
     void scriptSchema() const;
 
+    void scriptData();
+
     void saveSql();
 
     void treeNodeChanged(QTreeWidgetItem *, int) const;

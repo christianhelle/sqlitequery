@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(ui->actionExecute_Query, SIGNAL(triggered()), this, SLOT(executeQuery()));
     connect(ui->actionShrink, SIGNAL(triggered()), this, SLOT(shrink()));
     connect(ui->actionScript_Schema, SIGNAL(triggered()), this, SLOT(scriptSchema()));
+    connect(ui->actionScript_Data, SIGNAL(triggered()), this, SLOT(scriptData()));
     connect(ui->treeWidget, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this,
             SLOT(treeNodeChanged(QTreeWidgetItem*,int)));
     connect(ui->treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*)), this,
@@ -205,6 +206,14 @@ void MainWindow::scriptSchema() const {
     const auto exporter = std::make_unique<DbExport>(info);
     const auto schema = exporter->exportSchema();
     ui->textEdit->setPlainText(schema);
+}
+
+void MainWindow::scriptData() {
+    DatabaseInfo info;
+    analyzer->analyze(info);
+    const QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
+    const auto exporter = std::make_unique<DbExport>(info);
+    exporter->exportDataToFile(database, filepath);
 }
 
 void MainWindow::saveSql() {
