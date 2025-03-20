@@ -86,9 +86,10 @@ void DbExport::exportDataToFile(const Database *database, const QString &filenam
         QSqlQuery query(database->getDatabase());
         query.exec(QString("SELECT * FROM %1").arg(table.name));
         while (query.next()) {
-            out << "INSERT INTO " << table.name << "(";
-            out << getColumnDefinitions(table).join(", ") << ") VALUES (";
-            out << getColumnValueDefinitions(table, query).join(", ") << ");\n";
+            auto columns = getColumnDefinitions(table).join(", ");
+            auto values = getColumnValueDefinitions(table, query).join(", ");
+            out << "INSERT INTO " << table.name << "(" << columns << ") ";
+            out << "VALUES (" << values << ");\n";
         }
         out << "\n";
     }
