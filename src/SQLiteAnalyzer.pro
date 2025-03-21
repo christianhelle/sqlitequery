@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     dbtree.cpp \
     recentfiles.cpp \
     settings.cpp \
-    dbexport.cpp
+    dbexport.cpp \
+    can
 
 HEADERS  += mainwindow.h \
     dbanalyzer.h \
