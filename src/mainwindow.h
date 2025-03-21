@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <qfuturewatcher.h>
 
+#include "cancellation.h"
 #include "dbanalyzer.h"
 #include "dbquery.h"
 #include "highlighter.h"
@@ -41,7 +42,7 @@ public slots:
 
     void scriptData();
 
-    void cancel();
+    void cancel() const;
 
     void saveSql();
 
@@ -66,19 +67,14 @@ private:
     DbTree *tree;
     Highlighter *highlighter;
     bool dataExportInProgress = false;
-    bool cancelExport;
+    std::unique_ptr<CancellationTokenSource> tcs;
 
     QString showFileDialog(QFileDialog::AcceptMode mode);
 
     void analyzeDatabase() const;
 
     template<typename F>
-    void runInMainThread(F&& fun)
-    {
-        QObject tmp;
-        QObject::connect(&tmp, &QObject::destroyed, qApp, std::forward<F>(fun),
-                         Qt::QueuedConnection);
-    }
+    auto runInMainThread(F &&fun) -> void;
 };
 
 #endif // MAINWINDOW_H

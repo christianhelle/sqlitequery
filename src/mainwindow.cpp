@@ -239,6 +239,7 @@ void MainWindow::scriptSchema() const {
 }
 
 void MainWindow::setEnabledActions(const bool enabled) {
+    ui->actionRefresh->setEnabled(enabled);
     ui->actionShrink->setEnabled(enabled);
     ui->actionScript_Data->setEnabled(enabled);
     ui->actionExecute_Query->setEnabled(enabled);
@@ -255,24 +256,34 @@ void MainWindow::scriptData() {
     DatabaseInfo info;
     analyzer->analyze(info);
     this->setEnabledActions(false);
-    this->cancelExport = false;
 
-    auto future = QtConcurrent::run([this, info, filepath]() {
+    tcs = std::make_unique<CancellationTokenSource>();
+    const auto cancellationToken = tcs->get();
+    auto future = QtConcurrent::run([this, info, filepath, cancellationToken]() {
         const auto exporter = std::make_unique<DbExport>(info);
-        exporter->exportDataToFile(database, filepath, &cancelExport);
+        exporter->exportDataToFile(database, filepath, &cancellationToken);
     });
-    future.then([this]() {
-        runInMainThread([this]() {
+    future.then([this, cancellationToken]() {
+        runInMainThread([this, cancellationToken]() {
             this->setEnabledActions(true);
-            if (this->cancelExport)
+            if (cancellationToken.isCancellationRequested())
                 ui->queryResultMessagesTextEdit->setPlainText("Data export cancelled");
-            this->cancelExport = false;
         });
     });
 }
 
-void MainWindow::cancel() {
-    this->cancelExport = true;
+template<typename F>
+void MainWindow::runInMainThread(F &&fun) {
+    QObject tmp;
+    QObject::connect(&tmp,
+                     &QObject::destroyed,
+                     qApp,
+                     std::forward<F>(fun),
+                     Qt::QueuedConnection);
+}
+
+void MainWindow::cancel() const {
+    this->tcs->cancel();
 }
 
 void MainWindow::saveSql() {
