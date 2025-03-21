@@ -271,6 +271,16 @@ void MainWindow::scriptData() {
     });
 }
 
+template<typename F>
+void MainWindow::runInMainThread(F &&fun) {
+    QObject tmp;
+    QObject::connect(&tmp,
+                     &QObject::destroyed,
+                     qApp,
+                     std::forward<F>(fun),
+                     Qt::QueuedConnection);
+}
+
 void MainWindow::cancel() const {
     this->tcs->cancel();
 }

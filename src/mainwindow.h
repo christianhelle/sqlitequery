@@ -74,12 +74,7 @@ private:
     void analyzeDatabase() const;
 
     template<typename F>
-    void runInMainThread(F&& fun)
-    {
-        QObject tmp;
-        QObject::connect(&tmp, &QObject::destroyed, qApp, std::forward<F>(fun),
-                         Qt::QueuedConnection);
-    }
+    auto runInMainThread(F &&fun) -> void;
 };
 
 #endif // MAINWINDOW_H
