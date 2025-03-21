@@ -19,7 +19,9 @@ public:
 
     [[nodiscard]] QStringList getColumnValueDefinitions(const Table &table, const QSqlQuery &query) const;
 
-    void exportDataToFile(const Database *database, const QString &filename, const bool *cancel) const;
+    void exportDataToFile(const Database *database,
+                          const QString &filename,
+                          const CancellationToken *cancellation_token) const;
 
 private:
     DatabaseInfo info;

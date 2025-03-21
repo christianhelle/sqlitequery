@@ -255,24 +255,24 @@ void MainWindow::scriptData() {
     DatabaseInfo info;
     analyzer->analyze(info);
     this->setEnabledActions(false);
-    this->cancelExport = false;
 
-    auto future = QtConcurrent::run([this, info, filepath]() {
+    tcs = std::make_unique<CancellationTokenSource>();
+    const auto cancellationToken = tcs->get();
+    auto future = QtConcurrent::run([this, info, filepath, cancellationToken]() {
         const auto exporter = std::make_unique<DbExport>(info);
-        exporter->exportDataToFile(database, filepath, &cancelExport);
+        exporter->exportDataToFile(database, filepath, &cancellationToken);
     });
-    future.then([this]() {
-        runInMainThread([this]() {
+    future.then([this, cancellationToken]() {
+        runInMainThread([this, cancellationToken]() {
             this->setEnabledActions(true);
-            if (this->cancelExport)
+            if (cancellationToken.isCancellationRequested())
                 ui->queryResultMessagesTextEdit->setPlainText("Data export cancelled");
-            this->cancelExport = false;
         });
     });
 }
 
-void MainWindow::cancel() {
-    this->cancelExport = true;
+void MainWindow::cancel() const {
+    this->tcs->cancel();
 }
 
 void MainWindow::saveSql() {
