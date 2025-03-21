@@ -31,6 +31,7 @@
 
 **Merged pull requests:**
 
+- Introduce Cancellation Tokens [\#26](https://github.com/christianhelle/sqlitequery/pull/26) ([christianhelle](https://github.com/christianhelle))
 - Add Build and SonarCloud badges to README [\#24](https://github.com/christianhelle/sqlitequery/pull/24) ([christianhelle](https://github.com/christianhelle))
 - Shrink images in README [\#16](https://github.com/christianhelle/sqlitequery/pull/16) ([christianhelle](https://github.com/christianhelle))
 - Add MacOS Screenshots [\#15](https://github.com/christianhelle/sqlitequery/pull/15) ([christianhelle](https://github.com/christianhelle))
