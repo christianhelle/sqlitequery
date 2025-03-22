@@ -50,6 +50,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->menuFile->insertMenu(ui->actionSave, recentFilesMenu);
 
     Settings::init();
+    WindowState windowState;
+    Settings::getMainWindowState(&windowState);
+    this->resize(windowState.size);
+    if (windowState.position.x() > 0 && windowState.position.y() > 0)
+        this->move(windowState.position);
+
     this->loadRecentFiles();
     // this->openExistingFile();
 }
@@ -63,6 +69,10 @@ MainWindow::~MainWindow() {
     delete tree;
     delete recentFilesMenu;
     delete ui;
+}
+
+void MainWindow::resizeEvent(QResizeEvent *e) {
+    Settings::setMainWindowState(e->size(), this->window()->pos());
 }
 
 void MainWindow::loadRecentFiles() const {
@@ -249,8 +259,7 @@ void MainWindow::setEnabledActions(const bool enabled) {
 }
 
 void MainWindow::showExportDataProgress(const std::unique_ptr<ExportDataProgress>::pointer progress,
-                                        const CancellationToken cancellationToken) const
-{
+                                        const CancellationToken cancellationToken) const {
     auto _ = QtConcurrent::run([this, cancellationToken, progress]() {
         do {
             std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -267,11 +276,10 @@ void MainWindow::showExportDataProgress(const std::unique_ptr<ExportDataProgress
     });
 }
 
-void MainWindow::exportDataAsync(const QString& filepath,
-                                 const DatabaseInfo& info,
+void MainWindow::exportDataAsync(const QString &filepath,
+                                 const DatabaseInfo &info,
                                  const std::unique_ptr<ExportDataProgress>::pointer progress,
-                                 const CancellationToken cancellationToken)
-{
+                                 const CancellationToken cancellationToken) {
     auto future = QtConcurrent::run([this, info, filepath, cancellationToken, progress]() {
         const auto exporter = std::make_unique<DbExport>(info);
         exporter->exportDataToFile(database, filepath, &cancellationToken, progress);

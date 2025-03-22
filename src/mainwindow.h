@@ -24,6 +24,8 @@ public:
 
     ~MainWindow() override;
 
+    void resizeEvent(QResizeEvent *e);
+
     void loadRecentFiles() const;
 
     void openDatabase(const QString &filename) const;
