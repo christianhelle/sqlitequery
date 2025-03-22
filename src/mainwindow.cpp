@@ -265,7 +265,7 @@ void MainWindow::scriptData() {
         exporter->exportDataToFile(database, filepath, &cancellationToken, progress);
     });
     future.then([this, cancellationToken, progress]() {
-        runInMainThread([this, cancellationToken, progress]() {
+        MainThread::run([this, cancellationToken, progress]() {
             this->setEnabledActions(true);
             if (cancellationToken.isCancellationRequested())
                 ui->queryResultMessagesTextEdit->setPlainText(
@@ -273,16 +273,6 @@ void MainWindow::scriptData() {
                     QString("%1 row(s)").arg(progress->getAffectedRows()));
         });
     });
-}
-
-template<typename F>
-void MainWindow::runInMainThread(F &&fun) {
-    QObject tmp;
-    QObject::connect(&tmp,
-                     &QObject::destroyed,
-                     qApp,
-                     std::forward<F>(fun),
-                     Qt::QueuedConnection);
 }
 
 void MainWindow::cancel() const {

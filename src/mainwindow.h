@@ -73,9 +73,6 @@ private:
     QString showFileDialog(QFileDialog::AcceptMode mode);
 
     void analyzeDatabase() const;
-
-    template<typename F>
-    auto runInMainThread(F &&fun) -> void;
 };
 
 #endif // MAINWINDOW_H
