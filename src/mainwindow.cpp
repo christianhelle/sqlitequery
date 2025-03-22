@@ -10,6 +10,8 @@
 #include <QTreeWidget>
 #include <QTableView>
 #include <QtConcurrent/QtConcurrent>
+#include <chrono>
+#include <thread>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
                                           ui(new Ui::MainWindow) {
@@ -264,6 +266,7 @@ void MainWindow::scriptData() {
     auto future = QtConcurrent::run([this, info, filepath, cancellationToken, progress]() {
         const auto exporter = std::make_unique<DbExport>(info);
         exporter->exportDataToFile(database, filepath, &cancellationToken, progress);
+        progress->reset();
     });
     future.then([this, cancellationToken, progress]() {
         MainThread::run([this, cancellationToken, progress]() {
@@ -272,6 +275,21 @@ void MainWindow::scriptData() {
                 ui->queryResultMessagesTextEdit->setPlainText(
                     "Data export cancelled. Exported " +
                     QString("%1 row(s)").arg(progress->getAffectedRows()));
+        });
+    });
+
+    auto _ = QtConcurrent::run([this, cancellationToken, progress]() {
+        do {
+          std::this_thread::sleep_for(std::chrono::seconds(1));
+          MainThread::run([this, progress]() {
+            ui->queryResultMessagesTextEdit->setPlainText(
+              "Data export in-progress. Exported " +
+              QString("%1 row(s)").arg(progress->getAffectedRows()));
+          });
+        } while (progress->getAffectedRows() > 0 && !cancellationToken.isCancellationRequested());
+
+        MainThread::run([this, progress]() {
+          ui->queryResultMessagesTextEdit->setPlainText("");
         });
     });
 }
