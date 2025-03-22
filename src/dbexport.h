@@ -1,8 +1,9 @@
 #ifndef DBEXPORT_H
 #define DBEXPORT_H
 
+#include "cancellation.h"
+#include "database.h"
 #include "databaseinfo.h"
-#include "mainwindow.h"
 
 class ExportDataProgress {
     uint64_t affectedRows = 0;
@@ -27,7 +28,8 @@ public:
 
     void exportDataToFile(const Database *database,
                           const QString &filename,
-                          const CancellationToken *cancellation_token) const;
+                          const CancellationToken *cancellation_token,
+                          ExportDataProgress *progress) const;
 
 private:
     DatabaseInfo info;
