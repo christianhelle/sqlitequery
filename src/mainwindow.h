@@ -7,6 +7,7 @@
 
 #include "cancellation.h"
 #include "dbanalyzer.h"
+#include "dbexport.h"
 #include "dbquery.h"
 #include "highlighter.h"
 #include "dbtree.h"
@@ -66,15 +67,12 @@ private:
     DbQuery *query;
     DbTree *tree;
     Highlighter *highlighter;
-    bool dataExportInProgress = false;
+    std::unique_ptr<ExportDataProgress> dataExportProgress;
     std::unique_ptr<CancellationTokenSource> tcs;
 
     QString showFileDialog(QFileDialog::AcceptMode mode);
 
     void analyzeDatabase() const;
-
-    template<typename F>
-    auto runInMainThread(F &&fun) -> void;
 };
 
 #endif // MAINWINDOW_H

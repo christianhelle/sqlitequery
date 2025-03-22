@@ -37,6 +37,7 @@ HEADERS  += mainwindow.h \
     recentfiles.h \
     settings.h \
     dbexport.h \
-    cancellation.h
+    cancellation.h \
+    mainthread.h
 
 FORMS    += mainwindow.ui

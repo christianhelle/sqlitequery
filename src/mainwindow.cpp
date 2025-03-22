@@ -3,6 +3,7 @@
 #include "ui_mainwindow.h"
 #include "settings.h"
 #include "dbexport.h"
+#include "mainthread.h"
 
 #include <QMessageBox>
 #include <QSqlTableModel>
@@ -100,7 +101,7 @@ QString MainWindow::showFileDialog(const QFileDialog::AcceptMode mode) {
 }
 
 void MainWindow::createNewFile() {
-    if (this->dataExportInProgress) {
+    if (this->dataExportProgress.get() != nullptr) {
         ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
         ui->queryResultTab->setCurrentIndex(1);
         return;
@@ -113,7 +114,7 @@ void MainWindow::createNewFile() {
 }
 
 void MainWindow::openDatabase(const QString &filename) const {
-    if (this->dataExportInProgress) {
+    if (this->dataExportProgress.get() != nullptr) {
         ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
         ui->queryResultTab->setCurrentIndex(1);
         return;
@@ -140,7 +141,7 @@ void MainWindow::openDatabase(const QString &filename) const {
 }
 
 void MainWindow::openExistingFile() {
-    if (this->dataExportInProgress) {
+    if (this->dataExportProgress.get() != nullptr) {
         ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
         ui->queryResultTab->setCurrentIndex(1);
         return;
@@ -156,7 +157,7 @@ void MainWindow::appExit() {
 }
 
 void MainWindow::shrink() const {
-    if (this->dataExportInProgress) {
+    if (this->dataExportProgress.get() != nullptr) {
         ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
         ui->queryResultTab->setCurrentIndex(1);
         return;
@@ -174,7 +175,7 @@ void MainWindow::refreshDatabase() const {
 }
 
 void MainWindow::analyzeDatabase() const {
-    if (this->dataExportInProgress) {
+    if (this->dataExportProgress.get() != nullptr) {
         ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
         ui->queryResultTab->setCurrentIndex(1);
         return;
@@ -192,7 +193,7 @@ void MainWindow::analyzeDatabase() const {
 }
 
 void MainWindow::executeQuery() const {
-    if (this->dataExportInProgress) {
+    if (this->dataExportProgress.get() != nullptr) {
         ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
         ui->queryResultTab->setCurrentIndex(1);
         return;
@@ -226,11 +227,6 @@ void MainWindow::executeQuery() const {
 }
 
 void MainWindow::scriptSchema() const {
-    if (this->dataExportInProgress) {
-        ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
-        ui->queryResultTab->setCurrentIndex(1);
-        return;
-    }
     DatabaseInfo info;
     analyzer->analyze(info);
     const auto exporter = std::make_unique<DbExport>(info);
@@ -245,7 +241,9 @@ void MainWindow::setEnabledActions(const bool enabled) {
     ui->actionExecute_Query->setEnabled(enabled);
     ui->actionScript_Schema->setEnabled(enabled);
     ui->actionCancel->setVisible(!enabled);
-    this->dataExportInProgress = !enabled;
+    if (enabled) {
+        this->dataExportProgress.release();
+    }
 }
 
 void MainWindow::scriptData() {
@@ -257,29 +255,25 @@ void MainWindow::scriptData() {
     analyzer->analyze(info);
     this->setEnabledActions(false);
 
-    tcs = std::make_unique<CancellationTokenSource>();
+    this->dataExportProgress = std::make_unique<ExportDataProgress>();
+    const auto progress = dataExportProgress.get();
+
+    this->tcs = std::make_unique<CancellationTokenSource>();
     const auto cancellationToken = tcs->get();
-    auto future = QtConcurrent::run([this, info, filepath, cancellationToken]() {
+
+    auto future = QtConcurrent::run([this, info, filepath, cancellationToken, progress]() {
         const auto exporter = std::make_unique<DbExport>(info);
-        exporter->exportDataToFile(database, filepath, &cancellationToken);
+        exporter->exportDataToFile(database, filepath, &cancellationToken, progress);
     });
-    future.then([this, cancellationToken]() {
-        runInMainThread([this, cancellationToken]() {
+    future.then([this, cancellationToken, progress]() {
+        MainThread::run([this, cancellationToken, progress]() {
             this->setEnabledActions(true);
             if (cancellationToken.isCancellationRequested())
-                ui->queryResultMessagesTextEdit->setPlainText("Data export cancelled");
+                ui->queryResultMessagesTextEdit->setPlainText(
+                    "Data export cancelled. Exported " +
+                    QString("%1 row(s)").arg(progress->getAffectedRows()));
         });
     });
-}
-
-template<typename F>
-void MainWindow::runInMainThread(F &&fun) {
-    QObject tmp;
-    QObject::connect(&tmp,
-                     &QObject::destroyed,
-                     qApp,
-                     std::forward<F>(fun),
-                     Qt::QueuedConnection);
 }
 
 void MainWindow::cancel() const {
@@ -304,8 +298,10 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item) const {
 }
 
 void MainWindow::treeNodeChanged(QTreeWidgetItem *item, const int column) const {
-    if (this->dataExportInProgress) {
-        ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
+    if (this->dataExportProgress.get() != nullptr) {
+        ui->queryResultMessagesTextEdit->setPlainText(
+            "Unable to process request. Data export in progress - " + QString("%1 row(s)").arg(
+                this->dataExportProgress.get()->getAffectedRows()));
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
