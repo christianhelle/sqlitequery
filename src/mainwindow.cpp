@@ -3,6 +3,7 @@
 #include "ui_mainwindow.h"
 #include "settings.h"
 #include "dbexport.h"
+#include "mainthread.h"
 
 #include <QMessageBox>
 #include <QSqlTableModel>
