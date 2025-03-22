@@ -267,7 +267,7 @@ void MainWindow::showExportDataProgress(const std::unique_ptr<ExportDataProgress
     });
 }
 
-void MainWindow::scriptDataAsync(const QString& filepath,
+void MainWindow::exportDataAsync(const QString& filepath,
                                  const DatabaseInfo& info,
                                  const std::unique_ptr<ExportDataProgress>::pointer progress,
                                  const CancellationToken cancellationToken)
@@ -288,7 +288,7 @@ void MainWindow::scriptDataAsync(const QString& filepath,
     });
 }
 
-void MainWindow::scriptData() {
+void MainWindow::exportData() {
     const QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
     if (filepath.isEmpty())
         return;
@@ -304,7 +304,7 @@ void MainWindow::scriptData() {
     this->tcs = std::make_unique<CancellationTokenSource>();
     const auto cancellationToken = tcs->get();
 
-    scriptDataAsync(filepath, info, progress, cancellationToken);
+    exportDataAsync(filepath, info, progress, cancellationToken);
     showExportDataProgress(progress, cancellationToken);
 }
 
