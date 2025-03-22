@@ -4,6 +4,12 @@
 #include "databaseinfo.h"
 #include "mainwindow.h"
 
+class ExportDataProgress {
+    uint64_t affectedRows = 0;
+public:
+    void increment() { affectedRows++; }
+    uint64_t getAffectedRows() const { return affectedRows; }
+};
 
 class DbExport {
 public:
