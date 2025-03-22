@@ -5,7 +5,7 @@ if ($IsWindows) {
     ../deps/innosetup/ISCC.exe setup.iss
 } 
 
-if ($IsLinux || $IsMacOS) {
+if ($IsLinux -or $IsMacOS) {
     cmake -B build
     cmake --build build --config Release
 }
