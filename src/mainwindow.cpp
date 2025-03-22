@@ -256,6 +256,7 @@ void MainWindow::scriptData() {
     DatabaseInfo info;
     analyzer->analyze(info);
     this->setEnabledActions(false);
+    ui->queryResultTab->setCurrentIndex(1);
 
     this->dataExportProgress = std::make_unique<ExportDataProgress>();
     const auto progress = dataExportProgress.get();
