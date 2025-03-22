@@ -241,7 +241,7 @@ void MainWindow::setEnabledActions(const bool enabled) {
     ui->actionExecute_Query->setEnabled(enabled);
     ui->actionScript_Schema->setEnabled(enabled);
     ui->actionCancel->setVisible(!enabled);
-    if (enabled){
+    if (enabled) {
         this->dataExportProgress.release();
     }
 }
@@ -299,7 +299,9 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item) const {
 
 void MainWindow::treeNodeChanged(QTreeWidgetItem *item, const int column) const {
     if (this->dataExportProgress.get() != nullptr) {
-        ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress - " + QString("%1 row(s)").arg(this->dataExportProgress.get()->getAffectedRows()));
+        ui->queryResultMessagesTextEdit->setPlainText(
+            "Unable to process request. Data export in progress - " + QString("%1 row(s)").arg(
+                this->dataExportProgress.get()->getAffectedRows()));
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
