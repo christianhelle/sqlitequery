@@ -24,7 +24,7 @@ public:
 
     ~MainWindow() override;
 
-    void resizeEvent(QResizeEvent *e);
+    void resizeEvent(QResizeEvent *e) override;
 
     void loadRecentFiles() const;
 
