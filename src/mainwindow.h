@@ -40,8 +40,12 @@ public slots:
     void scriptSchema() const;
 
     void setEnabledActions(bool);
+    void showExportDataProgress(std::unique_ptr<ExportDataProgress>::pointer progress,
+                                CancellationToken cancellationToken) const;
+    void exportDataAsync(const QString& filepath, const DatabaseInfo& info, std::unique_ptr<ExportDataProgress>::pointer progress,
+                         CancellationToken cancellationToken);
 
-    void scriptData();
+    void exportData();
 
     void cancel() const;
 

@@ -8,6 +8,7 @@
 class ExportDataProgress {
     uint64_t affectedRows = 0;
 public:
+    void reset() { affectedRows = 0; }
     void increment() { affectedRows++; }
     uint64_t getAffectedRows() const { return affectedRows; }
 };
