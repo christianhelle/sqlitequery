@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Implement Export Data progress reporting [\#27](https://github.com/christianhelle/sqlitequery/pull/27) ([christianhelle](https://github.com/christianhelle))
 - Add support for async export data with cancellation [\#25](https://github.com/christianhelle/sqlitequery/pull/25) ([christianhelle](https://github.com/christianhelle))
 - Resolves code analyzer issues [\#23](https://github.com/christianhelle/sqlitequery/pull/23) ([christianhelle](https://github.com/christianhelle))
 - Add primary key and default value details to column tree [\#22](https://github.com/christianhelle/sqlitequery/pull/22) ([christianhelle](https://github.com/christianhelle))
