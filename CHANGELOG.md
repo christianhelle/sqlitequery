@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Save window size and position and reuse upon next launch [\#29](https://github.com/christianhelle/sqlitequery/pull/29) ([christianhelle](https://github.com/christianhelle))
 - Show Export Data Progress [\#28](https://github.com/christianhelle/sqlitequery/pull/28) ([christianhelle](https://github.com/christianhelle))
 - Implement Export Data progress reporting [\#27](https://github.com/christianhelle/sqlitequery/pull/27) ([christianhelle](https://github.com/christianhelle))
 - Add support for async export data with cancellation [\#25](https://github.com/christianhelle/sqlitequery/pull/25) ([christianhelle](https://github.com/christianhelle))
