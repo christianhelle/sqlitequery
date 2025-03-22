@@ -2,8 +2,14 @@
 
 #include <QStandardPaths>
 #include <QDir>
+#include <QApplication>
+#include <QSettings>
 
 void Settings::init() {
+    QApplication::setOrganizationDomain("christianhelle.com");
+    QApplication::setOrganizationName("Christian Helle");
+    QApplication::setApplicationName("SQLite Query Analyzer");
+
     const auto path = getSettingsFolder();
     if (const QDir dir(path); !dir.exists() && !dir.mkdir(path)) {
         qDebug("Failed to create settings directory");
@@ -26,4 +32,20 @@ QString Settings::getSettingsFolder() {
     constexpr auto type = QStandardPaths::HomeLocation;
     const auto home_path = QStandardPaths::writableLocation(type);
     return home_path + "/.sqlite_query_analyzer";
+}
+
+void Settings::getMainWindowState(WindowState *state) {
+    QSettings settings;
+    settings.beginGroup("MainWindow");
+    state->size = settings.value("main_window_size", QSize(800, 600)).toSize();
+    state->position = settings.value("main_window_position", QPoint(0, 0)).toPoint();
+    settings.endGroup();
+}
+
+void Settings::setMainWindowState(const QSizeF &size, const QPoint &position) {
+    QSettings settings;
+    settings.beginGroup("MainWindow");
+    settings.setValue("main_window_size", size);
+    settings.setValue("main_window_position", position);
+    settings.endGroup();
 }
