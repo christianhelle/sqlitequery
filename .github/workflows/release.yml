@@ -1,7 +1,10 @@
 name: Release
 
 on:
+  workflow_dispatch:
   push:
+    branches:
+      - 'release'
 
 env:
   VERSION: '0.1.${{ github.run_number }}'
@@ -113,3 +116,57 @@ jobs:
         with:
           name: SQLiteQuerAnalyzer_Windows_Installer_v${{ env.VERSION }}
           path: ${{ github.workspace }}\src\Artifacts\SQLiteQueryAnalyzer-Setup.exe
+
+  Release:
+    needs: [
+      macos, 
+      windows
+    ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create tag
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/${{ env.VERSION }}",
+              sha: context.sha
+            })
+      - name: Create release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.VERSION }}
+          release_name: v${{ env.VERSION }}
+          draft: true
+          prerelease: false
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Upload Windows Installer asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: artifacts/Visual Studio Extension/ApiClientCodeGenerator-VS2019-${{ env.VERSION }}.vsix
+          asset_name: ApiClientCodeGenerator-VS2019-${{ env.VERSION }}.vsix
+          asset_content_type: application/zip
+      - name: Upload VSIX for VS2022 asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: artifacts/Visual Studio Extension/ApiClientCodeGenerator-VS2022-${{ env.VERSION }}.vsix
+          asset_name: ApiClientCodeGenerator-VS2022-${{ env.VERSION }}.vsix
+          asset_content_type: application/zip
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+        
