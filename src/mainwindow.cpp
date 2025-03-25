@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(ui->actionExecute_Query, SIGNAL(triggered()), this, SLOT(executeQuery()));
     connect(ui->actionShrink, SIGNAL(triggered()), this, SLOT(shrink()));
     connect(ui->actionScript_Schema, SIGNAL(triggered()), this, SLOT(scriptSchema()));
-    connect(ui->actionScript_Data, SIGNAL(triggered()), this, SLOT(scriptData()));
+    connect(ui->actionScript_Data, SIGNAL(triggered()), this, SLOT(exportData()));
     connect(ui->actionCancel, SIGNAL(triggered()), this, SLOT(cancel()));
     connect(ui->treeWidget, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this,
             SLOT(treeNodeChanged(QTreeWidgetItem*,int)));
@@ -57,7 +57,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
         this->move(windowState.position);
 
     this->loadRecentFiles();
-    // this->openExistingFile();
 }
 
 MainWindow::~MainWindow() {
@@ -317,6 +316,12 @@ void MainWindow::exportData() {
 }
 
 void MainWindow::cancel() const {
+    if (this->dataExportProgress != nullptr) {
+        ui->queryResultMessagesTextEdit->setPlainText(
+            "Data export cancelled. Exported " +
+            QString("%1 row(s)").arg(this->dataExportProgress->getAffectedRows()));
+    }
+
     this->tcs->cancel();
 }
 
