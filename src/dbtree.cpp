@@ -5,10 +5,6 @@ DbTree::DbTree(QTreeWidget *tree) {
     this->treeNodes = new QList<QTreeWidgetItem *>();
 }
 
-DbTree::~DbTree() {
-    this->clear();
-}
-
 void DbTree::clear() const {
     qDeleteAll(this->treeNodes->begin(), this->treeNodes->end());
     this->treeNodes->clear();

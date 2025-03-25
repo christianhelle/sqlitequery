@@ -35,7 +35,7 @@ public slots:
 
     void openExistingFile();
 
-    static void appExit();
+    [[noreturn]] static void appExit();
 
     void executeQuery() const;
 

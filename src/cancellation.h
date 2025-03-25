@@ -6,7 +6,7 @@ class CancellationToken {
 public:
     explicit CancellationToken(bool *isCancelled);
 
-    bool isCancellationRequested() const;
+    [[nodiscard]] bool isCancellationRequested() const;
 
 private:
     bool *isCancelled = nullptr;
@@ -21,4 +21,4 @@ private:
 };
 
 
-#endif //CANCELLATIONTOKENS_H
+#endif //CANCELLATION_H

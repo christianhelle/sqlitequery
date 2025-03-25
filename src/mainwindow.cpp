@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
 MainWindow::~MainWindow() {
     qDebug("MainWindow::~MainWindow()");
+    this->tree->clear();
 }
 
 void MainWindow::resizeEvent(QResizeEvent *e) {
@@ -155,7 +156,7 @@ void MainWindow::openExistingFile() {
     this->loadRecentFiles();
 }
 
-void MainWindow::appExit() {
+[[noreturn]] void MainWindow::appExit() {
     exit(0);
 }
 
@@ -165,8 +166,7 @@ void MainWindow::shrink() const {
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
-    const QString filename = this->database->getFilename();
-    if (filename.isNull() || filename.isEmpty())
+    if (const QString filename = this->database->getFilename(); filename.isNull() || filename.isEmpty())
         return;
 
     this->database->shrink();
@@ -261,7 +261,7 @@ void MainWindow::showExportDataProgress(const std::unique_ptr<ExportDataProgress
             });
         } while (progress->getAffectedRows() > 0 && !cancellationToken.isCancellationRequested());
 
-        MainThread::run([this, progress]() {
+        MainThread::run([this]() {
             ui->queryResultMessagesTextEdit->setPlainText("");
         });
     });
@@ -334,6 +334,8 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item) const {
     treeNodeChanged(item, 0);
 }
 
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
+// This is a slot method
 void MainWindow::treeNodeChanged(QTreeWidgetItem *item, const int column) const {
     if (this->dataExportProgress.get() != nullptr) {
         ui->queryResultMessagesTextEdit->setPlainText(

@@ -9,8 +9,6 @@ class DbTree {
 public:
     explicit DbTree(QTreeWidget *);
 
-    ~DbTree();
-
     void clear() const;
 
     void populateTree(const DatabaseInfo& info) const;

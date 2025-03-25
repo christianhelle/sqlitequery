@@ -1,17 +1,14 @@
 #include "dbanalyzer.h"
-#include <QtSql>
+
+#include <QFileInfo>
 
 DbAnalyzer::DbAnalyzer(Database *database) {
     qDebug("DatabaseAnalyzer::DatabaseAnalyzer()");
     this->database = database;
 }
 
-DbAnalyzer::~DbAnalyzer() {
-    qDebug("DatabaseAnalyzer::~DatabaseAnalyzer()");
-}
-
 bool DbAnalyzer::analyze(DatabaseInfo &info) const {
-    QFileInfo file(this->database->getFilename());
+    const QFileInfo file(this->database->getFilename());
 
     info.filename = file.fileName();
     info.size = file.size();
