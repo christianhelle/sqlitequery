@@ -22,7 +22,7 @@ jobs:
       - name: Update Version Number (Inno Setup)
         shell: pwsh
         run: |
-          $version = (Get-Content -Path src/setup.iss -Raw) -replace 'AppVersion = 1.0.0', 'AppVersion = ${{ env.VERSION }}'
+          $version = (Get-Content -Path src/setup.iss -Raw) -replace '#define MyAppVersion "1.0.0"', '#define MyAppVersion "${{ env.VERSION }}"'
           $version | Set-Content -Path src/setup.iss
 
       - name: Update Version in code
