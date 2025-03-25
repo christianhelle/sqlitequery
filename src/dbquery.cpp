@@ -22,11 +22,6 @@ void DbQuery::clearResults() const {
     this->scrollArea->setWidget(container);
     this->container->show();
 
-    for (const auto &tableResult: *this->tableResults) {
-        const QAbstractItemModel *model = tableResult->model();
-        delete model;
-    }
-
     qDeleteAll(this->tableResults->begin(), this->tableResults->end());
     this->tableResults->clear();
 }
