@@ -21,4 +21,4 @@ private:
 };
 
 
-#endif //CANCELLATIONTOKENS_H
+#endif //CANCELLATION_H
