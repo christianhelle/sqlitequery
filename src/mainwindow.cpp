@@ -353,14 +353,12 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item, const int column) const 
         if (ui->tableView->model() != Q_NULLPTR)
             std::make_unique<QSqlTableModel>(ui->tableView->model());
 
-        // The model is no longer alive after the unique pointer destroys it...
-        // ReSharper disable once CppDFAMemoryLeak
-        const auto model = new QSqlTableModel(nullptr, this->database->getDatabase());
-        model->setTable(item->text(column));
-        model->setEditStrategy(QSqlTableModel::OnFieldChange);
-        model->select();
+        auto model = QSqlTableModel(nullptr, this->database->getDatabase());
+        model.setTable(item->text(column));
+        model.setEditStrategy(QSqlTableModel::OnFieldChange);
+        model.select();
 
-        ui->tableView->setModel(model);
+        ui->tableView->setModel(&model);
         ui->tableView->setSortingEnabled(true);
         ui->tabWidget->setCurrentIndex(1);
     }
