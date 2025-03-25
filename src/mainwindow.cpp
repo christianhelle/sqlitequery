@@ -96,7 +96,7 @@ QString MainWindow::showFileDialog(const QFileDialog::AcceptMode mode) {
 
     if (dialog.exec()) {
         QStringList files = dialog.selectedFiles();
-        if (files.length())
+        if (!files.empty())
             return files.first();
     }
 
