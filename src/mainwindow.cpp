@@ -166,8 +166,7 @@ void MainWindow::shrink() const {
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
-    const QString filename = this->database->getFilename();
-    if (filename.isNull() || filename.isEmpty())
+    if (const QString filename = this->database->getFilename(); filename.isNull() || filename.isEmpty())
         return;
 
     this->database->shrink();
