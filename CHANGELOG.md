@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Improve Memory management [\#31](https://github.com/christianhelle/sqlitequery/pull/31) ([christianhelle](https://github.com/christianhelle))
 - Fix Export Data not starting [\#30](https://github.com/christianhelle/sqlitequery/pull/30) ([christianhelle](https://github.com/christianhelle))
 - Save window size and position and reuse upon next launch [\#29](https://github.com/christianhelle/sqlitequery/pull/29) ([christianhelle](https://github.com/christianhelle))
 - Show Export Data Progress [\#28](https://github.com/christianhelle/sqlitequery/pull/28) ([christianhelle](https://github.com/christianhelle))
