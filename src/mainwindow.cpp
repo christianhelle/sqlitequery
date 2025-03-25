@@ -57,7 +57,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
         this->move(windowState.position);
 
     this->loadRecentFiles();
-    // this->openExistingFile();
 }
 
 MainWindow::~MainWindow() {
