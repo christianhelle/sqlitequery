@@ -12,14 +12,14 @@ DbQuery::DbQuery(QWidget *widget, Database *database) {
     this->database = database;
     tableResults = QList<QTableView *>();
 
-    this->container = new QWidget(this->widget);
-    this->scrollArea = new QScrollArea(this->widget);
+    this->container = std::make_unique<QWidget>(this->widget);
+    this->scrollArea = std::make_unique<QScrollArea>(this->widget);
 }
 
 void DbQuery::clearResults() {
     this->container->setGeometry(this->widget->geometry());
     this->scrollArea->setGeometry(this->widget->geometry());
-    this->scrollArea->setWidget(container);
+    this->scrollArea->setWidget(container.get());
     this->container->show();
 
     qDeleteAll(this->tableResults.begin(), this->tableResults.end());
@@ -61,7 +61,7 @@ bool DbQuery::execute(const QStringList &queryList, QStringList *errors) {
             if (i > 0)
                 yOffset += height;
             auto rect = QRect(0, yOffset, width, height);
-            auto *table = new QTableView(this->container);
+            auto *table = new QTableView(this->container.get());
             table->setGeometry(rect);
             table->show();
 
