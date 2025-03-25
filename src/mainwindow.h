@@ -71,7 +71,7 @@ private:
     std::unique_ptr<Database> database;
     std::unique_ptr<DbAnalyzer> analyzer;
     std::unique_ptr<DbQuery> query;
-    DbTree *tree;
+    std::unique_ptr<DbTree> tree;
     Highlighter *highlighter;
     std::unique_ptr<ExportDataProgress> dataExportProgress;
     std::unique_ptr<CancellationTokenSource> tcs;

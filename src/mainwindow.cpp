@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     this->analyzer = std::make_unique<DbAnalyzer>(database.get());
     this->query = std::make_unique<DbQuery>(ui->queryResultsGrid, this->database.get());
 
-    this->tree = new DbTree(ui->treeWidget);
+    this->tree = std::make_unique<DbTree>(ui->treeWidget);
     this->highlighter = new Highlighter(ui->textEdit->document());
 
     // ReSharper disable once CppDFAMemoryLeak - By design
@@ -63,7 +63,6 @@ MainWindow::~MainWindow() {
     qDebug("MainWindow::~MainWindow()");
 
     delete highlighter;
-    delete tree;
     delete recentFilesMenu;
     delete ui;
 }
