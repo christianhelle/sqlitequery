@@ -10,23 +10,23 @@
 DbQuery::DbQuery(QWidget *widget, Database *database) {
     this->widget = widget;
     this->database = database;
-    tableResults = new QList<QTableView *>();
+    tableResults = QList<QTableView *>();
 
     this->container = new QWidget(this->widget);
     this->scrollArea = new QScrollArea(this->widget);
 }
 
-void DbQuery::clearResults() const {
+void DbQuery::clearResults() {
     this->container->setGeometry(this->widget->geometry());
     this->scrollArea->setGeometry(this->widget->geometry());
     this->scrollArea->setWidget(container);
     this->container->show();
 
-    qDeleteAll(this->tableResults->begin(), this->tableResults->end());
-    this->tableResults->clear();
+    qDeleteAll(this->tableResults.begin(), this->tableResults.end());
+    this->tableResults.clear();
 }
 
-bool DbQuery::execute(const QStringList &queryList, QStringList *errors) const {
+bool DbQuery::execute(const QStringList &queryList, QStringList *errors) {
     this->clearResults();
 
     if (!this->database->open()) {
@@ -60,12 +60,12 @@ bool DbQuery::execute(const QStringList &queryList, QStringList *errors) const {
         if (query.isSelect()) {
             if (i > 0)
                 yOffset += height;
-            QRect rect = QRect(0, yOffset, width, height);
-            QTableView *table = new QTableView(this->container);
+            auto rect = QRect(0, yOffset, width, height);
+            auto *table = new QTableView(this->container);
             table->setGeometry(rect);
             table->show();
 
-            this->tableResults->append(table);
+            this->tableResults.append(table);
             count++;
 
             auto *model = new QSqlQueryModel();

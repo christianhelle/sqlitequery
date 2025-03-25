@@ -10,15 +10,15 @@ class DbQuery {
 public:
     DbQuery(QWidget *, Database *);
 
-    bool execute(const QStringList &, QStringList *) const;
+    bool execute(const QStringList &, QStringList *);
 
-    void clearResults() const;
+    void clearResults();
 
 private:
     QWidget *widget;
     QScrollArea *scrollArea;
     QWidget *container;
-    QList<QTableView *> *tableResults;
+    QList<QTableView *> tableResults;
     Database *database;
 };
 
