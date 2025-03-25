@@ -316,6 +316,12 @@ void MainWindow::exportData() {
 }
 
 void MainWindow::cancel() const {
+    if (this->dataExportProgress != nullptr) {
+        ui->queryResultMessagesTextEdit->setPlainText(
+            "Data export cancelled. Exported " +
+            QString("%1 row(s)").arg(this->dataExportProgress->getAffectedRows()));
+    }
+
     this->tcs->cancel();
 }
 
