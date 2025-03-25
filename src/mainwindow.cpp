@@ -38,9 +38,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui->actionRefresh, SIGNAL(triggered()), this, SLOT(refreshDatabase()));
 
-    this->database = new Database();
-    this->analyzer = new DbAnalyzer(database);
-    this->query = new DbQuery(ui->queryResultsGrid, this->database);
+    this->database = std::make_unique<Database>();
+    this->analyzer = new DbAnalyzer(database.get());
+    this->query = new DbQuery(ui->queryResultsGrid, this->database.get());
 
     this->tree = new DbTree(ui->treeWidget);
     this->highlighter = new Highlighter(ui->textEdit->document());
@@ -281,7 +281,7 @@ void MainWindow::exportDataAsync(const QString &filepath,
                                  const CancellationToken cancellationToken) {
     auto future = QtConcurrent::run([this, info, filepath, cancellationToken, progress]() {
         const auto exporter = std::make_unique<DbExport>(info);
-        exporter->exportDataToFile(database, filepath, &cancellationToken, progress);
+        exporter->exportDataToFile(database.get(), filepath, &cancellationToken, progress);
         progress->reset();
     });
     future.then([this, cancellationToken, progress]() {

@@ -68,7 +68,7 @@ public slots:
 private:
     Ui::MainWindow *ui;
     QMenu *recentFilesMenu;
-    Database *database;
+    std::unique_ptr<Database> database;
     DbAnalyzer *analyzer;
     DbQuery *query;
     DbTree *tree;
