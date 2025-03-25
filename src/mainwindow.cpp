@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(ui->actionExecute_Query, SIGNAL(triggered()), this, SLOT(executeQuery()));
     connect(ui->actionShrink, SIGNAL(triggered()), this, SLOT(shrink()));
     connect(ui->actionScript_Schema, SIGNAL(triggered()), this, SLOT(scriptSchema()));
-    connect(ui->actionScript_Data, SIGNAL(triggered()), this, SLOT(scriptData()));
+    connect(ui->actionScript_Data, SIGNAL(triggered()), this, SLOT(exportData()));
     connect(ui->actionCancel, SIGNAL(triggered()), this, SLOT(cancel()));
     connect(ui->treeWidget, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this,
             SLOT(treeNodeChanged(QTreeWidgetItem*,int)));
