@@ -152,7 +152,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: SQLiteQuerAnalyzer_Windows_Installer_v${{ env.VERSION }}
+          asset_path: artifacts/SQLiteQuerAnalyzer_Windows_Installer_v${{ env.VERSION }}
           asset_name: SQLiteAnalyzer-Setup.exe
           asset_content_type: application/zip
       - name: Upload VSIX for VS2022 asset
@@ -161,6 +161,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: SQLiteQuerAnalyzer_Windows_v${{ env.VERSION }}
+          asset_path: artifacts/SQLiteQuerAnalyzer_Windows_v${{ env.VERSION }}
           asset_name: SQLiteAnalyzer-Windows.zip
           asset_content_type: application/zip
