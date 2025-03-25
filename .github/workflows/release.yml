@@ -32,7 +32,7 @@ jobs:
       with:
         name: SQLiteQuerAnalyzer_MacOS_v${{ env.VERSION }}
         path: |
-          **/*.dmg
+          src/build/SQLiteQueryAnalyzer.dmg
   windows:
     name: Windows
     runs-on:  windows-latest
@@ -146,7 +146,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
-      - name: Upload Windows Installer asset
+      - name: Upload Windows Installer
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -155,7 +155,7 @@ jobs:
           asset_path: artifacts/SQLiteQuerAnalyzer_Windows_Installer_v${{ env.VERSION }}/SQLiteQueryAnalyzer-Setup.exe
           asset_name: SQLiteQuerAnalyzer_Windows_Installer_v${{ env.VERSION }}.exe
           asset_content_type: application/zip
-      - name: Upload Windows Binary asset
+      - name: Upload Windows Binary
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -163,4 +163,13 @@ jobs:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: artifacts/SQLiteQuerAnalyzer_Windows_v${{ env.VERSION }}/SQLiteQueryAnalyzer_Windows.zip
           asset_name: SQLiteQuerAnalyzer_Windows_v${{ env.VERSION }}.zip
+          asset_content_type: application/zip
+      - name: Upload MacOS disk image
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: artifacts/SQLiteQuerAnalyzer_MacOS_v${{ env.VERSION }}/SQLiteQueryAnalyzer.dmg
+          asset_name: SQLiteQuerAnalyzer_MacOS_v${{ env.VERSION }}.dmg
           asset_content_type: application/zip
