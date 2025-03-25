@@ -26,10 +26,7 @@ jobs:
         version: '6.8.2'
     - name: Build
       working-directory: src
-      run: |
-        qmake
-        make
-        macdeployqt SQLiteQueryAnalyzer.app -dmg
+      run: pwsh build.ps1
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
       with:
