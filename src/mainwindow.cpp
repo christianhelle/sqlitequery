@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
 MainWindow::~MainWindow() {
     qDebug("MainWindow::~MainWindow()");
+    this->tree->clear();
 }
 
 void MainWindow::resizeEvent(QResizeEvent *e) {
