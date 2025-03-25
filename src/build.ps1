@@ -11,5 +11,5 @@ if ($IsLinux -or $IsMacOS) {
 }
 
 if ($IsMacOS) {
-    macdeployqt build/SQLiteQueryAnalyzer.app
+    macdeployqt build/SQLiteQueryAnalyzer.app -dmg
 }
