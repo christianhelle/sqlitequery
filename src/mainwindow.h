@@ -66,7 +66,7 @@ public slots:
     void openRecentFile() const;
 
 private:
-    Ui::MainWindow *ui;
+    std::unique_ptr<Ui::MainWindow> ui;
     std::unique_ptr<QMenu> recentFilesMenu;
     std::unique_ptr<Database> database;
     std::unique_ptr<DbAnalyzer> analyzer;

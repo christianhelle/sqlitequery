@@ -13,10 +13,10 @@
 #include <chrono>
 #include <thread>
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
-                                          ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     qDebug("MainWindow::MainWindow(QWidget*)");
 
+    ui = std::make_unique<Ui::MainWindow>();
     ui->setupUi(this);
     ui->splitterMain->setStretchFactor(1, 3);
     ui->splitterQueryTab->setStretchFactor(1, 1);
@@ -60,8 +60,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
 MainWindow::~MainWindow() {
     qDebug("MainWindow::~MainWindow()");
-
-    delete ui;
 }
 
 void MainWindow::resizeEvent(QResizeEvent *e) {
