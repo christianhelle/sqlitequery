@@ -32,7 +32,7 @@ jobs:
       with:
         name: SQLiteQuerAnalyzer_MacOS_v${{ env.VERSION }}
         path: |
-          src/*.dmg
+          src/build/*.dmg
   windows:
     name: Windows
     runs-on:  windows-latest
