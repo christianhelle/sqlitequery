@@ -262,7 +262,7 @@ void MainWindow::showExportDataProgress(const std::unique_ptr<ExportDataProgress
             });
         } while (progress->getAffectedRows() > 0 && !cancellationToken.isCancellationRequested());
 
-        MainThread::run([this, progress]() {
+        MainThread::run([this]() {
             ui->queryResultMessagesTextEdit->setPlainText("");
         });
     });
