@@ -69,7 +69,7 @@ private:
     Ui::MainWindow *ui;
     QMenu *recentFilesMenu;
     std::unique_ptr<Database> database;
-    DbAnalyzer *analyzer;
+    std::unique_ptr<DbAnalyzer> analyzer;
     DbQuery *query;
     DbTree *tree;
     Highlighter *highlighter;

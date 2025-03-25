@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(ui->actionRefresh, SIGNAL(triggered()), this, SLOT(refreshDatabase()));
 
     this->database = std::make_unique<Database>();
-    this->analyzer = new DbAnalyzer(database.get());
+    this->analyzer = std::make_unique<DbAnalyzer>(database.get());
     this->query = new DbQuery(ui->queryResultsGrid, this->database.get());
 
     this->tree = new DbTree(ui->treeWidget);
@@ -62,7 +62,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 MainWindow::~MainWindow() {
     qDebug("MainWindow::~MainWindow()");
 
-    delete analyzer;
     delete highlighter;
     delete query;
     delete tree;
