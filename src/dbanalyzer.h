@@ -8,8 +8,6 @@ class DbAnalyzer {
 public:
     explicit DbAnalyzer(Database *database);
 
-    ~DbAnalyzer();
-
     bool analyze(DatabaseInfo &info) const;
 
     void loadTables(DatabaseInfo &info) const;

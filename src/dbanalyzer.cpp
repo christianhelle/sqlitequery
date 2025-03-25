@@ -6,10 +6,6 @@ DbAnalyzer::DbAnalyzer(Database *database) {
     this->database = database;
 }
 
-DbAnalyzer::~DbAnalyzer() {
-    qDebug("DatabaseAnalyzer::~DatabaseAnalyzer()");
-}
-
 bool DbAnalyzer::analyze(DatabaseInfo &info) const {
     QFileInfo file(this->database->getFilename());
 
