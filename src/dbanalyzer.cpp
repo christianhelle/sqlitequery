@@ -1,5 +1,6 @@
 #include "dbanalyzer.h"
-#include <QtSql>
+
+#include <QFileInfo>
 
 DbAnalyzer::DbAnalyzer(Database *database) {
     qDebug("DatabaseAnalyzer::DatabaseAnalyzer()");
