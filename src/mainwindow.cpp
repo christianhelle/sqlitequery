@@ -335,6 +335,8 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item) const {
     treeNodeChanged(item, 0);
 }
 
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
+// This is a slot method
 void MainWindow::treeNodeChanged(QTreeWidgetItem *item, const int column) const {
     if (this->dataExportProgress.get() != nullptr) {
         ui->queryResultMessagesTextEdit->setPlainText(
