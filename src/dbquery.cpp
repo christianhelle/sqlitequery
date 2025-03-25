@@ -61,7 +61,8 @@ bool DbQuery::execute(const QStringList &queryList, QStringList *errors) {
             if (i > 0)
                 yOffset += height;
             auto rect = QRect(0, yOffset, width, height);
-            auto *table = new QTableView(this->container.get());
+            const auto ptr = this->container.get();
+            auto *table = new QTableView(ptr);
             table->setGeometry(rect);
             table->show();
 
