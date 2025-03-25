@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     this->database = std::make_unique<Database>();
     this->analyzer = std::make_unique<DbAnalyzer>(database.get());
-    this->query = new DbQuery(ui->queryResultsGrid, this->database.get());
+    this->query = std::make_unique<DbQuery>(ui->queryResultsGrid, this->database.get());
 
     this->tree = new DbTree(ui->treeWidget);
     this->highlighter = new Highlighter(ui->textEdit->document());
@@ -63,7 +63,6 @@ MainWindow::~MainWindow() {
     qDebug("MainWindow::~MainWindow()");
 
     delete highlighter;
-    delete query;
     delete tree;
     delete recentFilesMenu;
     delete ui;

@@ -70,7 +70,7 @@ private:
     QMenu *recentFilesMenu;
     std::unique_ptr<Database> database;
     std::unique_ptr<DbAnalyzer> analyzer;
-    DbQuery *query;
+    std::unique_ptr<DbQuery> query;
     DbTree *tree;
     Highlighter *highlighter;
     std::unique_ptr<ExportDataProgress> dataExportProgress;
