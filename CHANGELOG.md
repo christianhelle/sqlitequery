@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Fix incorrect version display on installer [\#34](https://github.com/christianhelle/sqlitequery/pull/34) ([christianhelle](https://github.com/christianhelle))
 - Improve Resource Management [\#33](https://github.com/christianhelle/sqlitequery/pull/33) ([christianhelle](https://github.com/christianhelle))
 - Improve Memory management [\#31](https://github.com/christianhelle/sqlitequery/pull/31) ([christianhelle](https://github.com/christianhelle))
 - Fix Export Data not starting [\#30](https://github.com/christianhelle/sqlitequery/pull/30) ([christianhelle](https://github.com/christianhelle))
@@ -37,6 +38,7 @@
 
 **Merged pull requests:**
 
+- House Keeping [\#35](https://github.com/christianhelle/sqlitequery/pull/35) ([christianhelle](https://github.com/christianhelle))
 - Setup Release workflow [\#32](https://github.com/christianhelle/sqlitequery/pull/32) ([christianhelle](https://github.com/christianhelle))
 - Introduce Cancellation Tokens [\#26](https://github.com/christianhelle/sqlitequery/pull/26) ([christianhelle](https://github.com/christianhelle))
 - Add Build and SonarCloud badges to README [\#24](https://github.com/christianhelle/sqlitequery/pull/24) ([christianhelle](https://github.com/christianhelle))
