@@ -57,6 +57,7 @@ bool DbQuery::execute(const QStringList &queryList, QStringList *errors) {
             continue;
         }
 
+        // ReSharper disable CppDFAMemoryLeak
         if (query.isSelect()) {
             if (i > 0)
                 yOffset += height;
