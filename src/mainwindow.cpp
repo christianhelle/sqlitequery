@@ -156,7 +156,7 @@ void MainWindow::openExistingFile() {
     this->loadRecentFiles();
 }
 
-void MainWindow::appExit() {
+[[noreturn]] void MainWindow::appExit() {
     exit(0);
 }
 
