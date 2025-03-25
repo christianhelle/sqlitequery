@@ -66,13 +66,13 @@ public slots:
     void openRecentFile() const;
 
 private:
-    Ui::MainWindow *ui;
-    QMenu *recentFilesMenu;
-    Database *database;
-    DbAnalyzer *analyzer;
-    DbQuery *query;
-    DbTree *tree;
-    Highlighter *highlighter;
+    std::unique_ptr<Ui::MainWindow> ui;
+    std::unique_ptr<QMenu> recentFilesMenu;
+    std::unique_ptr<Database> database;
+    std::unique_ptr<DbAnalyzer> analyzer;
+    std::unique_ptr<DbQuery> query;
+    std::unique_ptr<DbTree> tree;
+    std::unique_ptr<Highlighter> highlighter;
     std::unique_ptr<ExportDataProgress> dataExportProgress;
     std::unique_ptr<CancellationTokenSource> tcs;
 

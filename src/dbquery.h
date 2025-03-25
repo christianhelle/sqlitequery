@@ -10,16 +10,17 @@ class DbQuery {
 public:
     DbQuery(QWidget *, Database *);
 
-    bool execute(const QStringList &, QStringList *) const;
+    bool execute(const QStringList &, QStringList *);
 
-    void clearResults() const;
+    void clearResults();
 
 private:
     QWidget *widget;
-    QScrollArea *scrollArea;
-    QWidget *container;
-    QList<QTableView *> *tableResults;
     Database *database;
+
+    std::unique_ptr<QScrollArea> scrollArea;
+    std::unique_ptr<QWidget> container;
+    QList<QTableView *> tableResults;
 };
 
 #endif // DBQUERY_H

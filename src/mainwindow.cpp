@@ -13,10 +13,10 @@
 #include <chrono>
 #include <thread>
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
-                                          ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     qDebug("MainWindow::MainWindow(QWidget*)");
 
+    ui = std::make_unique<Ui::MainWindow>();
     ui->setupUi(this);
     ui->splitterMain->setStretchFactor(1, 3);
     ui->splitterQueryTab->setStretchFactor(1, 1);
@@ -38,16 +38,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui->actionRefresh, SIGNAL(triggered()), this, SLOT(refreshDatabase()));
 
-    this->database = new Database();
-    this->analyzer = new DbAnalyzer(database);
-    this->query = new DbQuery(ui->queryResultsGrid, this->database);
+    this->database = std::make_unique<Database>();
+    this->analyzer = std::make_unique<DbAnalyzer>(database.get());
+    this->query = std::make_unique<DbQuery>(ui->queryResultsGrid, this->database.get());
 
-    this->tree = new DbTree(ui->treeWidget);
-    this->highlighter = new Highlighter(ui->textEdit->document());
+    this->tree = std::make_unique<DbTree>(ui->treeWidget);
+    this->highlighter = std::make_unique<Highlighter>(ui->textEdit->document());
 
-    // ReSharper disable once CppDFAMemoryLeak - By design
-    this->recentFilesMenu = new QMenu("Recent Files");
-    ui->menuFile->insertMenu(ui->actionSave, recentFilesMenu);
+    this->recentFilesMenu = std::make_unique<QMenu>("Recent Files");
+    ui->menuFile->insertMenu(ui->actionSave, recentFilesMenu.get());
 
     Settings::init();
     WindowState windowState;
@@ -61,13 +60,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
 MainWindow::~MainWindow() {
     qDebug("MainWindow::~MainWindow()");
-
-    delete analyzer;
-    delete highlighter;
-    delete query;
-    delete tree;
-    delete recentFilesMenu;
-    delete ui;
 }
 
 void MainWindow::resizeEvent(QResizeEvent *e) {
@@ -281,7 +273,7 @@ void MainWindow::exportDataAsync(const QString &filepath,
                                  const CancellationToken cancellationToken) {
     auto future = QtConcurrent::run([this, info, filepath, cancellationToken, progress]() {
         const auto exporter = std::make_unique<DbExport>(info);
-        exporter->exportDataToFile(database, filepath, &cancellationToken, progress);
+        exporter->exportDataToFile(database.get(), filepath, &cancellationToken, progress);
         progress->reset();
     });
     future.then([this, cancellationToken, progress]() {
@@ -361,14 +353,12 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item, const int column) const 
         if (ui->tableView->model() != Q_NULLPTR)
             std::make_unique<QSqlTableModel>(ui->tableView->model());
 
-        // The model is no longer alive after the unique pointer destroys it...
-        // ReSharper disable once CppDFAMemoryLeak
-        const auto model = new QSqlTableModel(nullptr, this->database->getDatabase());
-        model->setTable(item->text(column));
-        model->setEditStrategy(QSqlTableModel::OnFieldChange);
-        model->select();
+        auto model = QSqlTableModel(nullptr, this->database->getDatabase());
+        model.setTable(item->text(column));
+        model.setEditStrategy(QSqlTableModel::OnFieldChange);
+        model.select();
 
-        ui->tableView->setModel(model);
+        ui->tableView->setModel(&model);
         ui->tableView->setSortingEnabled(true);
         ui->tabWidget->setCurrentIndex(1);
     }
