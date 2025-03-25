@@ -25,16 +25,14 @@ jobs:
       with:
         version: '6.8.2'
     - name: Build
-      run: |
-        qmake
-        make
-        macdeployqt SQLiteQueryAnalyzer.app -dmg
+      working-directory: src
+      run: pwsh build.ps1
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
       with:
         name: SQLiteQuerAnalyzer_MacOS_v${{ env.VERSION }}
         path: |
-          src/*.dmg
+          src/build/SQLiteQueryAnalyzer.dmg
   windows:
     name: Windows
     runs-on:  windows-latest
@@ -148,25 +146,30 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
-      - name: Upload Windows Installer asset
+      - name: Upload Windows Installer
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: artifacts/Visual Studio Extension/ApiClientCodeGenerator-VS2019-${{ env.VERSION }}.vsix
-          asset_name: ApiClientCodeGenerator-VS2019-${{ env.VERSION }}.vsix
+          asset_path: artifacts/SQLiteQuerAnalyzer_Windows_Installer_v${{ env.VERSION }}/SQLiteQueryAnalyzer-Setup.exe
+          asset_name: SQLiteQuerAnalyzer for Windows (Installer) v${{ env.VERSION }}.exe
           asset_content_type: application/zip
-      - name: Upload VSIX for VS2022 asset
+      - name: Upload Windows Binary
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: artifacts/Visual Studio Extension/ApiClientCodeGenerator-VS2022-${{ env.VERSION }}.vsix
-          asset_name: ApiClientCodeGenerator-VS2022-${{ env.VERSION }}.vsix
+          asset_path: artifacts/SQLiteQuerAnalyzer_Windows_v${{ env.VERSION }}/SQLiteQueryAnalyzer_Windows.zip
+          asset_name: SQLiteQuerAnalyzer for Windows (Binaries) v${{ env.VERSION }}.zip
           asset_content_type: application/zip
-      - uses: actions/download-artifact@v4
+      - name: Upload MacOS disk image
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          path: artifacts
-        
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: artifacts/SQLiteQuerAnalyzer_MacOS_v${{ env.VERSION }}/SQLiteQueryAnalyzer.dmg
+          asset_name: SQLiteQuerAnalyzer for MacOS v${{ env.VERSION }}.dmg
+          asset_content_type: application/zip
