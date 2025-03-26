@@ -7,6 +7,10 @@
 struct WindowState {
     QSize size;
     QPoint position;
+    int treeWidth;
+    int tabWidth;
+    int queryTextHeight;
+    int queryResultHeight;
 };
 
 struct SessionState {
@@ -19,9 +23,18 @@ public:
     static void init();
 
     static QString getSettingsFolder();
+
     static void getMainWindowState(WindowState *state);
-    static void setMainWindowState(const QSizeF &size, const QPoint &position);
+
+    static void setMainWindowState(const QSizeF &size,
+                                   const QPoint &position,
+                                   const int treeWidth,
+                                   const int tabWidth,
+                                   const int queryTextHeight,
+                                   const int queryResultHeight);
+
     static void getSessionState(SessionState *state);
+
     static void setSessionState(const QString &sqliteFile, const QString &query);
 };
 
