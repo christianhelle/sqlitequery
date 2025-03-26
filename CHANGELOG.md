@@ -2,7 +2,15 @@
 
 ## [Unreleased](https://github.com/christianhelle/sqlitequery/tree/HEAD)
 
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/824c095995cb1bf0ef088f1ad9e6406380dee980...HEAD)
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.18...HEAD)
+
+**Implemented enhancements:**
+
+- Restore Window State for Splitters upon startup [\#38](https://github.com/christianhelle/sqlitequery/pull/38) ([christianhelle](https://github.com/christianhelle))
+
+## [0.1.18](https://github.com/christianhelle/sqlitequery/tree/0.1.18) (2025-03-26)
+
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/824c095995cb1bf0ef088f1ad9e6406380dee980...0.1.18)
 
 **Implemented enhancements:**
 

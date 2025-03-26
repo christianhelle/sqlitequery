@@ -21,22 +21,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     ui->splitterMain->setStretchFactor(1, 3);
     ui->splitterQueryTab->setStretchFactor(1, 1);
     this->setWindowTitle("SQLite Query Analyzer");
-
-    connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(createNewFile()));
-    connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openExistingFile()));
-    connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveSql()));
-    connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(appExit()));
-    connect(ui->actionExecute_Query, SIGNAL(triggered()), this, SLOT(executeQuery()));
-    connect(ui->actionShrink, SIGNAL(triggered()), this, SLOT(shrink()));
-    connect(ui->actionScript_Schema, SIGNAL(triggered()), this, SLOT(scriptSchema()));
-    connect(ui->actionScript_Data, SIGNAL(triggered()), this, SLOT(exportData()));
-    connect(ui->actionCancel, SIGNAL(triggered()), this, SLOT(cancel()));
-    connect(ui->treeWidget, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this,
-            SLOT(treeNodeChanged(QTreeWidgetItem*,int)));
-    connect(ui->treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*)), this,
-            SLOT(treeNodeChanged(QTreeWidgetItem*)));
-    connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
-    connect(ui->actionRefresh, SIGNAL(triggered()), this, SLOT(refreshDatabase()));
+    this->connectSignalSlots();
 
     this->database = std::make_unique<Database>();
     this->analyzer = std::make_unique<DbAnalyzer>(database.get());
@@ -49,23 +34,119 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     ui->menuFile->insertMenu(ui->actionSave, recentFilesMenu.get());
 
     Settings::init();
-    WindowState windowState;
-    Settings::getMainWindowState(&windowState);
-    this->resize(windowState.size);
-    if (windowState.position.x() > 0 && windowState.position.y() > 0)
-        this->move(windowState.position);
-
     this->loadRecentFiles();
+    restoreWindowState();
+
+    this->loaded = true;
 }
 
 MainWindow::~MainWindow() {
     qDebug("MainWindow::~MainWindow()");
     this->saveSession();
+    this->saveWindowState(this->window()->size());
     this->tree->clear();
 }
 
+void MainWindow::connectSignalSlots() const {
+    connect(ui->actionNew,
+            SIGNAL(triggered()),
+            this,
+            SLOT(createNewFile()));
+    connect(ui->actionOpen,
+            SIGNAL(triggered()),
+            this,
+            SLOT(openExistingFile()));
+    connect(ui->actionSave,
+            SIGNAL(triggered()),
+            this,
+            SLOT(saveSql()));
+    connect(ui->actionExit,
+            SIGNAL(triggered()),
+            this,
+            SLOT(appExit()));
+    connect(ui->actionExecute_Query,
+            SIGNAL(triggered()),
+            this,
+            SLOT(executeQuery()));
+    connect(ui->actionShrink,
+            SIGNAL(triggered()),
+            this,
+            SLOT(shrink()));
+    connect(ui->actionScript_Schema,
+            SIGNAL(triggered()),
+            this,
+            SLOT(scriptSchema()));
+    connect(ui->actionScript_Data,
+            SIGNAL(triggered()),
+            this,
+            SLOT(exportData()));
+    connect(ui->actionCancel,
+            SIGNAL(triggered()),
+            this,
+            SLOT(cancel()));
+    connect(ui->treeWidget,
+            SIGNAL(itemActivated(QTreeWidgetItem*,int)),
+            this,
+            SLOT(treeNodeChanged(QTreeWidgetItem*,int)));
+    connect(ui->treeWidget,
+            SIGNAL(currentItemChanged(QTreeWidgetItem*)),
+            this,
+            SLOT(treeNodeChanged(QTreeWidgetItem*)));
+    connect(ui->actionAbout,
+            SIGNAL(triggered()),
+            this,
+            SLOT(about()));
+    connect(ui->actionRefresh,
+            SIGNAL(triggered()),
+            this,
+            SLOT(refreshDatabase()));
+}
+
+void MainWindow::restoreWindowState() {
+    WindowState windowState;
+    Settings::getMainWindowState(&windowState);
+    this->resize(windowState.size);
+
+    if (windowState.position.x() > 0 &&
+        windowState.position.y() > 0)
+        this->move(windowState.position);
+
+    if (windowState.treeWidth > 0 &&
+        windowState.tabWidth > 0) {
+        ui->splitterMain->setSizes({
+            windowState.treeWidth,
+            windowState.tabWidth
+        });
+    }
+
+    if (windowState.queryTextHeight > 0 &&
+        windowState.queryResultHeight > 0)
+        ui->splitterQueryTab->setSizes({
+            windowState.queryTextHeight,
+            windowState.queryResultHeight
+        });
+}
+
+void MainWindow::saveWindowState(const QSize &size) const {
+    if (!this->loaded)
+        return;
+
+    const auto windowSize = size;
+    const auto position = this->window()->pos();
+    const int treeWidth = ui->splitterMain->sizes().first();
+    const int tabWidth = ui->splitterMain->sizes().last();
+    const int queryTextHeight = ui->splitterQueryTab->sizes().first();
+    const int queryResultHeight = ui->splitterQueryTab->sizes().last();
+    Settings::setMainWindowState(windowSize,
+                                 position,
+                                 treeWidth,
+                                 tabWidth,
+                                 queryTextHeight,
+                                 queryResultHeight);
+}
+
 void MainWindow::resizeEvent(QResizeEvent *e) {
-    Settings::setMainWindowState(e->size(), this->window()->pos());
+    saveWindowState(e->size());
 }
 
 void MainWindow::loadRecentFiles() const {
@@ -177,6 +258,7 @@ void MainWindow::openExistingFile() {
 
 void MainWindow::appExit() const {
     this->saveSession();
+    this->saveWindowState(this->window()->size());
     exit(0);
 }
 
