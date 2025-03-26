@@ -164,12 +164,12 @@ void MainWindow::loadRecentFiles() const {
     }
 }
 
-void MainWindow::openRecentFile() const {
+void MainWindow::openRecentFile() {
     const QString file = sender()->objectName();
     this->openDatabase(file);
 }
 
-void MainWindow::restoreLastSession() const {
+void MainWindow::restoreLastSession() {
     SessionState state;
     Settings::getSessionState(&state);
     if (!state.sqliteFile.isEmpty()) {
@@ -214,7 +214,7 @@ void MainWindow::createNewFile() {
     this->loadRecentFiles();
 }
 
-void MainWindow::openDatabase(const QString &filename) const {
+void MainWindow::openDatabase(const QString &filename) {
     if (this->dataExportProgress.get() != nullptr) {
         ui->queryResultMessagesTextEdit->setPlainText("Unable to process request. Data export in progress");
         ui->queryResultTab->setCurrentIndex(1);
@@ -242,6 +242,8 @@ void MainWindow::openDatabase(const QString &filename) const {
         std::make_unique<QSqlTableModel>(ui->tableView->model());
         ui->tableView->setModel(Q_NULLPTR);
     }
+
+    this->setWindowTitle("SQLite Query Analyzer - " + filename);
 }
 
 void MainWindow::openExistingFile() {
