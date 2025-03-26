@@ -21,22 +21,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     ui->splitterMain->setStretchFactor(1, 3);
     ui->splitterQueryTab->setStretchFactor(1, 1);
     this->setWindowTitle("SQLite Query Analyzer");
-
-    connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(createNewFile()));
-    connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openExistingFile()));
-    connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveSql()));
-    connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(appExit()));
-    connect(ui->actionExecute_Query, SIGNAL(triggered()), this, SLOT(executeQuery()));
-    connect(ui->actionShrink, SIGNAL(triggered()), this, SLOT(shrink()));
-    connect(ui->actionScript_Schema, SIGNAL(triggered()), this, SLOT(scriptSchema()));
-    connect(ui->actionScript_Data, SIGNAL(triggered()), this, SLOT(exportData()));
-    connect(ui->actionCancel, SIGNAL(triggered()), this, SLOT(cancel()));
-    connect(ui->treeWidget, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this,
-            SLOT(treeNodeChanged(QTreeWidgetItem*,int)));
-    connect(ui->treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*)), this,
-            SLOT(treeNodeChanged(QTreeWidgetItem*)));
-    connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
-    connect(ui->actionRefresh, SIGNAL(triggered()), this, SLOT(refreshDatabase()));
+    this->connectSignalSlots();
 
     this->database = std::make_unique<Database>();
     this->analyzer = std::make_unique<DbAnalyzer>(database.get());
@@ -60,6 +45,61 @@ MainWindow::~MainWindow() {
     this->saveSession();
     this->saveWindowState(this->size());
     this->tree->clear();
+}
+
+void MainWindow::connectSignalSlots() const {
+    connect(ui->actionNew,
+            SIGNAL(triggered()),
+            this,
+            SLOT(createNewFile()));
+    connect(ui->actionOpen,
+            SIGNAL(triggered()),
+            this,
+            SLOT(openExistingFile()));
+    connect(ui->actionSave,
+            SIGNAL(triggered()),
+            this,
+            SLOT(saveSql()));
+    connect(ui->actionExit,
+            SIGNAL(triggered()),
+            this,
+            SLOT(appExit()));
+    connect(ui->actionExecute_Query,
+            SIGNAL(triggered()),
+            this,
+            SLOT(executeQuery()));
+    connect(ui->actionShrink,
+            SIGNAL(triggered()),
+            this,
+            SLOT(shrink()));
+    connect(ui->actionScript_Schema,
+            SIGNAL(triggered()),
+            this,
+            SLOT(scriptSchema()));
+    connect(ui->actionScript_Data,
+            SIGNAL(triggered()),
+            this,
+            SLOT(exportData()));
+    connect(ui->actionCancel,
+            SIGNAL(triggered()),
+            this,
+            SLOT(cancel()));
+    connect(ui->treeWidget,
+            SIGNAL(itemActivated(QTreeWidgetItem*,int)),
+            this,
+            SLOT(treeNodeChanged(QTreeWidgetItem*,int)));
+    connect(ui->treeWidget,
+            SIGNAL(currentItemChanged(QTreeWidgetItem*)),
+            this,
+            SLOT(treeNodeChanged(QTreeWidgetItem*)));
+    connect(ui->actionAbout,
+            SIGNAL(triggered()),
+            this,
+            SLOT(about()));
+    connect(ui->actionRefresh,
+            SIGNAL(triggered()),
+            this,
+            SLOT(refreshDatabase()));
 }
 
 void MainWindow::restoreWindowState() {

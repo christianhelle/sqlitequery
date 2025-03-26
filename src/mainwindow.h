@@ -24,6 +24,8 @@ public:
 
     ~MainWindow() override;
 
+    void connectSignalSlots() const;
+
     void resizeEvent(QResizeEvent *e) override;
 
     void loadRecentFiles() const;
