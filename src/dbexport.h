@@ -41,7 +41,7 @@ public:
 
     void exportDataToFile(const Database *database,
                           const QString &filename,
-                          const CancellationToken *cancellation_token,
+                          const CancellationToken *cancellationToken,
                           ExportDataProgress *progress) const;
 
 private:
