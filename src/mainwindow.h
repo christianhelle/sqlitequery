@@ -30,9 +30,9 @@ public:
 
     void loadRecentFiles() const;
 
-    void openDatabase(const QString &filename) const;
+    void openDatabase(const QString &filename);
 
-    void restoreLastSession() const;
+    void restoreLastSession();
 
 public slots:
     void createNewFile();
@@ -70,7 +70,7 @@ public slots:
 
     void about();
 
-    void openRecentFile() const;
+    void openRecentFile();
 
 private:
     std::unique_ptr<Ui::MainWindow> ui;
