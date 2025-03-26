@@ -81,6 +81,7 @@ void DbExport::exportDataToFile(const Database *database,
     if (!file->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
         return;
 
+    progress->reset();
     QTextStream out(file.get());
     for (const auto &table: this->info.tables) {
         if (isInternalTable(table))
