@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Introduce Sessions [\#36](https://github.com/christianhelle/sqlitequery/pull/36) ([christianhelle](https://github.com/christianhelle))
 - Fix incorrect version display on installer [\#34](https://github.com/christianhelle/sqlitequery/pull/34) ([christianhelle](https://github.com/christianhelle))
 - Improve Resource Management [\#33](https://github.com/christianhelle/sqlitequery/pull/33) ([christianhelle](https://github.com/christianhelle))
 - Improve Memory management [\#31](https://github.com/christianhelle/sqlitequery/pull/31) ([christianhelle](https://github.com/christianhelle))
