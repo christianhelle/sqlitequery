@@ -13,6 +13,7 @@
 - Save window size and position and reuse upon next launch [\#29](https://github.com/christianhelle/sqlitequery/pull/29) ([christianhelle](https://github.com/christianhelle))
 - Show Export Data Progress [\#28](https://github.com/christianhelle/sqlitequery/pull/28) ([christianhelle](https://github.com/christianhelle))
 - Implement Export Data progress reporting [\#27](https://github.com/christianhelle/sqlitequery/pull/27) ([christianhelle](https://github.com/christianhelle))
+- Introduce Cancellation Tokens [\#26](https://github.com/christianhelle/sqlitequery/pull/26) ([christianhelle](https://github.com/christianhelle))
 - Add support for async export data with cancellation [\#25](https://github.com/christianhelle/sqlitequery/pull/25) ([christianhelle](https://github.com/christianhelle))
 - Resolves code analyzer issues [\#23](https://github.com/christianhelle/sqlitequery/pull/23) ([christianhelle](https://github.com/christianhelle))
 - Add primary key and default value details to column tree [\#22](https://github.com/christianhelle/sqlitequery/pull/22) ([christianhelle](https://github.com/christianhelle))
@@ -40,7 +41,6 @@
 
 - House Keeping [\#35](https://github.com/christianhelle/sqlitequery/pull/35) ([christianhelle](https://github.com/christianhelle))
 - Setup Release workflow [\#32](https://github.com/christianhelle/sqlitequery/pull/32) ([christianhelle](https://github.com/christianhelle))
-- Introduce Cancellation Tokens [\#26](https://github.com/christianhelle/sqlitequery/pull/26) ([christianhelle](https://github.com/christianhelle))
 - Add Build and SonarCloud badges to README [\#24](https://github.com/christianhelle/sqlitequery/pull/24) ([christianhelle](https://github.com/christianhelle))
 - Shrink images in README [\#16](https://github.com/christianhelle/sqlitequery/pull/16) ([christianhelle](https://github.com/christianhelle))
 - Add MacOS Screenshots [\#15](https://github.com/christianhelle/sqlitequery/pull/15) ([christianhelle](https://github.com/christianhelle))
