@@ -8,15 +8,10 @@ Database::Database() {
     database.setHostName("localhost");
 }
 
-Database::~Database() {
-    qDebug("Database::~Database()");
-
-    this->close();
-}
-
 void Database::setSource(const QString &filename) {
     qDebug("Database::setSource(QString)");
 
+    this->close();
     this->source = filename;
     database.setDatabaseName(filename);
 }

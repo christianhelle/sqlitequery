@@ -6,7 +6,12 @@
 #include <QRegularExpression>
 #include <QPalette>
 
-class Highlighter : public QSyntaxHighlighter {
+struct HighlightingRule {
+    QRegularExpression pattern;
+    QTextCharFormat format;
+};
+
+class Highlighter final : public QSyntaxHighlighter {
     Q_OBJECT
 
 public:
@@ -16,11 +21,6 @@ protected:
     void highlightBlock(const QString &text) Q_DECL_OVERRIDE;
 
 private:
-    struct HighlightingRule {
-        QRegularExpression pattern;
-        QTextCharFormat format;
-    };
-
     QVector<HighlightingRule> highlightingRules;
 
     static bool isDarkMode();
