@@ -140,6 +140,10 @@ void MainWindow::openDatabase(const QString &filename) const {
         return;
     }
 
+    if (!this->database->getFilename().isEmpty()) {
+        this->query->clearResults();
+    }
+
     this->database->setSource(filename);
     if (!this->database->open()) {
         qDebug("Unable to open file");
@@ -149,7 +153,6 @@ void MainWindow::openDatabase(const QString &filename) const {
     this->analyzeDatabase();
     RecentFiles::add(filename);
 
-    this->query->clearResults();
     ui->queryResultMessagesTextEdit->clear();
     ui->tabWidget->setCurrentIndex(0);
     ui->textEdit->clear();
