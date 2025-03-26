@@ -6,7 +6,7 @@
 #include <QRegularExpression>
 #include <QPalette>
 
-class Highlighter : public QSyntaxHighlighter {
+class Highlighter final : public QSyntaxHighlighter {
     Q_OBJECT
 
 public:
