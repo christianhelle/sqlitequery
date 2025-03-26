@@ -9,13 +9,13 @@ class DbTree {
 public:
     explicit DbTree(QTreeWidget *);
 
-    void clear() const;
+    void clear();
 
-    void populateTree(const DatabaseInfo& info) const;
+    void populateTree(const DatabaseInfo& info);
 
 private:
     QTreeWidget *tree;
-    QList<QTreeWidgetItem *> *treeNodes;
+    QList<QTreeWidgetItem *> treeNodes;
 };
 
 #endif // DBTREE_H
