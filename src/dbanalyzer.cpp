@@ -2,9 +2,9 @@
 
 #include <QFileInfo>
 
-DbAnalyzer::DbAnalyzer(Database *database) {
+DbAnalyzer::DbAnalyzer(Database *database)
+    : database(database) {
     qDebug("DatabaseAnalyzer::DatabaseAnalyzer()");
-    this->database = database;
 }
 
 bool DbAnalyzer::analyze(DatabaseInfo &info) const {
