@@ -77,7 +77,7 @@ void MainWindow::restoreWindowState() {
             windowState.treeWidth,
             windowState.tabWidth
         });
-        }
+    }
 
     if (windowState.queryTextHeight > 0 &&
         windowState.queryResultHeight > 0)

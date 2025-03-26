@@ -24,13 +24,13 @@ public:
 
     ~MainWindow() override;
 
-    void saveWindowState(const QSize &size) const;
-
     void resizeEvent(QResizeEvent *e) override;
 
     void loadRecentFiles() const;
 
     void openDatabase(const QString &filename) const;
+
+    void restoreLastSession() const;
 
 public slots:
     void createNewFile();
@@ -70,10 +70,6 @@ public slots:
 
     void openRecentFile() const;
 
-    void restoreLastSession() const;
-
-    void restoreWindowState();
-
 private:
     std::unique_ptr<Ui::MainWindow> ui;
     std::unique_ptr<QMenu> recentFilesMenu;
@@ -91,6 +87,10 @@ private:
     void analyzeDatabase() const;
 
     void saveSession() const;
+
+    void saveWindowState(const QSize &size) const;
+
+    void restoreWindowState();
 };
 
 #endif // MAINWINDOW_H
