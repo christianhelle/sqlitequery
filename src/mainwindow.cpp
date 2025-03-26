@@ -49,23 +49,64 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     ui->menuFile->insertMenu(ui->actionSave, recentFilesMenu.get());
 
     Settings::init();
-    WindowState windowState;
-    Settings::getMainWindowState(&windowState);
-    this->resize(windowState.size);
-    if (windowState.position.x() > 0 && windowState.position.y() > 0)
-        this->move(windowState.position);
-
     this->loadRecentFiles();
+    restoreWindowState();
+
+    this->loaded = true;
 }
 
 MainWindow::~MainWindow() {
     qDebug("MainWindow::~MainWindow()");
     this->saveSession();
+    this->saveWindowState(this->size());
     this->tree->clear();
 }
 
+void MainWindow::restoreWindowState() {
+    WindowState windowState;
+    Settings::getMainWindowState(&windowState);
+    this->resize(windowState.size);
+
+    if (windowState.position.x() > 0 &&
+        windowState.position.y() > 0)
+        this->move(windowState.position);
+
+    if (windowState.treeWidth > 0 &&
+        windowState.tabWidth > 0) {
+        ui->splitterMain->setSizes({
+            windowState.treeWidth,
+            windowState.tabWidth
+        });
+        }
+
+    if (windowState.queryTextHeight > 0 &&
+        windowState.queryResultHeight > 0)
+        ui->splitterQueryTab->setSizes({
+            windowState.queryTextHeight,
+            windowState.queryResultHeight
+        });
+}
+
+void MainWindow::saveWindowState(const QSize &size) const {
+    if (!this->loaded)
+        return;
+
+    const auto windowSize = size;
+    const auto position = this->window()->pos();
+    const int treeWidth = ui->splitterMain->sizes().first();
+    const int tabWidth = ui->splitterMain->sizes().last();
+    const int queryTextHeight = ui->splitterQueryTab->sizes().first();
+    const int queryResultHeight = ui->splitterQueryTab->sizes().last();
+    Settings::setMainWindowState(windowSize,
+                                 position,
+                                 treeWidth,
+                                 tabWidth,
+                                 queryTextHeight,
+                                 queryResultHeight);
+}
+
 void MainWindow::resizeEvent(QResizeEvent *e) {
-    Settings::setMainWindowState(e->size(), this->window()->pos());
+    saveWindowState(e->size());
 }
 
 void MainWindow::loadRecentFiles() const {

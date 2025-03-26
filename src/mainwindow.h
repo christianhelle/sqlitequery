@@ -24,6 +24,8 @@ public:
 
     ~MainWindow() override;
 
+    void saveWindowState(const QSize &size) const;
+
     void resizeEvent(QResizeEvent *e) override;
 
     void loadRecentFiles() const;
@@ -42,9 +44,12 @@ public slots:
     void scriptSchema() const;
 
     void setEnabledActions(bool);
+
     void showExportDataProgress(std::unique_ptr<ExportDataProgress>::pointer progress,
                                 CancellationToken cancellationToken) const;
-    void exportDataAsync(const QString& filepath, const DatabaseInfo& info, std::unique_ptr<ExportDataProgress>::pointer progress,
+
+    void exportDataAsync(const QString &filepath, const DatabaseInfo &info,
+                         std::unique_ptr<ExportDataProgress>::pointer progress,
                          CancellationToken cancellationToken);
 
     void exportData();
@@ -67,6 +72,8 @@ public slots:
 
     void restoreLastSession() const;
 
+    void restoreWindowState();
+
 private:
     std::unique_ptr<Ui::MainWindow> ui;
     std::unique_ptr<QMenu> recentFilesMenu;
@@ -77,6 +84,7 @@ private:
     std::unique_ptr<Highlighter> highlighter;
     std::unique_ptr<ExportDataProgress> dataExportProgress;
     std::unique_ptr<CancellationTokenSource> tcs;
+    bool loaded;
 
     QString showFileDialog(QFileDialog::AcceptMode mode);
 
