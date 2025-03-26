@@ -1,7 +1,8 @@
 #include "dbtree.h"
 
-DbTree::DbTree(QTreeWidget *tree): tree(tree) {
-    this->treeNodes = QList<QTreeWidgetItem *>();
+DbTree::DbTree(QTreeWidget *tree)
+    : tree(tree),
+      treeNodes(QList<QTreeWidgetItem *>()) {
 }
 
 void DbTree::clear() {
@@ -28,7 +29,7 @@ QString getFileSize(const qint64 size) {
 
 // ReSharper disable all CppDFAMemoryLeak - By design
 // tree nodes are relased in the clean() method
-void DbTree::populateTree(const DatabaseInfo& info) {
+void DbTree::populateTree(const DatabaseInfo &info) {
     this->clear();
 
     const auto dbInfoNode = new QTreeWidgetItem(this->tree);
