@@ -35,7 +35,7 @@ public slots:
 
     void openExistingFile();
 
-    [[noreturn]] static void appExit();
+    [[noreturn]] void appExit() const;
 
     void executeQuery() const;
 
@@ -65,6 +65,8 @@ public slots:
 
     void openRecentFile() const;
 
+    void restoreLastSession() const;
+
 private:
     std::unique_ptr<Ui::MainWindow> ui;
     std::unique_ptr<QMenu> recentFilesMenu;
@@ -79,6 +81,8 @@ private:
     QString showFileDialog(QFileDialog::AcceptMode mode);
 
     void analyzeDatabase() const;
+
+    void saveSession() const;
 };
 
 #endif // MAINWINDOW_H

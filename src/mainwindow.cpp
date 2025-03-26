@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
 MainWindow::~MainWindow() {
     qDebug("MainWindow::~MainWindow()");
+    this->saveSession();
     this->tree->clear();
 }
 
@@ -85,6 +86,22 @@ void MainWindow::loadRecentFiles() const {
 void MainWindow::openRecentFile() const {
     const QString file = sender()->objectName();
     this->openDatabase(file);
+}
+
+void MainWindow::restoreLastSession() const {
+    SessionState state;
+    Settings::getSessionState(&state);
+    if (!state.sqliteFile.isEmpty()) {
+        this->openDatabase(state.sqliteFile);
+        ui->textEdit->setPlainText(state.query);
+    }
+}
+
+void MainWindow::saveSession() const {
+    SessionState state;
+    state.sqliteFile = this->database->getFilename();
+    state.query = ui->textEdit->toPlainText();
+    Settings::setSessionState(state.sqliteFile, state.query);
 }
 
 QString MainWindow::showFileDialog(const QFileDialog::AcceptMode mode) {
@@ -149,13 +166,14 @@ void MainWindow::openExistingFile() {
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
-    QString filepath = this->showFileDialog(QFileDialog::AcceptOpen);
+    const auto filepath = this->showFileDialog(QFileDialog::AcceptOpen);
     this->openDatabase(filepath);
     RecentFiles::add(filepath);
     this->loadRecentFiles();
 }
 
-[[noreturn]] void MainWindow::appExit() {
+void MainWindow::appExit() const {
+    this->saveSession();
     exit(0);
 }
 

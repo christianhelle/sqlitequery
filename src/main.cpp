@@ -10,6 +10,8 @@ int main(int argc, char *argv[]) {
     MainWindow window;
     if (QStringList args = QApplication::arguments(); args.length() > 1) {
         window.openDatabase(args.takeAt(1));
+    } else {
+        window.restoreLastSession();
     }
 
     window.show();

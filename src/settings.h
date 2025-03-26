@@ -9,6 +9,11 @@ struct WindowState {
     QPoint position;
 };
 
+struct SessionState {
+    QString sqliteFile;
+    QString query;
+};
+
 class Settings {
 public:
     static void init();
@@ -16,6 +21,8 @@ public:
     static QString getSettingsFolder();
     static void getMainWindowState(WindowState *state);
     static void setMainWindowState(const QSizeF &size, const QPoint &position);
+    static void getSessionState(SessionState *state);
+    static void setSessionState(const QString &sqliteFile, const QString &query);
 };
 
 

@@ -49,3 +49,19 @@ void Settings::setMainWindowState(const QSizeF &size, const QPoint &position) {
     settings.setValue("main_window_position", position);
     settings.endGroup();
 }
+
+void Settings::getSessionState(SessionState *state) {
+    QSettings settings;
+    settings.beginGroup("Session");
+    state->sqliteFile = settings.value("sqlite_file").toString();
+    state->query = settings.value("query").toString();
+    settings.endGroup();
+}
+
+void Settings::setSessionState(const QString &sqliteFile, const QString &query) {
+    QSettings settings;
+    settings.beginGroup("Session");
+    settings.setValue("sqlite_file", sqliteFile);
+    settings.setValue("query", query);
+    settings.endGroup();
+}
