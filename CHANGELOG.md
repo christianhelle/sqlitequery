@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Show Filename in Window Title [\#39](https://github.com/christianhelle/sqlitequery/pull/39) ([christianhelle](https://github.com/christianhelle))
 - Restore Window State for Splitters upon startup [\#38](https://github.com/christianhelle/sqlitequery/pull/38) ([christianhelle](https://github.com/christianhelle))
 - Improve Export Data progress reporting [\#37](https://github.com/christianhelle/sqlitequery/pull/37) ([christianhelle](https://github.com/christianhelle))
 
