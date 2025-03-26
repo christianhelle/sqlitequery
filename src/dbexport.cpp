@@ -103,6 +103,7 @@ void DbExport::exportDataToFile(const Database *database,
         out << "\n";
     }
     file->close();
+    progress->setCompleted();
 }
 
 bool DbExport::isInternalTable(const Table &table) {
