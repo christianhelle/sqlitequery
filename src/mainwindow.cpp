@@ -351,21 +351,17 @@ void MainWindow::setEnabledActions(const bool enabled) {
     }
 }
 
-void MainWindow::showExportDataProgress(const std::unique_ptr<ExportDataProgress>::pointer progress,
+void MainWindow::showExportDataProgress(const ExportDataProgress *progress,
                                         const CancellationToken cancellationToken) const {
-    auto _ = QtConcurrent::run([this, cancellationToken, progress]() {
+    auto _ = QtConcurrent::run([this, progress, cancellationToken]() {
         do {
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
             MainThread::run([this, progress]() {
                 ui->queryResultMessagesTextEdit->setPlainText(
-                    "Data export in-progress. Exported " +
-                    QString("%1 row(s)").arg(progress->getAffectedRows()));
+                    QString("Exported %1 row(s)").arg(progress->getAffectedRows()));
             });
-        } while (progress->getAffectedRows() > 0 && !cancellationToken.isCancellationRequested());
-
-        MainThread::run([this]() {
-            ui->queryResultMessagesTextEdit->setPlainText("");
-        });
+        } while (!cancellationToken.isCancellationRequested() &&
+                 !progress->isCompleted());
     });
 }
 
@@ -376,15 +372,12 @@ void MainWindow::exportDataAsync(const QString &filepath,
     auto future = QtConcurrent::run([this, info, filepath, cancellationToken, progress]() {
         const auto exporter = std::make_unique<DbExport>(info);
         exporter->exportDataToFile(database.get(), filepath, &cancellationToken, progress);
-        progress->reset();
     });
-    future.then([this, cancellationToken, progress]() {
-        MainThread::run([this, cancellationToken, progress]() {
+    future.then([this, progress] {
+        MainThread::run([this, progress]() {
             this->setEnabledActions(true);
-            if (cancellationToken.isCancellationRequested())
-                ui->queryResultMessagesTextEdit->setPlainText(
-                    "Data export cancelled. Exported " +
-                    QString("%1 row(s)").arg(progress->getAffectedRows()));
+            ui->queryResultMessagesTextEdit->setPlainText(
+                QString("Exported %1 row(s)").arg(progress->getAffectedRows()));
         });
     });
 }
@@ -410,12 +403,6 @@ void MainWindow::exportData() {
 }
 
 void MainWindow::cancel() const {
-    if (this->dataExportProgress != nullptr) {
-        ui->queryResultMessagesTextEdit->setPlainText(
-            "Data export cancelled. Exported " +
-            QString("%1 row(s)").arg(this->dataExportProgress->getAffectedRows()));
-    }
-
     this->tcs->cancel();
 }
 

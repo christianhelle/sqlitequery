@@ -75,12 +75,13 @@ QStringList DbExport::getColumnValueDefinitions(const Table &table, const QSqlQu
 
 void DbExport::exportDataToFile(const Database *database,
                                 const QString &filename,
-                                const CancellationToken *cancellation_token,
+                                const CancellationToken *cancellationToken,
                                 ExportDataProgress *progress) const {
     const auto file = std::make_unique<QFile>(filename);
     if (!file->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
         return;
 
+    progress->reset();
     QTextStream out(file.get());
     for (const auto &table: this->info.tables) {
         if (isInternalTable(table))
@@ -89,19 +90,17 @@ void DbExport::exportDataToFile(const Database *database,
 
         QSqlQuery query(database->getDatabase());
         query.exec(QString("SELECT * FROM %1").arg(table.name));
-        while (query.next()) {
+        while (query.next() && !cancellationToken->isCancellationRequested()) {
             const auto columns = getColumnDefinitions(table).join(", ");
             const auto values = getColumnValueDefinitions(table, query).join(", ");
             out << "INSERT INTO " << table.name << "(" << columns << ") ";
             out << "VALUES (" << values << ");\n";
             progress->increment();
-            if (cancellation_token->isCancellationRequested()) {
-                break;
-            }
         }
         out << "\n";
     }
     file->close();
+    progress->setCompleted();
 }
 
 bool DbExport::isInternalTable(const Table &table) {

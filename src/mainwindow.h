@@ -47,7 +47,7 @@ public slots:
 
     void setEnabledActions(bool);
 
-    void showExportDataProgress(std::unique_ptr<ExportDataProgress>::pointer progress,
+    void showExportDataProgress(const ExportDataProgress *progress,
                                 CancellationToken cancellationToken) const;
 
     void exportDataAsync(const QString &filepath, const DatabaseInfo &info,

@@ -7,10 +7,22 @@
 
 class ExportDataProgress {
     uint64_t affectedRows = 0;
+    bool isComplete = false;
+
 public:
-    void reset() { affectedRows = 0; }
-    void increment() { affectedRows++; }
-    uint64_t getAffectedRows() const { return affectedRows; }
+    void reset() {
+        affectedRows = 0;
+        isComplete = false;
+    }
+
+    void increment() {
+        affectedRows++;
+        isComplete = false;
+    }
+
+    [[nodiscard]] uint64_t getAffectedRows() const { return affectedRows; }
+    [[nodiscard]] bool isCompleted() const { return isComplete; }
+    void setCompleted() { isComplete = true; }
 };
 
 class DbExport {
@@ -29,7 +41,7 @@ public:
 
     void exportDataToFile(const Database *database,
                           const QString &filename,
-                          const CancellationToken *cancellation_token,
+                          const CancellationToken *cancellationToken,
                           ExportDataProgress *progress) const;
 
 private:
