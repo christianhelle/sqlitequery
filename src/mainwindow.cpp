@@ -242,6 +242,8 @@ void MainWindow::openDatabase(const QString &filename) const {
         std::make_unique<QSqlTableModel>(ui->tableView->model());
         ui->tableView->setModel(Q_NULLPTR);
     }
+
+    this->setWindowTitle("SQLite Query Analyzer - " + filename);
 }
 
 void MainWindow::openExistingFile() {
