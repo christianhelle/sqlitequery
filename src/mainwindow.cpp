@@ -269,7 +269,7 @@ void MainWindow::setEnabledActions(const bool enabled) {
     }
 }
 
-void MainWindow::showExportDataProgress(const std::unique_ptr<ExportDataProgress>::pointer progress,
+void MainWindow::showExportDataProgress(const ExportDataProgress *progress,
                                         const CancellationToken cancellationToken) const {
     auto _ = QtConcurrent::run([this, cancellationToken, progress]() {
         do {
