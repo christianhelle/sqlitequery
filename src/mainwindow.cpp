@@ -166,7 +166,7 @@ void MainWindow::openExistingFile() {
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
-    QString filepath = this->showFileDialog(QFileDialog::AcceptOpen);
+    const auto filepath = this->showFileDialog(QFileDialog::AcceptOpen);
     this->openDatabase(filepath);
     RecentFiles::add(filepath);
     this->loadRecentFiles();
