@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/christianhelle/sqlitequery/tree/HEAD)
+## [0.1.18](https://github.com/christianhelle/sqlitequery/tree/0.1.18) (2025-03-26)
 
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/824c095995cb1bf0ef088f1ad9e6406380dee980...HEAD)
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/824c095995cb1bf0ef088f1ad9e6406380dee980...0.1.18)
 
 **Implemented enhancements:**
 
