@@ -7,6 +7,7 @@
 **Implemented enhancements:**
 
 - Restore Window State for Splitters upon startup [\#38](https://github.com/christianhelle/sqlitequery/pull/38) ([christianhelle](https://github.com/christianhelle))
+- Improve Export Data progress reporting [\#37](https://github.com/christianhelle/sqlitequery/pull/37) ([christianhelle](https://github.com/christianhelle))
 
 ## [0.1.18](https://github.com/christianhelle/sqlitequery/tree/0.1.18) (2025-03-26)
 
