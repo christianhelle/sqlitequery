@@ -9,6 +9,11 @@ struct WindowState {
     QPoint position;
 };
 
+struct SessionState {
+    QString sqliteFile;
+    QString query;
+};
+
 class Settings {
 public:
     static void init();
