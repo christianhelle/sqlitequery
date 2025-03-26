@@ -7,8 +7,6 @@ class Database {
 public:
     Database();
 
-    ~Database();
-
     void setSource(const QString &filename);
 
     bool open();
