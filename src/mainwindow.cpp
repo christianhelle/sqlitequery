@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 MainWindow::~MainWindow() {
     qDebug("MainWindow::~MainWindow()");
     this->saveSession();
-    this->saveWindowState(this->size());
+    this->saveWindowState(this->window()->size());
     this->tree->clear();
 }
 
@@ -258,6 +258,7 @@ void MainWindow::openExistingFile() {
 
 void MainWindow::appExit() const {
     this->saveSession();
+    this->saveWindowState(this->window()->size());
     exit(0);
 }
 
