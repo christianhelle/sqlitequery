@@ -7,9 +7,10 @@
 #include <QSqlQueryModel>
 #include <QMessageBox>
 
-DbQuery::DbQuery(QWidget *widget, Database *database) : widget(widget),
-                                                        database(database) {
-    this->tableResults = QList<QTableView *>();
+DbQuery::DbQuery(QWidget *widget, Database *database)
+    : widget(widget),
+      database(database),
+      tableResults(QList<QTableView *>()) {
     this->container = std::make_unique<QWidget>(this->widget);
     this->scrollArea = std::make_unique<QScrollArea>(this->widget);
 }
