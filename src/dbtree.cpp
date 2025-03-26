@@ -1,8 +1,7 @@
 #include "dbtree.h"
 
-DbTree::DbTree(QTreeWidget *tree) {
-    this->tree = tree;
-    this->treeNodes = new QList<QTreeWidgetItem *>();
+DbTree::DbTree(QTreeWidget *tree): tree(tree) {
+    this->treeNodes = QList<QTreeWidgetItem *>();
 }
 
 void DbTree::clear() const {
