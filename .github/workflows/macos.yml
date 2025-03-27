@@ -5,6 +5,7 @@ on:
     paths-ignore:
       - '**/*'
       - '!.github/workflows/macos*.yml'
+      - '!src/project/*'
       - '!src/**/*.cpp'
       - '!src/**/*.h'
     branches:
@@ -13,6 +14,7 @@ on:
     paths-ignore:
       - '**/*'
       - '!.github/workflows/macos*.yml'
+      - '!src/project/*'
       - '!src/**/*.cpp'
       - '!src/**/*.h'
     branches:
