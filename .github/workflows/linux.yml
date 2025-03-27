@@ -1,14 +1,22 @@
 name: Linux
 
 on:
+  workflow_dispatch:
   push:
+    paths-ignore:
+      - '**/*'
+      - '!.github/workflows/linux.yml'
+      - '!src/project/*'
+      - '!src/**/*.cpp'
+      - '!src/**/*.h'
+    branches:
+      - '*'
 
 env:
   VERSION: '0.1.${{ github.run_number }}'
 
 jobs:
   build:
-    name: Linux Build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -24,7 +32,7 @@ jobs:
         version: '6.8.2'
     - name: QMake
       run: qmake
-      working-directory: src
+      working-directory: src/project
     - name: Make
       run: make
-      working-directory: src
+      working-directory: src/project

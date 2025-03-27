@@ -1,0 +1,51 @@
+name: Build MacOS Template
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version number for the build'
+        required: true
+        type: string
+
+jobs:
+  template:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update Version Number (Qt Project)
+        shell: pwsh
+        run: |
+          $version = (Get-Content -Path src/project/SQLiteAnalyzer.pro -Raw) -replace 'VERSION = 1.0.0', 'VERSION = ${{ inputs.version }}'
+          $version | Set-Content -Path src/project/SQLiteAnalyzer.pro
+
+      - name: Update Version in code
+        shell: pwsh
+        run: |
+          $version = (Get-Content -Path src/main.cpp -Raw) -replace '#define VERSION "1.0.0"', '#define VERSION "${{ inputs.version }}"'
+          $version | Set-Content -Path src/main.cpp
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.2'
+
+      - name: QMake
+        run: qmake
+        working-directory: src/project
+
+      - name: Make
+        run: make
+        working-directory: src/project
+
+      - name: macdeployqt
+        working-directory: src/project
+        run: macdeployqt SQLiteQueryAnalyzer.app -dmg
+
+      - name: Publish artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: SQLiteQuerAnalyzer_MacOS_v${{ inputs.version }}
+          path: |
+            src/*.dmg
