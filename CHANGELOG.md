@@ -2,7 +2,16 @@
 
 ## [Unreleased](https://github.com/christianhelle/sqlitequery/tree/HEAD)
 
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.18...HEAD)
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.19...HEAD)
+
+**Merged pull requests:**
+
+- Restructure Build Pipelines [\#42](https://github.com/christianhelle/sqlitequery/pull/42) ([christianhelle](https://github.com/christianhelle))
+- Re-structure project files and folders [\#41](https://github.com/christianhelle/sqlitequery/pull/41) ([christianhelle](https://github.com/christianhelle))
+
+## [0.1.19](https://github.com/christianhelle/sqlitequery/tree/0.1.19) (2025-03-27)
+
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.18...0.1.19)
 
 **Implemented enhancements:**
 
@@ -10,10 +19,6 @@
 - Show Filename in Window Title [\#39](https://github.com/christianhelle/sqlitequery/pull/39) ([christianhelle](https://github.com/christianhelle))
 - Restore Window State for Splitters upon startup [\#38](https://github.com/christianhelle/sqlitequery/pull/38) ([christianhelle](https://github.com/christianhelle))
 - Improve Export Data progress reporting [\#37](https://github.com/christianhelle/sqlitequery/pull/37) ([christianhelle](https://github.com/christianhelle))
-
-**Merged pull requests:**
-
-- Re-structure project files and folders [\#41](https://github.com/christianhelle/sqlitequery/pull/41) ([christianhelle](https://github.com/christianhelle))
 
 ## [0.1.18](https://github.com/christianhelle/sqlitequery/tree/0.1.18) (2025-03-26)
 
