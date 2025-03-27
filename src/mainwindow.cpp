@@ -2,7 +2,7 @@
 #include "recentfiles.h"
 #include "ui_mainwindow.h"
 #include "settings.h"
-#include "dbexport.h"
+#include "database/dbexport.h"
 #include "mainthread.h"
 
 #include <QMessageBox>

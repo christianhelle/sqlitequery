@@ -17,26 +17,26 @@ ICON = resources/icon.icns
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    dbanalyzer.cpp \
+    database/dbanalyzer.cpp \
     highlighter.cpp \
-    dbquery.cpp \
-    database.cpp \
-    dbtree.cpp \
+    database/dbquery.cpp \
+    database/database.cpp \
+    database/dbtree.cpp \
     recentfiles.cpp \
     settings.cpp \
-    dbexport.cpp \
+    database/dbexport.cpp \
     threading/cancellation.cpp
 
 HEADERS  += mainwindow.h \
-    dbanalyzer.h \
-    databaseinfo.h \
+    database/dbanalyzer.h \
+    database/databaseinfo.h \
     highlighter.h \
-    dbquery.h \
-    database.h \
-    dbtree.h \
+    database/dbquery.h \
+    database/database.h \
+    database/dbtree.h \
     recentfiles.h \
     settings.h \
-    dbexport.h \
+    database/dbexport.h \
     threading/cancellation.h \
     mainthread.h
 
