@@ -3,10 +3,10 @@ project(SQLiteQueryAnalyzer VERSION 1.0 LANGUAGES C CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC ON)
-set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/resources/icon.rc")
+set(app_icon_resource_windows "../resources/icon.rc")
 set(MACOSX_BUNDLE_ICON_FILE icon.icns)
-set(app_icon_macos "${CMAKE_CURRENT_SOURCE_DIR}/resources/icon.icns")
-set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION "resources")
+set(app_icon_macos "../resources/icon.icns")
+set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION "../resources")
 
 find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui Sql)
@@ -17,19 +17,19 @@ qt_standard_project_setup()
 qt_add_executable(SQLiteQueryAnalyzer WIN32 MACOSX_BUNDLE
         ${app_icon_resource_windows}
         ${app_icon_macos}
-        database/database.cpp database/database.h
-        database/databaseinfo.h
-        database/dbanalyzer.cpp database/dbanalyzer.h
-        database/dbquery.cpp database/dbquery.h
-        database/dbtree.cpp database/dbtree.h
-        ui/highlighter.cpp ui/highlighter.h
-        main.cpp
-        ui/mainwindow.cpp ui/mainwindow.h ui/mainwindow.ui
-        settings/recentfiles.cpp settings/recentfiles.h
-        settings/settings.cpp settings/settings.h
-        database/dbexport.cpp database/dbexport.h
-        threading/cancellation.cpp threading/cancellation.h
-        threading/mainthread.h
+        ../database/database.cpp ../database/database.h
+        ../database/databaseinfo.h
+        ../database/dbanalyzer.cpp ../database/dbanalyzer.h
+        ../database/dbquery.cpp ../database/dbquery.h
+        ../database/dbtree.cpp ../database/dbtree.h
+        ../ui/highlighter.cpp ../ui/highlighter.h
+        ../main.cpp
+        ../ui/mainwindow.cpp ../ui/mainwindow.h ../ui/mainwindow.ui
+        ../settings/recentfiles.cpp ../settings/recentfiles.h
+        ../settings/settings.cpp ../settings/settings.h
+        ../database/dbexport.cpp ../database/dbexport.h
+        ../threading/cancellation.cpp ../threading/cancellation.h
+        ../threading/mainthread.h
 )
 target_link_libraries(SQLiteQueryAnalyzer PRIVATE
         Qt::Core
@@ -44,8 +44,8 @@ if ((QT_VERSION_MAJOR GREATER 4))
 endif ()
 
 install(TARGETS SQLiteQueryAnalyzer
-        BUNDLE DESTINATION .
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        BUNDLE DESTINATION ..
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/build
 )
 
 qt_generate_deploy_app_script(

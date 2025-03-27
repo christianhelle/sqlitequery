@@ -1,7 +1,7 @@
 #ifndef DBEXPORT_H
 #define DBEXPORT_H
 
-#include "threading/cancellation.h"
+#include "../threading/cancellation.h"
 #include "database.h"
 #include "databaseinfo.h"
 
