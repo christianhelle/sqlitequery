@@ -28,3 +28,14 @@ src/.ninja*
 src/build.ninja
 src/Testing
 src/.sonarlint
+src/project/.cmake
+src/project/.qt
+src/project/CMakeFiles
+src/project/SQLiteQueryAnalyzer_autogen
+src/project/cmake_install.cmake
+src/project/CMakeCache.txt
+src/project/SQLiteQueryAnalyzer
+src/project/.cmake
+src/project/.ninja*
+src/project/build.ninja
+src/project/Makefile
