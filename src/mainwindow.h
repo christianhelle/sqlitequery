@@ -5,7 +5,7 @@
 #include <QFileDialog>
 #include <qfuturewatcher.h>
 
-#include "cancellation.h"
+#include "threading/cancellation.h"
 #include "dbanalyzer.h"
 #include "dbexport.h"
 #include "dbquery.h"

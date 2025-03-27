@@ -25,7 +25,7 @@ SOURCES += main.cpp\
     recentfiles.cpp \
     settings.cpp \
     dbexport.cpp \
-    cancellation.cpp
+    threading/cancellation.cpp
 
 HEADERS  += mainwindow.h \
     dbanalyzer.h \
@@ -37,7 +37,7 @@ HEADERS  += mainwindow.h \
     recentfiles.h \
     settings.h \
     dbexport.h \
-    cancellation.h \
+    threading/cancellation.h \
     mainthread.h
 
 FORMS    += mainwindow.ui
