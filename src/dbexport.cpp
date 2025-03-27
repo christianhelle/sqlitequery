@@ -89,14 +89,16 @@ void DbExport::exportDataToFile(const Database *database,
         out << "-- " << table.name << "\n";
 
         QSqlQuery query(database->getDatabase());
+        query.setForwardOnly(true);
         query.exec(QString("SELECT * FROM %1").arg(table.name));
+        const auto columns = getColumnDefinitions(table).join(", ");
         while (query.next() && !cancellationToken->isCancellationRequested()) {
-            const auto columns = getColumnDefinitions(table).join(", ");
             const auto values = getColumnValueDefinitions(table, query).join(", ");
             out << "INSERT INTO " << table.name << "(" << columns << ") ";
             out << "VALUES (" << values << ");\n";
             progress->increment();
         }
+        query.finish();
         out << "\n";
     }
     file->close();
