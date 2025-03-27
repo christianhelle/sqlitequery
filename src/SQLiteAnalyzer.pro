@@ -16,28 +16,28 @@ RC_ICONS = resources/icon.ico
 ICON = resources/icon.icns
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    dbanalyzer.cpp \
-    highlighter.cpp \
-    dbquery.cpp \
-    database.cpp \
-    dbtree.cpp \
-    recentfiles.cpp \
-    settings.cpp \
-    dbexport.cpp \
-    cancellation.cpp
+        ui/mainwindow.cpp \
+    database/dbanalyzer.cpp \
+    ui/highlighter.cpp \
+    database/dbquery.cpp \
+    database/database.cpp \
+    database/dbtree.cpp \
+    settings/recentfiles.cpp \
+    settings/settings.cpp \
+    database/dbexport.cpp \
+    threading/cancellation.cpp
 
-HEADERS  += mainwindow.h \
-    dbanalyzer.h \
-    databaseinfo.h \
-    highlighter.h \
-    dbquery.h \
-    database.h \
-    dbtree.h \
-    recentfiles.h \
-    settings.h \
-    dbexport.h \
-    cancellation.h \
-    mainthread.h
+HEADERS  += ui/mainwindow.h \
+    database/dbanalyzer.h \
+    database/databaseinfo.h \
+    ui/highlighter.h \
+    database/dbquery.h \
+    database/database.h \
+    database/dbtree.h \
+    settings/recentfiles.h \
+    settings/settings.h \
+    database/dbexport.h \
+    threading/cancellation.h \
+    threading/mainthread.h
 
-FORMS    += mainwindow.ui
+FORMS    += ui/mainwindow.ui

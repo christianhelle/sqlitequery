@@ -1,9 +1,9 @@
 #include "mainwindow.h"
-#include "recentfiles.h"
+#include "settings/recentfiles.h"
 #include "ui_mainwindow.h"
-#include "settings.h"
-#include "dbexport.h"
-#include "mainthread.h"
+#include "settings/settings.h"
+#include "database/dbexport.h"
+#include "threading/mainthread.h"
 
 #include <QMessageBox>
 #include <QSqlTableModel>

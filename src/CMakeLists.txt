@@ -17,19 +17,19 @@ qt_standard_project_setup()
 qt_add_executable(SQLiteQueryAnalyzer WIN32 MACOSX_BUNDLE
         ${app_icon_resource_windows}
         ${app_icon_macos}
-        database.cpp database.h
-        databaseinfo.h
-        dbanalyzer.cpp dbanalyzer.h
-        dbquery.cpp dbquery.h
-        dbtree.cpp dbtree.h
-        highlighter.cpp highlighter.h
+        database/database.cpp database/database.h
+        database/databaseinfo.h
+        database/dbanalyzer.cpp database/dbanalyzer.h
+        database/dbquery.cpp database/dbquery.h
+        database/dbtree.cpp database/dbtree.h
+        ui/highlighter.cpp ui/highlighter.h
         main.cpp
-        mainwindow.cpp mainwindow.h mainwindow.ui
-        recentfiles.cpp recentfiles.h
-        settings.cpp settings.h
-        dbexport.cpp dbexport.h
-        cancellation.cpp cancellation.h
-        mainthread.h
+        ui/mainwindow.cpp ui/mainwindow.h ui/mainwindow.ui
+        settings/recentfiles.cpp settings/recentfiles.h
+        settings/settings.cpp settings/settings.h
+        database/dbexport.cpp database/dbexport.h
+        threading/cancellation.cpp threading/cancellation.h
+        threading/mainthread.h
 )
 target_link_libraries(SQLiteQueryAnalyzer PRIVATE
         Qt::Core

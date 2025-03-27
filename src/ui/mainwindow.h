@@ -5,12 +5,12 @@
 #include <QFileDialog>
 #include <qfuturewatcher.h>
 
-#include "cancellation.h"
-#include "dbanalyzer.h"
-#include "dbexport.h"
-#include "dbquery.h"
+#include "threading/cancellation.h"
+#include "database/dbanalyzer.h"
+#include "database/dbexport.h"
+#include "database/dbquery.h"
 #include "highlighter.h"
-#include "dbtree.h"
+#include "database/dbtree.h"
 
 namespace Ui {
     class MainWindow;

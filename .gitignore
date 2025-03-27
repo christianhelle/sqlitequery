@@ -14,7 +14,7 @@ src/recents
 src/.idea
 src/cmake-build-debug
 .vscode/settings.json
-src/Artifacts
+src/artifacts
 .DS_Store
 src/.qt
 src/CMakeFiles
@@ -27,3 +27,4 @@ src/.cmake
 src/.ninja*
 src/build.ninja
 src/Testing
+src/.sonarlint
