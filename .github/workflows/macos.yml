@@ -23,12 +23,12 @@ jobs:
         version: '6.8.2'
     - name: QMake
       run: qmake
-      working-directory: src
+      working-directory: src/project
     - name: Make
       run: make
-      working-directory: src
+      working-directory: src/project
     - name: macdeployqt
-      working-directory: src
+      working-directory: src/project
       run: macdeployqt SQLiteQueryAnalyzer.app -dmg
     - name: Publish artifacts
       uses: actions/upload-artifact@v4

@@ -25,7 +25,7 @@ jobs:
       with:
         version: '6.8.2'
     - name: Build
-      working-directory: src
+      working-directory: src/project
       run: pwsh build.ps1
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
