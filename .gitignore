@@ -39,3 +39,5 @@ src/project/.cmake
 src/project/.ninja*
 src/project/build.ninja
 src/project/Makefile
+.idea
+src/project/cmake-build-debug
