@@ -10,7 +10,7 @@ on:
       - '!src/**/*.cpp'
       - '!src/**/*.h'
     branches:
-      - 'master'
+      - '*'
   pull_request:
     paths-ignore:
       - '**/*'
