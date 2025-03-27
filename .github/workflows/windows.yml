@@ -11,15 +11,6 @@ on:
       - '!src/**/*.h'
     branches:
       - '*'
-  pull_request:
-    paths-ignore:
-      - '**/*'
-      - '!.github/workflows/windows*.yml'
-      - '!src/project/*'
-      - '!src/**/*.cpp'
-      - '!src/**/*.h'
-    branches:
-      - '*'
 
 jobs:
   build:
