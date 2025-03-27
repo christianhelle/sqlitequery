@@ -22,8 +22,8 @@ SOURCES += main.cpp\
     database/dbquery.cpp \
     database/database.cpp \
     database/dbtree.cpp \
-    recentfiles.cpp \
-    settings.cpp \
+    settings/recentfiles.cpp \
+    settings/settings.cpp \
     database/dbexport.cpp \
     threading/cancellation.cpp
 
@@ -34,8 +34,8 @@ HEADERS  += mainwindow.h \
     database/dbquery.h \
     database/database.h \
     database/dbtree.h \
-    recentfiles.h \
-    settings.h \
+    settings/recentfiles.h \
+    settings/settings.h \
     database/dbexport.h \
     threading/cancellation.h \
     mainthread.h

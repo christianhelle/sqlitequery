@@ -25,8 +25,8 @@ qt_add_executable(SQLiteQueryAnalyzer WIN32 MACOSX_BUNDLE
         highlighter.cpp highlighter.h
         main.cpp
         mainwindow.cpp mainwindow.h mainwindow.ui
-        recentfiles.cpp recentfiles.h
-        settings.cpp settings.h
+        settings/recentfiles.cpp settings/recentfiles.h
+        settings/settings.cpp settings/settings.h
         database/dbexport.cpp database/dbexport.h
         threading/cancellation.cpp threading/cancellation.h
         mainthread.h

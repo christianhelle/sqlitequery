@@ -1,7 +1,7 @@
 #include "mainwindow.h"
-#include "recentfiles.h"
+#include "settings/recentfiles.h"
 #include "ui_mainwindow.h"
-#include "settings.h"
+#include "settings/settings.h"
 #include "database/dbexport.h"
 #include "mainthread.h"
 
