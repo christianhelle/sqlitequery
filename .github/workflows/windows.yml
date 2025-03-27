@@ -87,4 +87,4 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: SQLiteQuerAnalyzer_Windows_Installer_v${{ env.VERSION }}
-          path: ${{ github.workspace }}\src\Artifacts\SQLiteQueryAnalyzer-Setup.exe
+          path: ${{ github.workspace }}\src\artifacts\SQLiteQueryAnalyzer-Setup.exe
