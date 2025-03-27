@@ -96,7 +96,7 @@ jobs:
       - name: Zip build
         working-directory: ${{ runner.temp }}
         run: |
-          7z a SQLiteQueryAnalyzer_Windows.zip ${{ github.workspace }}\src\build\Release\* -r
+          7z a SQLiteQueryAnalyzer_Windows.zip ${{ github.workspace }}\src\project\build\Release\* -r
               
       - name: Publish Build
         uses: actions/upload-artifact@master

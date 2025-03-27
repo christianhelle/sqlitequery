@@ -16,20 +16,20 @@ jobs:
       - name: Update Version Number (Qt Project)
         shell: pwsh
         run: |
-          $version = (Get-Content -Path src/SQLiteAnalyzer.pro -Raw) -replace 'VERSION = 1.0.0', 'VERSION = ${{ env.VERSION }}'
-          $version | Set-Content -Path src/SQLiteAnalyzer.pro
+          $version = (Get-Content -Path src/project/SQLiteAnalyzer.pro -Raw) -replace 'VERSION = 1.0.0', 'VERSION = ${{ env.VERSION }}'
+          $version | Set-Content -Path src/project/SQLiteAnalyzer.pro
 
       - name: Update Version Number (Inno Setup)
         shell: pwsh
         run: |
-          $version = (Get-Content -Path src/setup.iss -Raw) -replace '#define MyAppVersion "1.0.0"', '#define MyAppVersion "${{ env.VERSION }}"'
-          $version | Set-Content -Path src/setup.iss
+          $version = (Get-Content -Path src/project/setup.iss -Raw) -replace '#define MyAppVersion "1.0.0"', '#define MyAppVersion "${{ env.VERSION }}"'
+          $version | Set-Content -Path src/project/setup.iss
 
       - name: Update Version in code
         shell: pwsh
         run: |
-          $version = (Get-Content -Path src/main.cpp -Raw) -replace '#define VERSION "1.0.0"', '#define VERSION "${{ env.VERSION }}"'
-          $version | Set-Content -Path src/main.cpp
+          $version = (Get-Content -Path src/project/main.cpp -Raw) -replace '#define VERSION "1.0.0"', '#define VERSION "${{ env.VERSION }}"'
+          $version | Set-Content -Path src/project/main.cpp
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
@@ -61,7 +61,7 @@ jobs:
           arch: x64
 
       - name: Build
-        working-directory: ${{ github.workspace }}\src
+        working-directory: ${{ github.workspace }}\src\project
         run: |          
           cmake . -DCMAKE_PREFIX_PATH=${{ runner.temp }}\Qt\6.8.2\msvc2022_64 -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" -B build
           cmake --build build --config Release
@@ -70,7 +70,7 @@ jobs:
       - name: Zip build
         working-directory: ${{ runner.temp }}
         run: |
-          7z a SQLiteQueryAnalyzer_Windows.zip ${{ github.workspace }}\src\build\Release\* -r
+          7z a SQLiteQueryAnalyzer_Windows.zip ${{ github.workspace }}\src\project\build\Release\* -r
               
       - name: Publish Build
         uses: actions/upload-artifact@master
