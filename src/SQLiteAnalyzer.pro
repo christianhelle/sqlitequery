@@ -38,6 +38,6 @@ HEADERS  += ui/mainwindow.h \
     settings/settings.h \
     database/dbexport.h \
     threading/cancellation.h \
-    ui/mainthread.h
+    threading/mainthread.h
 
 FORMS    += ui/mainwindow.ui
