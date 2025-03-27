@@ -3,13 +3,9 @@ name: Windows
 on:
   push:
 
-env:
-  VERSION: '0.1.${{ github.run_number }}'
-
 jobs:
   build:
     uses: ./.github/workflows/windows-template.yml
     with:
-      version: ${{ env.VERSION }}
-    secrets:
-      github_token: ${{ secrets.GITHUB_TOKEN }}
+      version: 0.1.${{ github.run_number }}
+    secrets: inherit
