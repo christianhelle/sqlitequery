@@ -27,3 +27,4 @@ src/.cmake
 src/.ninja*
 src/build.ninja
 src/Testing
+src/.sonarlint
