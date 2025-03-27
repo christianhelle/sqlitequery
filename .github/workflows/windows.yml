@@ -2,6 +2,21 @@ name: Windows
 
 on:
   push:
+    paths-ignore:
+      - '**/*'
+      - '!.github/workflows/windows*.yml'
+      - '!src/**/*.cpp'
+      - '!src/**/*.h'
+    branches:
+      - 'master'
+  pull_request:
+    paths-ignore:
+      - '**/*'
+      - '!.github/workflows/windows*.yml'
+      - '!src/**/*.cpp'
+      - '!src/**/*.h'
+    branches:
+      - '*'
 
 jobs:
   build:
