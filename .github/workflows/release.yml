@@ -105,7 +105,7 @@ jobs:
           path: ${{ runner.temp }}\SQLiteQueryAnalyzer_Windows.zip
 
       - name: Inno Setup
-        working-directory: ${{ github.workspace }}\src
+        working-directory: ${{ github.workspace }}\src\project
         run: |
           ..\deps\innosetup\ISCC.exe setup.iss
 
