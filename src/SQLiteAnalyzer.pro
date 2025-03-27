@@ -16,9 +16,9 @@ RC_ICONS = resources/icon.ico
 ICON = resources/icon.icns
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+        ui/mainwindow.cpp \
     database/dbanalyzer.cpp \
-    highlighter.cpp \
+    ui/highlighter.cpp \
     database/dbquery.cpp \
     database/database.cpp \
     database/dbtree.cpp \
@@ -27,10 +27,10 @@ SOURCES += main.cpp\
     database/dbexport.cpp \
     threading/cancellation.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += ui/mainwindow.h \
     database/dbanalyzer.h \
     database/databaseinfo.h \
-    highlighter.h \
+    ui/highlighter.h \
     database/dbquery.h \
     database/database.h \
     database/dbtree.h \
@@ -38,6 +38,6 @@ HEADERS  += mainwindow.h \
     settings/settings.h \
     database/dbexport.h \
     threading/cancellation.h \
-    mainthread.h
+    ui/mainthread.h
 
-FORMS    += mainwindow.ui
+FORMS    += ui/mainwindow.ui
