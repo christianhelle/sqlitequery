@@ -28,18 +28,6 @@ protected:
     };
 };
 
-class DbSchemaExport : public DbExport
-{
-public:
-    explicit DbSchemaExport(DatabaseInfo info)
-        : DbExport(info)
-    {
-    }
-
-    [[nodiscard]] QString exportSchema() const;
-    void exportSchemaToFile(const QString& filename) const;
-};
-
 class ExportDataProgress
 {
     uint64_t affectedRows = 0;

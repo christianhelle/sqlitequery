@@ -3,6 +3,7 @@
 #include "ui_mainwindow.h"
 #include "../settings/settings.h"
 #include "../database/dbexport.h"
+#include "../database/dbschemaexport.h"
 #include "../threading/mainthread.h"
 
 #include <QMessageBox>
