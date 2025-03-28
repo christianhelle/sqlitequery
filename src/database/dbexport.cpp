@@ -2,7 +2,7 @@
 
 #include <QFile>
 
-QString DbExport::exportSchema() const {
+QString DbSchemaExport::exportSchema() const {
     QStringList createTableScripts;
     for (const auto &table: this->info.tables) {
         if (isInternalTable(table)) {
@@ -27,7 +27,7 @@ QString DbExport::exportSchema() const {
     return createTableScripts.join("\n\n");
 }
 
-void DbExport::exportSchemaToFile(const QString &filename) const {
+void DbSchemaExport::exportSchemaToFile(const QString &filename) const {
     const auto sql = this->exportSchema();
     if (sql.isEmpty())
         return;
@@ -39,7 +39,7 @@ void DbExport::exportSchemaToFile(const QString &filename) const {
     }
 }
 
-QStringList DbExport::getColumnDefinitions(const Table &table) {
+QStringList DbDataExport::getColumnDefinitions(const Table &table) {
     QStringList columnDefinitions;
     for (const auto &column: table.columns) {
         columnDefinitions.append(column.name);
@@ -47,7 +47,7 @@ QStringList DbExport::getColumnDefinitions(const Table &table) {
     return columnDefinitions;
 }
 
-QStringList DbExport::getColumnValueDefinitions(const Table &table, const QSqlQuery &query) const {
+QStringList DbDataExport::getColumnValueDefinitions(const Table &table, const QSqlQuery &query) const {
     QStringList valueDefinitions;
     QMap<QString, QString> values;
     for (const auto &column: table.columns) {
@@ -73,7 +73,7 @@ QStringList DbExport::getColumnValueDefinitions(const Table &table, const QSqlQu
     return valueDefinitions;
 }
 
-void DbExport::exportDataToFile(const Database *database,
+void DbDataExport::exportDataToFile(const Database *database,
                                 const QString &filename,
                                 const CancellationToken *cancellationToken,
                                 ExportDataProgress *progress) const {

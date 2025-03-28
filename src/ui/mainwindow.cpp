@@ -336,7 +336,7 @@ void MainWindow::executeQuery() const {
 void MainWindow::scriptSchema() const {
     DatabaseInfo info;
     analyzer->analyze(info);
-    const auto exporter = std::make_unique<DbExport>(info);
+    const auto exporter = std::make_unique<DbSchemaExport>(info);
     const auto schema = exporter->exportSchema();
     ui->textEdit->setPlainText(schema);
 }
@@ -372,7 +372,7 @@ void MainWindow::exportDataAsync(const QString &filepath,
                                  const std::unique_ptr<ExportDataProgress>::pointer progress,
                                  const CancellationToken cancellationToken) {
     auto future = QtConcurrent::run([this, info, filepath, cancellationToken, progress]() {
-        const auto exporter = std::make_unique<DbExport>(info);
+        const auto exporter = std::make_unique<DbDataExport>(info);
         exporter->exportDataToFile(database.get(), filepath, &cancellationToken, progress);
     });
     future.then([this, progress] {
