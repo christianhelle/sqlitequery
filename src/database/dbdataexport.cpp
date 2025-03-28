@@ -1,0 +1,72 @@
+#include "dbdataexport.h"
+
+#include <QFile>
+
+class CancellationToken;
+QStringList DbDataExport::getColumnDefinitions(const Table &table) {
+  QStringList columnDefinitions;
+  for (const auto &column : table.columns) {
+    columnDefinitions.append(column.name);
+  }
+  return columnDefinitions;
+}
+
+QStringList
+DbDataExport::getColumnValueDefinitions(const Table &table,
+                                        const QSqlQuery &query) const {
+  QStringList valueDefinitions;
+  QMap<QString, QString> values;
+  for (const auto &column : table.columns) {
+    const auto value = query.value(column.name).toString();
+    values[value] = column.dataType;
+  }
+  const auto keys = values.keys();
+  for (auto value : keys) {
+    bool isText = false;
+    for (const auto &type : textTypes) {
+      if (values[value].contains(type, Qt::CaseInsensitive)) {
+        isText = true;
+        break;
+      }
+    }
+    if (isText) {
+      const auto val = value.replace("\"", "\"\"");
+      valueDefinitions.append(QString("\"%1\"").arg(val));
+    } else {
+      valueDefinitions.append(value);
+    }
+  }
+  return valueDefinitions;
+}
+
+void DbDataExport::exportDataToFile(const Database *database,
+                                    const QString &filename,
+                                    const CancellationToken *cancellationToken,
+                                    ExportDataProgress *progress) const {
+  const auto file = std::make_unique<QFile>(filename);
+  if (!file->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
+    return;
+
+  progress->reset();
+  QTextStream out(file.get());
+  for (const auto &table : this->info.tables) {
+    if (isInternalTable(table))
+      continue;
+    out << "-- " << table.name << "\n";
+
+    QSqlQuery query(database->getDatabase());
+    query.setForwardOnly(true);
+    query.exec(QString("SELECT * FROM %1").arg(table.name));
+    const auto columns = getColumnDefinitions(table).join(", ");
+    while (query.next() && !cancellationToken->isCancellationRequested()) {
+      const auto values = getColumnValueDefinitions(table, query).join(", ");
+      out << "INSERT INTO " << table.name << "(" << columns << ") ";
+      out << "VALUES (" << values << ");\n";
+      progress->increment();
+    }
+    query.finish();
+    out << "\n";
+  }
+  file->close();
+  progress->setCompleted();
+}
