@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Use F5 as Refresh database shortcut [\#45](https://github.com/christianhelle/sqlitequery/pull/45) ([christianhelle](https://github.com/christianhelle))
 - Implement Forward only reads during Export Data for performance and memory optimization [\#40](https://github.com/christianhelle/sqlitequery/pull/40) ([christianhelle](https://github.com/christianhelle))
 - Show Filename in Window Title [\#39](https://github.com/christianhelle/sqlitequery/pull/39) ([christianhelle](https://github.com/christianhelle))
 - Restore Window State for Splitters upon startup [\#38](https://github.com/christianhelle/sqlitequery/pull/38) ([christianhelle](https://github.com/christianhelle))
