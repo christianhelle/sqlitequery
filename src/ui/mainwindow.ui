@@ -203,6 +203,9 @@
             <property name="text">
                 <string>Refresh</string>
             </property>
+            <property name="shortcut">
+                <string>F5</string>
+            </property>
         </action>
         <action name="actionScript_Schema">
             <property name="text">
