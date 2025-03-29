@@ -5,7 +5,7 @@
 
 class DbSchemaExport : public DbExport {
 public:
-    explicit DbSchemaExport(DatabaseInfo info) : DbExport(info) {
+    explicit DbSchemaExport(DatabaseInfo info) : DbExport(std::move(info)) {
     }
 
     [[nodiscard]] QString exportSchema() const;
