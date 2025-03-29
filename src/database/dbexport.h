@@ -1,21 +1,22 @@
 #ifndef DBEXPORT_H
 #define DBEXPORT_H
 
-#include "database.h"
 #include "databaseinfo.h"
 
-class DbExport
-{
+class DbExport {
 public:
     explicit DbExport(DatabaseInfo info)
-        : info(std::move(info))
-    {
+        : info(std::move(info)) {
     }
 
 protected:
+    [[nodiscard]] DatabaseInfo getDatabaseInfo() const { return info; }
+    [[nodiscard]] QStringList getTextTypes() const { return textTypes; }
+    static bool isInternalTable(const Table &table);
+
+private:
     DatabaseInfo info;
-    static bool isInternalTable(const Table& table);
-    QStringList textTypes = {
+    const QStringList textTypes = {
         "TEXT",
         "CHARACTER",
         "VARCHAR",
@@ -26,7 +27,6 @@ protected:
         "CLOB"
     };
 };
-
 
 
 #endif //DBEXPORT_H

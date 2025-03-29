@@ -39,4 +39,3 @@ void Database::shrink() {
     QSqlQuery query(database);
     query.exec("VACUUM");
 }
-

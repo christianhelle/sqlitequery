@@ -1,6 +1,7 @@
 #include "cancellation.h"
 
-CancellationToken::CancellationToken(bool *isCancelled): isCancelled(isCancelled) {}
+CancellationToken::CancellationToken(bool *isCancelled): isCancelled(isCancelled) {
+}
 
 bool CancellationToken::isCancellationRequested() const {
     return *isCancelled;
