@@ -28,18 +28,19 @@ public:
 
 class DbDataExport : public DbExport {
 public:
-  explicit DbDataExport(DatabaseInfo info) : DbExport(info) {}
+  explicit DbDataExport(DatabaseInfo info) : DbExport(info) {
+  }
 
   [[nodiscard]] QString exportData() const;
-  void exportDataToFile(const QString &filename) const;
-  void exportDataToFile(const Database *database, const QString &filename,
-                        const CancellationToken *cancellationToken,
-                        ExportDataProgress *progress) const;
+  void exportDataToFile(const QString& filename) const;
+  void exportDataToFile(const Database* database, const QString& filename,
+                        const CancellationToken* cancellationToken,
+                        ExportDataProgress* progress) const;
 
 private:
-  static QStringList getColumnDefinitions(const Table &table);
+  static QStringList getColumnDefs(const Table& table);
   [[nodiscard]] QStringList
-  getColumnValueDefinitions(const Table &table, const QSqlQuery &query) const;
+  getColumnValueDefs(const Table& table, const QSqlQuery& query) const;
 };
 
 #endif // DBDATAEXPORT_H

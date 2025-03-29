@@ -3,17 +3,13 @@
 
 #include "dbexport.h"
 
-
-class DbSchemaExport : public DbExport
-{
+class DbSchemaExport : public DbExport {
 public:
-    explicit DbSchemaExport(DatabaseInfo info)
-        : DbExport(info)
-    {
-    }
+  explicit DbSchemaExport(DatabaseInfo info) : DbExport(info) {
+  }
 
-    [[nodiscard]] QString exportSchema() const;
-    void exportSchemaToFile(const QString& filename) const;
+  [[nodiscard]] QString exportSchema() const;
+  void exportSchemaToFile(const QString& filename) const;
 };
 
-#endif //DBSCHEMAEXPORT_H
+#endif // DBSCHEMAEXPORT_H
