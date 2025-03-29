@@ -10,7 +10,7 @@ public:
     }
 
 protected:
-    DatabaseInfo getDatabaseInfo() const { return info; }
+    [[nodiscard]] DatabaseInfo getDatabaseInfo() const { return info; }
     static bool isInternalTable(const Table &table);
 
     const QStringList textTypes = {
