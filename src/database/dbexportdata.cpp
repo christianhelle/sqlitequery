@@ -1,4 +1,4 @@
-#include "dbdataexport.h"
+#include "dbexportdata.h"
 #include <QFile>
 
 QStringList DbDataExport::getColumnDefs(const Table &table) {
