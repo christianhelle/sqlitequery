@@ -15,7 +15,9 @@ private:
 class CancellationTokenSource {
 public:
     CancellationToken get();
+
     void cancel();
+
 private:
     bool isCancelled = false;
 };
