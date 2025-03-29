@@ -9,6 +9,7 @@ on:
       - '!src/project/*'
       - '!src/**/*.cpp'
       - '!src/**/*.h'
+      - '!src/**/*.ui'
     branches:
       - '*'
 
