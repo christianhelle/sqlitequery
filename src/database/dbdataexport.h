@@ -33,15 +33,16 @@ public:
     explicit DbDataExport(DatabaseInfo info) : DbExport(std::move(info)) {
     }
 
-    void exportDataToFile(const Database *database, const QString &filename,
+    void exportDataToFile(const Database *database,
+                          const QString &filename,
                           const CancellationToken *cancellationToken,
                           ExportDataProgress *progress) const;
 
 private:
     static QStringList getColumnDefs(const Table &table);
 
-    [[nodiscard]] QStringList
-    getColumnValueDefs(const Table &table, const QSqlQuery &query) const;
+    [[nodiscard]] QStringList getColumnValueDefs(const Table &table,
+                                                 const QSqlQuery &query) const;
 };
 
 #endif // DBDATAEXPORT_H
