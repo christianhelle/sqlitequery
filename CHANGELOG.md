@@ -13,6 +13,7 @@
 
 **Merged pull requests:**
 
+- Reformat code [\#44](https://github.com/christianhelle/sqlitequery/pull/44) ([christianhelle](https://github.com/christianhelle))
 - Extract DbSchemaExport and DbDataExport from DbExport [\#43](https://github.com/christianhelle/sqlitequery/pull/43) ([christianhelle](https://github.com/christianhelle))
 - Restructure Build Pipelines [\#42](https://github.com/christianhelle/sqlitequery/pull/42) ([christianhelle](https://github.com/christianhelle))
 - Re-structure project files and folders [\#41](https://github.com/christianhelle/sqlitequery/pull/41) ([christianhelle](https://github.com/christianhelle))
