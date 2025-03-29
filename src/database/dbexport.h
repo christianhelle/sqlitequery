@@ -11,8 +11,11 @@ public:
 
 protected:
     [[nodiscard]] DatabaseInfo getDatabaseInfo() const { return info; }
+    [[nodiscard]] QStringList getTextTypes() const { return textTypes; }
     static bool isInternalTable(const Table &table);
 
+private:
+    DatabaseInfo info;
     const QStringList textTypes = {
         "TEXT",
         "CHARACTER",
@@ -23,9 +26,6 @@ protected:
         "NVARCHAR",
         "CLOB"
     };
-
-private:
-    DatabaseInfo info;
 };
 
 

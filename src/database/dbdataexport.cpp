@@ -20,7 +20,7 @@ QStringList DbDataExport::getColumnValueDefs(const Table &table,
     const auto keys = values.keys();
     for (auto value: keys) {
         bool isText = false;
-        for (const auto &type: textTypes) {
+        for (const auto &type: getTextTypes()) {
             if (values[value].contains(type, Qt::CaseInsensitive)) {
                 isText = true;
                 break;
