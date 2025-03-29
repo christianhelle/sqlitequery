@@ -2,9 +2,11 @@
 #define DBDATAEXPORT_H
 
 #include "dbexport.h"
+#include "database.h"
 #include "../threading/cancellation.h"
 
 #include <cstdint>
+#include <utility>
 
 class ExportDataProgress {
     uint64_t affectedRows = 0;
@@ -28,12 +30,8 @@ public:
 
 class DbDataExport : public DbExport {
 public:
-    explicit DbDataExport(DatabaseInfo info) : DbExport(info) {
+    explicit DbDataExport(DatabaseInfo info) : DbExport(std::move(info)) {
     }
-
-    [[nodiscard]] QString exportData() const;
-
-    void exportDataToFile(const QString &filename) const;
 
     void exportDataToFile(const Database *database, const QString &filename,
                           const CancellationToken *cancellationToken,

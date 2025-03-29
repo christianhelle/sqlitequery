@@ -48,7 +48,7 @@ void DbDataExport::exportDataToFile(const Database *database,
 
     progress->reset();
     QTextStream out(file.get());
-    for (const auto &table: this->info.tables) {
+    for (const auto &table: this->getDatabaseInfo().tables) {
         if (isInternalTable(table)) {
             continue;
         }

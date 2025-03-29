@@ -1,7 +1,6 @@
 #ifndef DBEXPORT_H
 #define DBEXPORT_H
 
-#include "database.h"
 #include "databaseinfo.h"
 
 class DbExport {
@@ -11,11 +10,10 @@ public:
     }
 
 protected:
-    DatabaseInfo info;
-
+    DatabaseInfo getDatabaseInfo() const { return info; }
     static bool isInternalTable(const Table &table);
 
-    QStringList textTypes = {
+    const QStringList textTypes = {
         "TEXT",
         "CHARACTER",
         "VARCHAR",
@@ -25,6 +23,9 @@ protected:
         "NVARCHAR",
         "CLOB"
     };
+
+private:
+    DatabaseInfo info;
 };
 
 

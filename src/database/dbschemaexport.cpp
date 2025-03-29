@@ -4,7 +4,7 @@
 
 QString DbSchemaExport::exportSchema() const {
     QStringList createTableScripts;
-    for (const auto &table: this->info.tables) {
+    for (const auto &table: this->getDatabaseInfo().tables) {
         if (isInternalTable(table)) {
             continue;
         }
