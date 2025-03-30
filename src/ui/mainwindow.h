@@ -55,7 +55,7 @@ public slots:
                          std::unique_ptr<ExportDataProgress>::pointer progress,
                          CancellationToken cancellationToken);
 
-    void exportData();
+    void exportDataToSqlScript();
 
     void cancel() const;
 

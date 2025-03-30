@@ -398,7 +398,7 @@ void MainWindow::exportDataAsync(const QString &filepath,
     });
 }
 
-void MainWindow::exportData() {
+void MainWindow::exportDataToSqlScript() {
     const QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
     if (filepath.isEmpty())
         return;
