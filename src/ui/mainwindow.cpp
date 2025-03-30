@@ -83,6 +83,10 @@ void MainWindow::connectSignalSlots() const {
             SIGNAL(triggered()),
             this,
             SLOT(exportDataToSqlScript()));
+    connect(ui->actionScript_CSV,
+            SIGNAL(triggered()),
+            this,
+            SLOT(exportDataToCsvFiles()));
     connect(ui->actionCancel,
             SIGNAL(triggered()),
             this,
