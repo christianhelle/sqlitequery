@@ -7,15 +7,16 @@
 struct WindowState {
     QSize size;
     QPoint position;
-    int treeWidth;
-    int tabWidth;
-    int queryTextHeight;
-    int queryResultHeight;
+    int treeWidth{};
+    int tabWidth{};
+    int queryTextHeight{};
+    int queryResultHeight{};
 };
 
 struct SessionState {
     QString sqliteFile;
     QString query;
+    QString lastUsedExportPath;
 };
 
 class Settings {
@@ -35,7 +36,10 @@ public:
 
     static void getSessionState(SessionState *state);
 
-    static void setSessionState(const QString &sqliteFile, const QString &query);
+    static void setSessionState(const QString &sqliteFile,
+                                const QString &query);
+
+    static void setLastUsedExportPath(const QString &path);
 };
 
 
