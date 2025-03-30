@@ -1,4 +1,4 @@
-#include "dbschemaexport.h"
+#include "dbexportschema.h"
 
 #include <QFile>
 

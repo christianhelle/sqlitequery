@@ -8,7 +8,7 @@
 #include "../threading/cancellation.h"
 #include "../database/dbanalyzer.h"
 #include "../database/dbexport.h"
-#include "../database/dbdataexport.h"
+#include "../database/dbexportdata.h"
 #include "../database/dbquery.h"
 #include "highlighter.h"
 #include "../database/dbtree.h"

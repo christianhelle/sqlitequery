@@ -26,8 +26,8 @@ SOURCES += \
     ../settings/recentfiles.cpp \
     ../settings/settings.cpp \
     ../database/dbexport.cpp \
-    ../database/dbschemaexport.cpp \
-    ../database/dbdataexport.cpp \
+    ../database/dbexportschema.cpp \
+    ../database/dbexportdata.cpp \
     ../threading/cancellation.cpp
 
 HEADERS += \
@@ -41,8 +41,8 @@ HEADERS += \
     ../settings/recentfiles.h \
     ../settings/settings.h \
     ../database/dbexport.h \
-    ../database/dbschemaexport.h \
-    ../database/dbdataexport.h \
+    ../database/dbexportschema.h \
+    ../database/dbexportdata.h \
     ../threading/cancellation.h \
     ../threading/mainthread.h
 

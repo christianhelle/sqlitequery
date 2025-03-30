@@ -30,10 +30,10 @@ qt_add_executable(SQLiteQueryAnalyzer WIN32 MACOSX_BUNDLE
         ../database/dbexport.cpp ../database/dbexport.h
         ../threading/cancellation.cpp ../threading/cancellation.h
         ../threading/mainthread.h
-        ../database/dbschemaexport.cpp
-        ../database/dbschemaexport.h
-        ../database/dbdataexport.cpp
-        ../database/dbdataexport.h
+        ../database/dbexportschema.cpp
+        ../database/dbexportschema.h
+        ../database/dbexportdata.cpp
+        ../database/dbexportdata.h
 )
 target_link_libraries(SQLiteQueryAnalyzer PRIVATE
         Qt::Core
