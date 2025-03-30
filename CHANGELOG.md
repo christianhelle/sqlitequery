@@ -2,22 +2,44 @@
 
 ## [Unreleased](https://github.com/christianhelle/sqlitequery/tree/HEAD)
 
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.18...HEAD)
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.21...HEAD)
+
+**Merged pull requests:**
+
+- Rename DbExport subclasses [\#46](https://github.com/christianhelle/sqlitequery/pull/46) ([christianhelle](https://github.com/christianhelle))
+
+## [0.1.21](https://github.com/christianhelle/sqlitequery/tree/0.1.21) (2025-03-30)
+
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.20...0.1.21)
 
 **Implemented enhancements:**
 
 - Use F5 as Refresh database shortcut [\#45](https://github.com/christianhelle/sqlitequery/pull/45) ([christianhelle](https://github.com/christianhelle))
-- Implement Forward only reads during Export Data for performance and memory optimization [\#40](https://github.com/christianhelle/sqlitequery/pull/40) ([christianhelle](https://github.com/christianhelle))
-- Show Filename in Window Title [\#39](https://github.com/christianhelle/sqlitequery/pull/39) ([christianhelle](https://github.com/christianhelle))
-- Restore Window State for Splitters upon startup [\#38](https://github.com/christianhelle/sqlitequery/pull/38) ([christianhelle](https://github.com/christianhelle))
-- Improve Export Data progress reporting [\#37](https://github.com/christianhelle/sqlitequery/pull/37) ([christianhelle](https://github.com/christianhelle))
 
 **Merged pull requests:**
 
 - Reformat code [\#44](https://github.com/christianhelle/sqlitequery/pull/44) ([christianhelle](https://github.com/christianhelle))
 - Extract DbSchemaExport and DbDataExport from DbExport [\#43](https://github.com/christianhelle/sqlitequery/pull/43) ([christianhelle](https://github.com/christianhelle))
+
+## [0.1.20](https://github.com/christianhelle/sqlitequery/tree/0.1.20) (2025-03-27)
+
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.19...0.1.20)
+
+**Merged pull requests:**
+
 - Restructure Build Pipelines [\#42](https://github.com/christianhelle/sqlitequery/pull/42) ([christianhelle](https://github.com/christianhelle))
 - Re-structure project files and folders [\#41](https://github.com/christianhelle/sqlitequery/pull/41) ([christianhelle](https://github.com/christianhelle))
+
+## [0.1.19](https://github.com/christianhelle/sqlitequery/tree/0.1.19) (2025-03-27)
+
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.18...0.1.19)
+
+**Implemented enhancements:**
+
+- Implement Forward only reads during Export Data for performance and memory optimization [\#40](https://github.com/christianhelle/sqlitequery/pull/40) ([christianhelle](https://github.com/christianhelle))
+- Show Filename in Window Title [\#39](https://github.com/christianhelle/sqlitequery/pull/39) ([christianhelle](https://github.com/christianhelle))
+- Restore Window State for Splitters upon startup [\#38](https://github.com/christianhelle/sqlitequery/pull/38) ([christianhelle](https://github.com/christianhelle))
+- Improve Export Data progress reporting [\#37](https://github.com/christianhelle/sqlitequery/pull/37) ([christianhelle](https://github.com/christianhelle))
 
 ## [0.1.18](https://github.com/christianhelle/sqlitequery/tree/0.1.18) (2025-03-26)
 
