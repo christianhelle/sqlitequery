@@ -359,7 +359,7 @@ void MainWindow::scriptSchema() const {
 void MainWindow::setEnabledActions(const bool enabled) {
     ui->actionRefresh->setEnabled(enabled);
     ui->actionShrink->setEnabled(enabled);
-    ui->menuScript_Data->setEnabled(enabled);
+    ui->menuScript_Data->setVisible(enabled);
     ui->actionExecute_Query->setEnabled(enabled);
     ui->actionScript_Schema->setEnabled(enabled);
     ui->actionCancel->setVisible(!enabled);
