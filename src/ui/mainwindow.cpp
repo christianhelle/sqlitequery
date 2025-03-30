@@ -81,7 +81,7 @@ void MainWindow::connectSignalSlots() const {
     connect(ui->actionScript_SQL,
             SIGNAL(triggered()),
             this,
-            SLOT(exportData()));
+            SLOT(exportDataToSqlScript()));
     connect(ui->actionCancel,
             SIGNAL(triggered()),
             this,
