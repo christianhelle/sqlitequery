@@ -192,15 +192,26 @@ void MainWindow::saveSession() const {
 }
 
 QString MainWindow::showFileDialog(const QFileDialog::AcceptMode mode) {
+    SessionState state;
+    Settings::getSessionState(&state);
+    auto directory = state.lastUsedExportPath;
+    if (state.lastUsedExportPath == Q_NULLPTR || state.lastUsedExportPath.isEmpty()) {
+        directory = QDir::home().absolutePath();
+    }
+
     QFileDialog dialog(this);
     dialog.setAcceptMode(mode);
-    dialog.setDirectory(QDir::home());
+    dialog.setDirectory(directory);
     dialog.setFileMode(QFileDialog::AnyFile);
     dialog.setViewMode(QFileDialog::Detail);
 
     if (dialog.exec()) {
-        if (QStringList files = dialog.selectedFiles(); !files.empty())
-            return files.first();
+        if (QStringList files = dialog.selectedFiles(); !files.empty()) {
+            const auto &filepath = files.first();
+            const auto folder = QFileInfo(filepath).absolutePath();
+            Settings::setLastUsedExportPath(folder);
+            return filepath;
+        }
     }
 
     qDebug("File dialog cancelled");
@@ -422,12 +433,22 @@ void MainWindow::exportDataToSqlScript() {
 }
 
 void MainWindow::exportDataToCsvFiles() {
-    const auto outputFolder = QFileDialog::getExistingDirectory(this,
-                                                                R"(Select output folder)",
-                                                                QDir::homePath());
+    SessionState state;
+    Settings::getSessionState(&state);
+    auto directory = state.lastUsedExportPath;
+    if (state.lastUsedExportPath == Q_NULLPTR || state.lastUsedExportPath.isEmpty()) {
+        directory = QDir::home().absolutePath();
+    }
+
+    const auto outputFolder =
+            QFileDialog::getExistingDirectory(this,
+                                              R"(Select output folder)",
+                                              directory);
     if (outputFolder.isEmpty()) {
         return;
     }
+
+    Settings::setLastUsedExportPath(outputFolder);
 
     DatabaseInfo info;
     analyzer->analyze(info);
