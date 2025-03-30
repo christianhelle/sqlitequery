@@ -76,9 +76,36 @@ void DbDataExport::exportDataToCsvFile(const Database *database,
                                        const QString &delimiter,
                                        const CancellationToken *cancellationToken,
                                        ExportDataProgress *progress) const {
-    // TODO:
-    // ensure folder exists, create if not
-    // create a CSV file for each table
-    // write the data to the CSV file
-    // use the same logic as exportDataToSqlFile
+    progress->reset();
+    for (const auto &table: this->getDatabaseInfo().tables) {
+        if (isInternalTable(table) || cancellationToken->isCancellationRequested()) {
+            continue;
+        }
+
+        const auto filename = outputFolder + "/" + table.name + ".csv";
+        const auto file = std::make_unique<QFile>(filename);
+        if (!file->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+            return;
+        }
+
+        const auto columns = getColumnDefs(table).join(delimiter);
+        QTextStream out(file.get());
+        out << columns;
+
+        QSqlQuery query(database->getDatabase());
+        query.setForwardOnly(true);
+        query.exec(QString("SELECT * FROM %1").arg(table.name));
+
+        while (query.next() && !cancellationToken->isCancellationRequested()) {
+            const auto values = getColumnValueDefs(table, query).join(delimiter);
+            out << values << "\n";
+            progress->increment();
+        }
+        query.finish();
+
+        out << "\n";
+        file->close();
+    }
+
+    progress->setCompleted();
 }
