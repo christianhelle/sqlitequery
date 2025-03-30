@@ -116,10 +116,17 @@
                 <property name="title">
                     <string>Database</string>
                 </property>
+                <widget class="QMenu" name="menuScript_Data">
+                    <property name="title">
+                        <string>Script Data</string>
+                    </property>
+                    <addaction name="actionSQL_Script"/>
+                    <addaction name="actionCSV_Files"/>
+                </widget>
                 <addaction name="actionRefresh"/>
                 <addaction name="actionShrink"/>
                 <addaction name="actionScript_Schema"/>
-                <addaction name="actionScript_Data"/>
+                <addaction name="menuScript_Data"/>
                 <addaction name="actionCancel"/>
             </widget>
             <widget class="QMenu" name="menuHelp">
@@ -220,17 +227,22 @@
                 <string>Ctrl+S</string>
             </property>
         </action>
-        <action name="actionScript_Data">
-            <property name="text">
-                <string>Script Data</string>
-            </property>
-        </action>
         <action name="actionCancel">
             <property name="text">
                 <string>Cancel</string>
             </property>
             <property name="visible">
                 <bool>false</bool>
+            </property>
+        </action>
+        <action name="actionSQL_Script">
+            <property name="text">
+                <string>SQL Script</string>
+            </property>
+        </action>
+        <action name="actionCSV_Files">
+            <property name="text">
+                <string>CSV Files</string>
             </property>
         </action>
     </widget>
