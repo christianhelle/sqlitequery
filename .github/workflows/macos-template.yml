@@ -48,4 +48,4 @@ jobs:
         with:
           name: SQLiteQuerAnalyzer_MacOS_v${{ inputs.version }}
           path: |
-            src/*.dmg
+            src/project/SQLiteQueryAnalyzer.dmg
