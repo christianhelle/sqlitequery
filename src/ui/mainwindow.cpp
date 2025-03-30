@@ -5,8 +5,10 @@
 #include "../database/dbexport.h"
 #include "../database/dbexportschema.h"
 #include "../threading/mainthread.h"
+#include "prompts.h"
 
 #include <QMessageBox>
+#include <QInputDialog>
 #include <QSqlTableModel>
 #include <QTreeWidget>
 #include <QTableView>
@@ -191,33 +193,6 @@ void MainWindow::saveSession() const {
     Settings::setSessionState(state.sqliteFile, state.query);
 }
 
-QString MainWindow::showFileDialog(const QFileDialog::AcceptMode mode) {
-    SessionState state;
-    Settings::getSessionState(&state);
-    auto directory = state.lastUsedExportPath;
-    if (state.lastUsedExportPath == Q_NULLPTR || state.lastUsedExportPath.isEmpty()) {
-        directory = QDir::home().absolutePath();
-    }
-
-    QFileDialog dialog(this);
-    dialog.setAcceptMode(mode);
-    dialog.setDirectory(directory);
-    dialog.setFileMode(QFileDialog::AnyFile);
-    dialog.setViewMode(QFileDialog::Detail);
-
-    if (dialog.exec()) {
-        if (QStringList files = dialog.selectedFiles(); !files.empty()) {
-            const auto &filepath = files.first();
-            const auto folder = QFileInfo(filepath).absolutePath();
-            Settings::setLastUsedExportPath(folder);
-            return filepath;
-        }
-    }
-
-    qDebug("File dialog cancelled");
-    return Q_NULLPTR;
-}
-
 void MainWindow::createNewFile() {
     if (this->dataExportProgress.get() != nullptr) {
         ui->queryResultMessagesTextEdit->setPlainText(
@@ -226,7 +201,7 @@ void MainWindow::createNewFile() {
         return;
     }
 
-    const QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
+    const QString filepath = Prompts::getFilePath(this, QFileDialog::AcceptSave);
     this->openDatabase(filepath);
     RecentFiles::add(filepath);
     this->loadRecentFiles();
@@ -272,7 +247,7 @@ void MainWindow::openExistingFile() {
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
-    const auto filepath = this->showFileDialog(QFileDialog::AcceptOpen);
+    const auto filepath = Prompts::getFilePath(this, QFileDialog::AcceptOpen);
     this->openDatabase(filepath);
     RecentFiles::add(filepath);
     this->loadRecentFiles();
@@ -369,7 +344,8 @@ void MainWindow::scriptSchema() const {
 void MainWindow::setEnabledActions(const bool enabled) {
     ui->actionRefresh->setEnabled(enabled);
     ui->actionShrink->setEnabled(enabled);
-    ui->menuScript_Data->setVisible(enabled);
+    ui->actionScript_CSV->setEnabled(enabled);
+    ui->actionScript_SQL->setEnabled(enabled);
     ui->actionExecute_Query->setEnabled(enabled);
     ui->actionScript_Schema->setEnabled(enabled);
     ui->actionCancel->setVisible(!enabled);
@@ -413,7 +389,7 @@ void MainWindow::exportDataAsync(const QString &filepath,
 }
 
 void MainWindow::exportDataToSqlScript() {
-    const QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
+    const QString filepath = Prompts::getFilePath(this, QFileDialog::AcceptSave);
     if (filepath.isEmpty())
         return;
 
@@ -449,6 +425,7 @@ void MainWindow::exportDataToCsvFiles() {
     }
 
     Settings::setLastUsedExportPath(outputFolder);
+    const auto delimeter = Prompts::getCsvDelimiter(this, ",");
 
     DatabaseInfo info;
     analyzer->analyze(info);
@@ -462,11 +439,11 @@ void MainWindow::exportDataToCsvFiles() {
     const auto cancellationToken = tcs->get();
 
     auto future = QtConcurrent::run(
-        [this, info, outputFolder, cancellationToken, progress]() {
+        [this, info, outputFolder, cancellationToken, progress, delimeter]() {
             const auto exporter = std::make_unique<DbDataExport>(info);
             exporter->exportDataToCsvFile(database.get(),
                                           outputFolder,
-                                          ",",
+                                          delimeter,
                                           &cancellationToken, progress);
         });
     future.then([this, progress] {
@@ -487,7 +464,7 @@ void MainWindow::saveSql() {
     const auto sql = ui->textEdit->toPlainText();
     if (sql.isEmpty())
         return;
-    const QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
+    const QString filepath = Prompts::getFilePath(this, QFileDialog::AcceptSave);
     const auto file = std::make_unique<QFile>(filepath);
     if (file->
         open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {

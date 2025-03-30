@@ -28,7 +28,8 @@ SOURCES += \
     ../database/dbexport.cpp \
     ../database/dbexportschema.cpp \
     ../database/dbexportdata.cpp \
-    ../threading/cancellation.cpp
+    ../threading/cancellation.cpp \
+    ../ui/prompts.cpp \
 
 HEADERS += \
     ../ui/mainwindow.h \
@@ -45,6 +46,7 @@ HEADERS += \
     ../database/dbexportdata.h \
     ../threading/cancellation.h \
     ../threading/mainthread.h \
-    ../database/progress.h
+    ../database/progress.h \
+    ../ui/prompts.h
 
 FORMS    += ../ui/mainwindow.ui
