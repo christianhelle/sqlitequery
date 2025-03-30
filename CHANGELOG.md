@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.21...HEAD)
 
+**Implemented enhancements:**
+
+- Export data to CSV files [\#47](https://github.com/christianhelle/sqlitequery/pull/47) ([christianhelle](https://github.com/christianhelle))
+
 **Merged pull requests:**
 
 - Rename DbExport subclasses [\#46](https://github.com/christianhelle/sqlitequery/pull/46) ([christianhelle](https://github.com/christianhelle))
