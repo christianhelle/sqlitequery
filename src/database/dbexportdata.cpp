@@ -36,7 +36,7 @@ QStringList DbDataExport::getColumnValueDefs(const Table &table,
     return valueDefinitions;
 }
 
-void DbDataExport::exportDataToFile(const Database *database,
+void DbDataExport::exportDataToSqlFile(const Database *database,
                                     const QString &filename,
                                     const CancellationToken *cancellationToken,
                                     ExportDataProgress *progress) const {

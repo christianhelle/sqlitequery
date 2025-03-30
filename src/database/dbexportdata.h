@@ -15,10 +15,10 @@ public:
         DbExport(std::move(info)) {
     }
 
-    void exportDataToFile(const Database *database,
-                          const QString &filename,
-                          const CancellationToken *cancellationToken,
-                          ExportDataProgress *progress) const;
+    void exportDataToSqlFile(const Database *database,
+                             const QString &filename,
+                             const CancellationToken *cancellationToken,
+                             ExportDataProgress *progress) const;
 
 private:
     static QStringList getColumnDefs(const Table &table);

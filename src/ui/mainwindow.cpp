@@ -386,7 +386,7 @@ void MainWindow::exportDataAsync(const QString &filepath,
     auto future = QtConcurrent::run(
         [this, info, filepath, cancellationToken, progress]() {
             const auto exporter = std::make_unique<DbDataExport>(info);
-            exporter->exportDataToFile(database.get(), filepath, &cancellationToken,
+            exporter->exportDataToSqlFile(database.get(), filepath, &cancellationToken,
                                        progress);
         });
     future.then([this, progress] {
