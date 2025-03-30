@@ -14,7 +14,8 @@
 #include <chrono>
 #include <thread>
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent) {
     qDebug("MainWindow::MainWindow(QWidget*)");
 
     ui = std::make_unique<Ui::MainWindow>();
@@ -78,10 +79,14 @@ void MainWindow::connectSignalSlots() const {
             SIGNAL(triggered()),
             this,
             SLOT(scriptSchema()));
-    connect(ui->actionScript_Data,
+    connect(ui->actionScript_SQL,
             SIGNAL(triggered()),
             this,
-            SLOT(exportData()));
+            SLOT(exportDataToSqlScript()));
+    connect(ui->actionScript_CSV,
+            SIGNAL(triggered()),
+            this,
+            SLOT(exportDataToCsvFiles()));
     connect(ui->actionCancel,
             SIGNAL(triggered()),
             this,
@@ -116,16 +121,16 @@ void MainWindow::restoreWindowState() {
     if (windowState.treeWidth > 0 &&
         windowState.tabWidth > 0) {
         ui->splitterMain->setSizes({
-            windowState.treeWidth,
-            windowState.tabWidth
+                windowState.treeWidth,
+                windowState.tabWidth
         });
     }
 
     if (windowState.queryTextHeight > 0 &&
         windowState.queryResultHeight > 0)
         ui->splitterQueryTab->setSizes({
-            windowState.queryTextHeight,
-            windowState.queryResultHeight
+                windowState.queryTextHeight,
+                windowState.queryResultHeight
         });
 }
 
@@ -206,7 +211,7 @@ QString MainWindow::showFileDialog(const QFileDialog::AcceptMode mode) {
 void MainWindow::createNewFile() {
     if (this->dataExportProgress.get() != nullptr) {
         ui->queryResultMessagesTextEdit->setPlainText(
-            "Unable to process request. Data export in progress");
+                "Unable to process request. Data export in progress");
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -220,7 +225,7 @@ void MainWindow::createNewFile() {
 void MainWindow::openDatabase(const QString &filename) {
     if (this->dataExportProgress.get() != nullptr) {
         ui->queryResultMessagesTextEdit->setPlainText(
-            "Unable to process request. Data export in progress");
+                "Unable to process request. Data export in progress");
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -253,7 +258,7 @@ void MainWindow::openDatabase(const QString &filename) {
 void MainWindow::openExistingFile() {
     if (this->dataExportProgress.get() != nullptr) {
         ui->queryResultMessagesTextEdit->setPlainText(
-            "Unable to process request. Data export in progress");
+                "Unable to process request. Data export in progress");
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -272,7 +277,7 @@ void MainWindow::appExit() const {
 void MainWindow::shrink() const {
     if (this->dataExportProgress.get() != nullptr) {
         ui->queryResultMessagesTextEdit->setPlainText(
-            "Unable to process request. Data export in progress");
+                "Unable to process request. Data export in progress");
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -291,7 +296,7 @@ void MainWindow::refreshDatabase() const {
 void MainWindow::analyzeDatabase() const {
     if (this->dataExportProgress.get() != nullptr) {
         ui->queryResultMessagesTextEdit->setPlainText(
-            "Unable to process request. Data export in progress");
+                "Unable to process request. Data export in progress");
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -310,7 +315,7 @@ void MainWindow::analyzeDatabase() const {
 void MainWindow::executeQuery() const {
     if (this->dataExportProgress.get() != nullptr) {
         ui->queryResultMessagesTextEdit->setPlainText(
-            "Unable to process request. Data export in progress");
+                "Unable to process request. Data export in progress");
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -328,7 +333,7 @@ void MainWindow::executeQuery() const {
 
     const auto milliseconds = static_cast<double>(time.elapsed());
     const auto msg = "Query execution took " + QString::number(
-                         milliseconds / 1000) + " seconds";
+                             milliseconds / 1000) + " seconds";
     ui->queryResultMessagesTextEdit->setPlainText(msg);
 
     foreach(const QString sql, list) {
@@ -354,7 +359,7 @@ void MainWindow::scriptSchema() const {
 void MainWindow::setEnabledActions(const bool enabled) {
     ui->actionRefresh->setEnabled(enabled);
     ui->actionShrink->setEnabled(enabled);
-    ui->actionScript_Data->setEnabled(enabled);
+    ui->menuScript_Data->setVisible(enabled);
     ui->actionExecute_Query->setEnabled(enabled);
     ui->actionScript_Schema->setEnabled(enabled);
     ui->actionCancel->setVisible(!enabled);
@@ -371,7 +376,7 @@ void MainWindow::showExportDataProgress(const ExportDataProgress *progress,
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             MainThread::run([this, progress]() {
                 ui->queryResultMessagesTextEdit->setPlainText(
-                    QString("Exported %1 row(s)").arg(progress->getAffectedRows()));
+                        QString("Exported %1 row(s)").arg(progress->getAffectedRows()));
             });
         } while (!cancellationToken.isCancellationRequested() &&
                  !progress->isCompleted());
@@ -384,21 +389,21 @@ void MainWindow::exportDataAsync(const QString &filepath,
                                      ExportDataProgress>::pointer progress,
                                  const CancellationToken cancellationToken) {
     auto future = QtConcurrent::run(
-        [this, info, filepath, cancellationToken, progress]() {
-            const auto exporter = std::make_unique<DbDataExport>(info);
-            exporter->exportDataToFile(database.get(), filepath, &cancellationToken,
-                                       progress);
-        });
+            [this, info, filepath, cancellationToken, progress]() {
+                const auto exporter = std::make_unique<DbDataExport>(info);
+                exporter->exportDataToSqlFile(database.get(), filepath, &cancellationToken,
+                                              progress);
+            });
     future.then([this, progress] {
         MainThread::run([this, progress]() {
             this->setEnabledActions(true);
             ui->queryResultMessagesTextEdit->setPlainText(
-                QString("Exported %1 row(s)").arg(progress->getAffectedRows()));
+                    QString("Exported %1 row(s)").arg(progress->getAffectedRows()));
         });
     });
 }
 
-void MainWindow::exportData() {
+void MainWindow::exportDataToSqlScript() {
     const QString filepath = this->showFileDialog(QFileDialog::AcceptSave);
     if (filepath.isEmpty())
         return;
@@ -415,6 +420,43 @@ void MainWindow::exportData() {
     const auto cancellationToken = tcs->get();
 
     exportDataAsync(filepath, info, progress, cancellationToken);
+    showExportDataProgress(progress, cancellationToken);
+}
+
+void MainWindow::exportDataToCsvFiles() {
+    const auto outputFolder = QFileDialog::getExistingDirectory(this,
+                                                        R"(Select output folder)",
+                                                        QDir::homePath());
+    if (outputFolder.isEmpty()) {
+        return;
+    }
+
+    DatabaseInfo info;
+    analyzer->analyze(info);
+    this->setEnabledActions(false);
+    ui->queryResultTab->setCurrentIndex(1);
+
+    this->dataExportProgress = std::make_unique<ExportDataProgress>();
+    const auto progress = dataExportProgress.get();
+
+    this->tcs = std::make_unique<CancellationTokenSource>();
+    const auto cancellationToken = tcs->get();
+
+    auto future = QtConcurrent::run(
+            [this, info, outputFolder, cancellationToken, progress]() {
+                const auto exporter = std::make_unique<DbDataExport>(info);
+                exporter->exportDataToCsvFile(database.get(),
+                                              outputFolder,
+                                              ",",
+                                              &cancellationToken, progress);
+            });
+    future.then([this, progress] {
+        MainThread::run([this, progress]() {
+            this->setEnabledActions(true);
+            ui->queryResultMessagesTextEdit->setPlainText(
+                    QString("Exported %1 row(s)").arg(progress->getAffectedRows()));
+        });
+    });
     showExportDataProgress(progress, cancellationToken);
 }
 
@@ -446,9 +488,9 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item,
                                  const int column) const {
     if (this->dataExportProgress.get() != nullptr) {
         ui->queryResultMessagesTextEdit->setPlainText(
-            "Unable to process request. Data export in progress - " + QString(
-                "%1 row(s)").arg(
-                this->dataExportProgress.get()->getAffectedRows()));
+                "Unable to process request. Data export in progress - " + QString(
+                        "%1 row(s)").arg(
+                        this->dataExportProgress.get()->getAffectedRows()));
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }

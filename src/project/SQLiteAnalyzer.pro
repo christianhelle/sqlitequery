@@ -44,6 +44,7 @@ HEADERS += \
     ../database/dbexportschema.h \
     ../database/dbexportdata.h \
     ../threading/cancellation.h \
-    ../threading/mainthread.h
+    ../threading/mainthread.h \
+    ../database/progress.h
 
 FORMS    += ../ui/mainwindow.ui
