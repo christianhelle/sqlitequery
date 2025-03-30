@@ -7,6 +7,7 @@
 #include "../threading/mainthread.h"
 
 #include <QMessageBox>
+#include <QInputDialog>
 #include <QSqlTableModel>
 #include <QTreeWidget>
 #include <QTableView>
@@ -450,6 +451,18 @@ void MainWindow::exportDataToCsvFiles() {
 
     Settings::setLastUsedExportPath(outputFolder);
 
+    bool ok{};
+    auto input = QInputDialog::getText(this,
+                                       "CSV Delimeter",
+                                       "Please enter delimeter to use",
+                                       QLineEdit::Normal,
+                                       ",",
+                                       &ok);
+    if (!ok || input.isEmpty()) {
+        input = ",";
+    }
+    const auto &delimiter = input;
+
     DatabaseInfo info;
     analyzer->analyze(info);
     this->setEnabledActions(false);
@@ -462,11 +475,11 @@ void MainWindow::exportDataToCsvFiles() {
     const auto cancellationToken = tcs->get();
 
     auto future = QtConcurrent::run(
-        [this, info, outputFolder, cancellationToken, progress]() {
+        [this, info, outputFolder, cancellationToken, progress, delimiter]() {
             const auto exporter = std::make_unique<DbDataExport>(info);
             exporter->exportDataToCsvFile(database.get(),
                                           outputFolder,
-                                          ",",
+                                          delimiter,
                                           &cancellationToken, progress);
         });
     future.then([this, progress] {
