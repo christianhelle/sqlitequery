@@ -7,10 +7,10 @@
 struct WindowState {
     QSize size;
     QPoint position;
-    int treeWidth;
-    int tabWidth;
-    int queryTextHeight;
-    int queryResultHeight;
+    int treeWidth{};
+    int tabWidth{};
+    int queryTextHeight{};
+    int queryResultHeight{};
 };
 
 struct SessionState {
