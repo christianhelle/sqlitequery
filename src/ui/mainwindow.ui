@@ -120,8 +120,8 @@
                     <property name="title">
                         <string>Script Data</string>
                     </property>
-                    <addaction name="actionSQL_Script"/>
-                    <addaction name="actionCSV_Files"/>
+                    <addaction name="actionScript_SQL"/>
+                    <addaction name="actionScript_CSV"/>
                 </widget>
                 <addaction name="actionRefresh"/>
                 <addaction name="actionShrink"/>
@@ -235,12 +235,12 @@
                 <bool>false</bool>
             </property>
         </action>
-        <action name="actionSQL_Script">
+        <action name="actionScript_SQL">
             <property name="text">
                 <string>SQL Script</string>
             </property>
         </action>
-        <action name="actionCSV_Files">
+        <action name="actionScript_CSV">
             <property name="text">
                 <string>CSV Files</string>
             </property>
