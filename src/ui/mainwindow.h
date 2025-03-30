@@ -57,6 +57,8 @@ public slots:
 
     void exportDataToSqlScript();
 
+    void exportDataToCsvFiles();
+
     void cancel() const;
 
     void saveSql();
