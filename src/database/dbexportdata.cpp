@@ -37,9 +37,9 @@ QStringList DbDataExport::getColumnValueDefs(const Table &table,
 }
 
 void DbDataExport::exportDataToSqlFile(const Database *database,
-                                    const QString &filename,
-                                    const CancellationToken *cancellationToken,
-                                    ExportDataProgress *progress) const {
+                                       const QString &filename,
+                                       const CancellationToken *cancellationToken,
+                                       ExportDataProgress *progress) const {
     const auto file = std::make_unique<QFile>(filename);
     if (!file->
         open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
@@ -69,4 +69,16 @@ void DbDataExport::exportDataToSqlFile(const Database *database,
     }
     file->close();
     progress->setCompleted();
+}
+
+void DbDataExport::exportDataToCsvFile(const Database *database,
+                                       const QString &outputFolder,
+                                       const QString &delimiter,
+                                       const CancellationToken *cancellationToken,
+                                       ExportDataProgress *progress) const {
+    // TODO:
+    // ensure folder exists, create if not
+    // create a CSV file for each table
+    // write the data to the CSV file
+    // use the same logic as exportDataToSqlFile
 }

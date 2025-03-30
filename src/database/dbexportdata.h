@@ -20,6 +20,12 @@ public:
                              const CancellationToken *cancellationToken,
                              ExportDataProgress *progress) const;
 
+    void exportDataToCsvFile(const Database *database,
+                             const QString &outputFolder,
+                             const QString &delimiter,
+                             const CancellationToken *cancellationToken,
+                             ExportDataProgress *progress) const;
+
 private:
     static QStringList getColumnDefs(const Table &table);
 
