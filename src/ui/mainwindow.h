@@ -87,8 +87,6 @@ private:
     std::unique_ptr<CancellationTokenSource> tcs;
     bool loaded;
 
-    QString showFileDialog(QFileDialog::AcceptMode mode);
-
     void analyzeDatabase() const;
 
     void saveSession() const;
