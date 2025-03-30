@@ -72,13 +72,22 @@ void Settings::getSessionState(SessionState *state) {
     settings.beginGroup("Session");
     state->sqliteFile = settings.value("sqlite_file").toString();
     state->query = settings.value("query").toString();
+    state->lastUsedExportPath = settings.value("last_used_export_path").toString();
     settings.endGroup();
 }
 
-void Settings::setSessionState(const QString &sqliteFile, const QString &query) {
+void Settings::setSessionState(const QString &sqliteFile,
+                               const QString &query) {
     QSettings settings;
     settings.beginGroup("Session");
     settings.setValue("sqlite_file", sqliteFile);
     settings.setValue("query", query);
+    settings.endGroup();
+}
+
+void Settings::setLastUsedExportPath(const QString &path) {
+    QSettings settings;
+    settings.beginGroup("Session");
+    settings.setValue("last_used_export_path", path);
     settings.endGroup();
 }
