@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Prompt for CSV delimeter [\#49](https://github.com/christianhelle/sqlitequery/pull/49) ([christianhelle](https://github.com/christianhelle))
 - Remember last used export data folder [\#48](https://github.com/christianhelle/sqlitequery/pull/48) ([christianhelle](https://github.com/christianhelle))
 - Export data to CSV files [\#47](https://github.com/christianhelle/sqlitequery/pull/47) ([christianhelle](https://github.com/christianhelle))
 
