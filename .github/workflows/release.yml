@@ -21,6 +21,7 @@ jobs:
     uses: ./.github/workflows/windows-template.yml
     with:
       version: 0.1.${{ github.run_number }}
+      release: true
     secrets: inherit
   release:
     needs: [
