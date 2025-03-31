@@ -2,16 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QFileDialog>
-#include <qfuturewatcher.h>
 
 #include "../threading/cancellation.h"
 #include "../database/dbanalyzer.h"
 #include "../database/dbexport.h"
 #include "../database/dbexportdata.h"
 #include "../database/dbquery.h"
-#include "highlighter.h"
 #include "../database/dbtree.h"
+#include "highlighter.h"
 
 namespace Ui {
     class MainWindow;
@@ -51,7 +49,8 @@ public slots:
     void showExportDataProgress(const ExportDataProgress *progress,
                                 CancellationToken cancellationToken) const;
 
-    void exportDataAsync(const QString &filepath, const DatabaseInfo &info,
+    void exportDataAsync(const QString &filepath,
+                         const DatabaseInfo &info,
                          std::unique_ptr<ExportDataProgress>::pointer progress,
                          CancellationToken cancellationToken);
 
