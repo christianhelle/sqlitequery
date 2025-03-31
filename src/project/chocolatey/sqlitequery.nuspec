@@ -77,7 +77,7 @@ Features:
     <!--<replaces>NOT YET IMPLEMENTED</replaces>-->
   </metadata>
   <files>
-    <file src="build\Release\**" target="tools" />
+    <file src="..\build\Release\**" target="tools" />
     <file src="tools\**" target="tools" />
   </files>
 </package>
