@@ -42,3 +42,4 @@ src/project/Makefile
 .idea
 src/project/cmake-build-debug
 src/project/artifacts/SQLiteQueryAnalyzer-Setup.exe
+src/.vs
