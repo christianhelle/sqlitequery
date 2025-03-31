@@ -95,7 +95,7 @@ jobs:
         run: choco pack sqlitequery.nuspec --version ${{ inputs.version }}
     
       - name: Publish Chocolately Package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@master
         with:
           name: ChocolatelyPackage
           path: sqlitequery.${{ inputs.version }}.nupkg
