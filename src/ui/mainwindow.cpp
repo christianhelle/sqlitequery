@@ -409,17 +409,7 @@ void MainWindow::exportDataToSqlScript() {
 }
 
 void MainWindow::exportDataToCsvFiles() {
-    SessionState state;
-    Settings::getSessionState(&state);
-    auto directory = state.lastUsedExportPath;
-    if (state.lastUsedExportPath == Q_NULLPTR || state.lastUsedExportPath.isEmpty()) {
-        directory = QDir::home().absolutePath();
-    }
-
-    const auto outputFolder =
-            QFileDialog::getExistingDirectory(this,
-                                              R"(Select output folder)",
-                                              directory);
+    const auto outputFolder = Prompts::getFolderPath(this);
     if (outputFolder.isEmpty()) {
         return;
     }
