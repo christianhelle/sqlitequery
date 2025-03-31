@@ -7,6 +7,11 @@ on:
         description: 'Version number for the build'
         required: true
         type: string
+      release:
+        description: 'Is release build'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   template:
@@ -89,3 +94,21 @@ jobs:
         with:
           name: SQLiteQuerAnalyzer_Windows_Installer_v${{ inputs.version }}
           path: ${{ github.workspace }}\src\artifacts\SQLiteQueryAnalyzer-Setup.exe
+    
+      - name: Build Chocolatey Package
+        working-directory: ${{ github.workspace }}\src\project\chocolatey
+        run: choco pack sqlitequery.nuspec --version ${{ inputs.version }}
+    
+      - name: Publish Chocolatey Package
+        uses: actions/upload-artifact@master
+        with:
+          name: ChocolateyPackage
+          path: sqlitequery.${{ inputs.version }}.nupkg
+
+      - name: Upload Package to Chocolatey
+        working-directory: ${{ github.workspace }}\src\project\chocolatey
+        if: ${{ inputs.release == true }} && github.ref == 'refs/heads/master'
+        continue-on-error: true
+        run: |
+          choco apiKey --key ${{ secrets.CHOCOLATEY_API_KEY }} --source https://push.chocolatey.org/
+          choco push sqlitequery.${{ inputs.version }}.nupkg --source https://push.chocolatey.org/
