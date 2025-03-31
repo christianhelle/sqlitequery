@@ -101,6 +101,7 @@ jobs:
           path: sqlitequery.${{ inputs.version }}.nupkg
 
       - name: Upload Package to Chocolately
+        working-directory: ${{ github.workspace }}\src\project\chocolatey
         run: |
-          choco apikey --key ${{ secrets.CHOCOLATEY_API_KEY }} --src https://push.chocolatey.org/
-          choco push artifacts/ChocolatelyPackage/sqlitequery.${{ inputs.version }}.nupkg --src https://push.chocolatey.org/
+          choco apiKey --key ${{ secrets.CHOCOLATEY_API_KEY }} --source https://push.chocolatey.org/
+          choco push sqlitequery.${{ inputs.version }}.nupkg --source https://push.chocolatey.org/
