@@ -7,6 +7,11 @@ on:
         description: 'Version number for the build'
         required: true
         type: string
+      release:
+        description: 'Is release build'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   template:
@@ -102,6 +107,7 @@ jobs:
 
       - name: Upload Package to Chocolately
         working-directory: ${{ github.workspace }}\src\project\chocolatey
+        if: ${{ inputs.release == true }}
         run: |
           choco apiKey --key ${{ secrets.CHOCOLATEY_API_KEY }} --source https://push.chocolatey.org/
           choco push sqlitequery.${{ inputs.version }}.nupkg --source https://push.chocolatey.org/
