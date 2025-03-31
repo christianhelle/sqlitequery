@@ -13,6 +13,7 @@
 
 **Merged pull requests:**
 
+- Use Prompts everywhere [\#51](https://github.com/christianhelle/sqlitequery/pull/51) ([christianhelle](https://github.com/christianhelle))
 - Rename DbExport subclasses [\#46](https://github.com/christianhelle/sqlitequery/pull/46) ([christianhelle](https://github.com/christianhelle))
 
 ## [0.1.21](https://github.com/christianhelle/sqlitequery/tree/0.1.21) (2025-03-30)
