@@ -89,3 +89,18 @@ jobs:
         with:
           name: SQLiteQuerAnalyzer_Windows_Installer_v${{ inputs.version }}
           path: ${{ github.workspace }}\src\artifacts\SQLiteQueryAnalyzer-Setup.exe
+    
+      - name: Build Chocolately Package
+        working-directory: ${{ github.workspace }}\src\project
+        run: choco pack sqlitequery.nuspec --version ${{ inputs.version }}
+    
+      - name: Publish Chocolately Package
+        uses: actions/upload-artifact@v3
+        with:
+          name: ChocolatelyPackage
+          path: sqlitequery.${{ inputs.version }}.nupkg
+
+      - name: Upload Package to Chocolately
+        run: |
+          choco apikey --key ${{ secrets.CHOCOLATEY_API_KEY }} --src https://push.chocolatey.org/
+          choco push artifacts/ChocolatelyPackage/sqlitequery.${{ inputs.version }}.nupkg --src https://push.chocolatey.org/
