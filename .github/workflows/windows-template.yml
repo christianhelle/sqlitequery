@@ -91,7 +91,7 @@ jobs:
           path: ${{ github.workspace }}\src\artifacts\SQLiteQueryAnalyzer-Setup.exe
     
       - name: Build Chocolately Package
-        working-directory: ${{ github.workspace }}\src\project
+        working-directory: ${{ github.workspace }}\src\project\chocolatey
         run: choco pack sqlitequery.nuspec --version ${{ inputs.version }}
     
       - name: Publish Chocolately Package
