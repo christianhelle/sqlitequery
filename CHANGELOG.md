@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Build Chocolatey Packages [\#52](https://github.com/christianhelle/sqlitequery/pull/52) ([christianhelle](https://github.com/christianhelle))
 - New Icon [\#50](https://github.com/christianhelle/sqlitequery/pull/50) ([christianhelle](https://github.com/christianhelle))
 - Prompt for CSV delimeter [\#49](https://github.com/christianhelle/sqlitequery/pull/49) ([christianhelle](https://github.com/christianhelle))
 - Remember last used export data folder [\#48](https://github.com/christianhelle/sqlitequery/pull/48) ([christianhelle](https://github.com/christianhelle))
