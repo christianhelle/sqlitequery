@@ -1,5 +1,5 @@
 #include <QApplication>
-#include "ui/mainwindow.h"
+#include "gui/mainwindow.h"
 
 #define VERSION "1.0.0"
 

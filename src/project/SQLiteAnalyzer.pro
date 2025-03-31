@@ -17,9 +17,9 @@ ICON = ../resources/icon.icns
 
 SOURCES += \
     ../main.cpp\
-    ../ui/mainwindow.cpp \
+    ../gui/mainwindow.cpp \
     ../database/dbanalyzer.cpp \
-    ../ui/highlighter.cpp \
+    ../gui/highlighter.cpp \
     ../database/dbquery.cpp \
     ../database/database.cpp \
     ../database/dbtree.cpp \
@@ -29,13 +29,13 @@ SOURCES += \
     ../database/dbexportschema.cpp \
     ../database/dbexportdata.cpp \
     ../threading/cancellation.cpp \
-    ../ui/prompts.cpp \
+    ../gui/prompts.cpp \
 
 HEADERS += \
-    ../ui/mainwindow.h \
+    ../gui/mainwindow.h \
     ../database/dbanalyzer.h \
     ../database/databaseinfo.h \
-    ../ui/highlighter.h \
+    ../gui/highlighter.h \
     ../database/dbquery.h \
     ../database/database.h \
     ../database/dbtree.h \
@@ -47,6 +47,6 @@ HEADERS += \
     ../threading/cancellation.h \
     ../threading/mainthread.h \
     ../database/progress.h \
-    ../ui/prompts.h
+    ../gui/prompts.h
 
-FORMS    += ../ui/mainwindow.ui
+FORMS    += ../gui/mainwindow.ui

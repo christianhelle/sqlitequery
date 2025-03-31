@@ -22,9 +22,9 @@ qt_add_executable(SQLiteQueryAnalyzer WIN32 MACOSX_BUNDLE
         ../database/dbanalyzer.cpp ../database/dbanalyzer.h
         ../database/dbquery.cpp ../database/dbquery.h
         ../database/dbtree.cpp ../database/dbtree.h
-        ../ui/highlighter.cpp ../ui/highlighter.h
+        ../gui/highlighter.cpp ../gui/highlighter.h
         ../main.cpp
-        ../ui/mainwindow.cpp ../ui/mainwindow.h ../ui/mainwindow.ui
+        ../gui/mainwindow.cpp ../gui/mainwindow.h ../gui/mainwindow.ui
         ../settings/recentfiles.cpp ../settings/recentfiles.h
         ../settings/settings.cpp ../settings/settings.h
         ../database/dbexport.cpp ../database/dbexport.h
@@ -35,8 +35,8 @@ qt_add_executable(SQLiteQueryAnalyzer WIN32 MACOSX_BUNDLE
         ../database/dbexportdata.cpp
         ../database/dbexportdata.h
         ../database/progress.h
-        ../ui/prompts.cpp
-        ../ui/prompts.h
+        ../gui/prompts.cpp
+        ../gui/prompts.h
 )
 target_link_libraries(SQLiteQueryAnalyzer PRIVATE
         Qt::Core
