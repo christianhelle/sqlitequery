@@ -344,6 +344,7 @@ void MainWindow::scriptSchema() const {
 void MainWindow::setEnabledActions(const bool enabled) {
     ui->actionRefresh->setEnabled(enabled);
     ui->actionShrink->setEnabled(enabled);
+    ui->menuExport_Data->setEnabled(enabled);
     ui->actionScript_CSV->setEnabled(enabled);
     ui->actionScript_SQL->setEnabled(enabled);
     ui->actionExecute_Query->setEnabled(enabled);
