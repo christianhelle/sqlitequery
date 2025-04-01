@@ -35,5 +35,5 @@ jobs:
       run: qmake
       working-directory: src/project
     - name: Make
-      run: make
+      run: make -j 32
       working-directory: src/project
