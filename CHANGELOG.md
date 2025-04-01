@@ -2,7 +2,15 @@
 
 ## [Unreleased](https://github.com/christianhelle/sqlitequery/tree/HEAD)
 
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.21...HEAD)
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.23...HEAD)
+
+**Merged pull requests:**
+
+- GUI Refactoring [\#54](https://github.com/christianhelle/sqlitequery/pull/54) ([christianhelle](https://github.com/christianhelle))
+
+## [0.1.23](https://github.com/christianhelle/sqlitequery/tree/0.1.23) (2025-03-31)
+
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.21...0.1.23)
 
 **Implemented enhancements:**
 
