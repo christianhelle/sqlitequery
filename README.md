@@ -17,7 +17,7 @@ It provides an intuitive interface for executing queries and direct table editin
 
 ## Features
 
-- Cross platform
+- Cross platform - Runs natively on Windows, MacOS, and Linux
 - Easy-to-use interface for executing SQL queries
 - Fast table data editing
 - Export database schema as CREATE TABLE statements
