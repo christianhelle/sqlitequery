@@ -20,8 +20,9 @@ It provides an intuitive interface for executing queries and direct table editin
 - Cross platform - Runs natively on Windows, MacOS, and Linux
 - Easy-to-use interface for executing SQL queries
 - Fast table data editing
+- Persists application state and reloads last session on startup
 - Export database schema as CREATE TABLE statements
-- Export data as INSERT statements
+- Export data as an SQL script containing INSERT statements or as CSV files
 
 ## Screenshots
 
