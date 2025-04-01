@@ -6,10 +6,6 @@
 #include <QSettings>
 
 void Settings::init() {
-    QApplication::setOrganizationDomain("christianhelle.com");
-    QApplication::setOrganizationName("Christian Helle");
-    QApplication::setApplicationName("SQLite Query Analyzer");
-
     const auto path = getSettingsFolder();
     if (const QDir dir(path); !dir.exists() && !dir.mkdir(path)) {
         qDebug("Failed to create settings directory");

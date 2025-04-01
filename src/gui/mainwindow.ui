@@ -116,9 +116,9 @@
                 <property name="title">
                     <string>Database</string>
                 </property>
-                <widget class="QMenu" name="menuScript_Data">
+                <widget class="QMenu" name="menuExport_Data">
                     <property name="title">
-                        <string>Script Data</string>
+                        <string>Export Data</string>
                     </property>
                     <addaction name="actionScript_SQL"/>
                     <addaction name="actionScript_CSV"/>
@@ -126,7 +126,7 @@
                 <addaction name="actionRefresh"/>
                 <addaction name="actionShrink"/>
                 <addaction name="actionScript_Schema"/>
-                <addaction name="menuScript_Data"/>
+                <addaction name="menuExport_Data"/>
                 <addaction name="actionCancel"/>
             </widget>
             <widget class="QMenu" name="menuHelp">
