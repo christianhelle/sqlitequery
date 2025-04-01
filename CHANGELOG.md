@@ -7,6 +7,7 @@
 **Merged pull requests:**
 
 - GUI Refactoring [\#54](https://github.com/christianhelle/sqlitequery/pull/54) ([christianhelle](https://github.com/christianhelle))
+- Exclude vc\_redist.x64.exe from build artifacts [\#53](https://github.com/christianhelle/sqlitequery/pull/53) ([christianhelle](https://github.com/christianhelle))
 
 ## [0.1.23](https://github.com/christianhelle/sqlitequery/tree/0.1.23) (2025-03-31)
 
