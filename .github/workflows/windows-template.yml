@@ -68,6 +68,7 @@ jobs:
 
       - name: Build
         working-directory: ${{ github.workspace }}\src\project
+        shell: pwsh
         run: |          
           cmake . `
             -DCMAKE_PREFIX_PATH=${{ runner.temp }}\Qt\6.8.2\msvc2022_64 `
