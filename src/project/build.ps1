@@ -7,7 +7,7 @@ if ($IsWindows) {
 
 if ($IsLinux -or $IsMacOS) {
     cmake -B build
-    cmake --build build --config Release
+    cmake --build build --config Release --parallel 32
 }
 
 if ($IsMacOS) {
