@@ -90,7 +90,7 @@ sudo apt-get install -y cmake qt6-base-dev
 Build project
 
 ```sh
-cd src
+cd src/project
 cmake .
 cmake --build . --config Release
 ```
@@ -108,7 +108,7 @@ brew install qt@6
 Build project
 
 ```sh
-cd src
+cd src/project
 cmake .
 cmake --build . --config Release
 ```
