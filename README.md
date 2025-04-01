@@ -62,12 +62,20 @@ Here are some screenshots of SQLite Query Analyzer in action:
 - CMake 3.16 or later - Install from [official website](https://cmake.org/download/)
 - Qt 6.8.2 - Install from [official website](https://www.qt.io/download-qt-installer-oss)
 - Git
+- [Powershell Core](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell) (Optional)
 
 ### Clone the repository
 
 ```sh
 git clone https://github.com/christianhelle/sqlitequery.git
 cd sqlitequery
+```
+
+### Build the project using cross platform powershell script
+
+```sh
+cd src/project
+pwsh build.ps1
 ```
 
 ### Building on Linux
