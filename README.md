@@ -11,17 +11,20 @@
 
 # SQLite Query Analyzer
 
-SQLite Query Analyzer is a lightweight and efficient desktop utility designed to simplify the process of managing SQLite databases.
+SQLite Query Analyzer is a lightweight and efficient desktop utility designed
+to simplify the process of managing SQLite databases.
 
-It provides an intuitive interface for executing queries and direct table editing, making database operations seamless and straightforward.
+It provides an intuitive interface for executing queries and direct table editing,
+making database operations seamless and straightforward.
 
 ## Features
 
-- Cross platform
+- Cross platform - Runs natively on Windows, MacOS, and Linux
 - Easy-to-use interface for executing SQL queries
 - Fast table data editing
+- Persists application state and reloads last session on startup
 - Export database schema as CREATE TABLE statements
-- Export data as INSERT statements
+- Export data as an SQL script containing INSERT statements or as CSV files
 
 ## Screenshots
 
@@ -61,12 +64,20 @@ Here are some screenshots of SQLite Query Analyzer in action:
 - CMake 3.16 or later - Install from [official website](https://cmake.org/download/)
 - Qt 6.8.2 - Install from [official website](https://www.qt.io/download-qt-installer-oss)
 - Git
+- [Powershell Core](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell) (Optional)
 
 ### Clone the repository
 
 ```sh
 git clone https://github.com/christianhelle/sqlitequery.git
 cd sqlitequery
+```
+
+### Build the project using cross platform powershell script
+
+```sh
+cd src/project
+pwsh build.ps1
 ```
 
 ### Building on Linux
@@ -81,7 +92,7 @@ sudo apt-get install -y cmake qt6-base-dev
 Build project
 
 ```sh
-cd src
+cd src/project
 cmake .
 cmake --build . --config Release
 ```
@@ -99,7 +110,7 @@ brew install qt@6
 Build project
 
 ```sh
-cd src
+cd src/project
 cmake .
 cmake --build . --config Release
 ```
@@ -129,4 +140,6 @@ Build the installer project using Inno Setup (Optional)
 
 ## Contributing
 
-We welcome contributions to SQLite Query Analyzer! If you have any ideas, suggestions, or bug reports, please open an issue or submit a pull request on GitHub.
+We welcome contributions to SQLite Query Analyzer!
+If you have any ideas, suggestions, or bug reports,
+please open an issue or submit a pull request on GitHub.
