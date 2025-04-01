@@ -10,17 +10,17 @@ on:
       - '*'
 
 env:
-  VERSION: '0.1.${{ github.run_number }}'
+  VERSION: '0.2.${{ github.run_number }}'
 
 jobs:
   macos:
     uses: ./.github/workflows/macos-template.yml
     with:
-      version: '0.1.${{ github.run_number }}'      
+      version: '0.2.${{ github.run_number }}'      
   windows:
     uses: ./.github/workflows/windows-template.yml
     with:
-      version: 0.1.${{ github.run_number }}
+      version: 0.2.${{ github.run_number }}
       release: true
     secrets: inherit
   release:
