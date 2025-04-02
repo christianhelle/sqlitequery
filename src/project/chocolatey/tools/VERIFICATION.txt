@@ -3,11 +3,5 @@ Verification is intended to assist the Chocolatey moderators and community
 in verifying that this package's contents are trustworthy.
 
 The binaries included is the application itself, SQLite Query Analyzer
-The SHA1 checksum is generated during build time
+The checksums (MD5 and SH1) are generated during build time
 
-To verify the binaries:
-
-- To go the GitHub Releases page: https://github.com/christianhelle/sqlitequery/releases.
-- Find the release that you are interested in.
-- There you should find the exe that is contained within the Chocolatey package
-  for that version, and also the SHA of the file
