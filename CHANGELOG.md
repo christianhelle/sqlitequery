@@ -1,17 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/christianhelle/sqlitequery/tree/HEAD)
+## [0.2.25](https://github.com/christianhelle/sqlitequery/tree/0.2.25) (2025-04-01)
 
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.23...HEAD)
-
-**Merged pull requests:**
-
-- GUI Refactoring [\#54](https://github.com/christianhelle/sqlitequery/pull/54) ([christianhelle](https://github.com/christianhelle))
-- Exclude vc\_redist.x64.exe from build artifacts [\#53](https://github.com/christianhelle/sqlitequery/pull/53) ([christianhelle](https://github.com/christianhelle))
-
-## [0.1.23](https://github.com/christianhelle/sqlitequery/tree/0.1.23) (2025-03-31)
-
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.21...0.1.23)
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.18...0.2.25)
 
 **Implemented enhancements:**
 
@@ -20,44 +11,23 @@
 - Prompt for CSV delimeter [\#49](https://github.com/christianhelle/sqlitequery/pull/49) ([christianhelle](https://github.com/christianhelle))
 - Remember last used export data folder [\#48](https://github.com/christianhelle/sqlitequery/pull/48) ([christianhelle](https://github.com/christianhelle))
 - Export data to CSV files [\#47](https://github.com/christianhelle/sqlitequery/pull/47) ([christianhelle](https://github.com/christianhelle))
-
-**Merged pull requests:**
-
-- Use Prompts everywhere [\#51](https://github.com/christianhelle/sqlitequery/pull/51) ([christianhelle](https://github.com/christianhelle))
-- Rename DbExport subclasses [\#46](https://github.com/christianhelle/sqlitequery/pull/46) ([christianhelle](https://github.com/christianhelle))
-
-## [0.1.21](https://github.com/christianhelle/sqlitequery/tree/0.1.21) (2025-03-30)
-
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.20...0.1.21)
-
-**Implemented enhancements:**
-
 - Use F5 as Refresh database shortcut [\#45](https://github.com/christianhelle/sqlitequery/pull/45) ([christianhelle](https://github.com/christianhelle))
-
-**Merged pull requests:**
-
-- Reformat code [\#44](https://github.com/christianhelle/sqlitequery/pull/44) ([christianhelle](https://github.com/christianhelle))
-- Extract DbSchemaExport and DbDataExport from DbExport [\#43](https://github.com/christianhelle/sqlitequery/pull/43) ([christianhelle](https://github.com/christianhelle))
-
-## [0.1.20](https://github.com/christianhelle/sqlitequery/tree/0.1.20) (2025-03-27)
-
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.19...0.1.20)
-
-**Merged pull requests:**
-
-- Restructure Build Pipelines [\#42](https://github.com/christianhelle/sqlitequery/pull/42) ([christianhelle](https://github.com/christianhelle))
-- Re-structure project files and folders [\#41](https://github.com/christianhelle/sqlitequery/pull/41) ([christianhelle](https://github.com/christianhelle))
-
-## [0.1.19](https://github.com/christianhelle/sqlitequery/tree/0.1.19) (2025-03-27)
-
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.1.18...0.1.19)
-
-**Implemented enhancements:**
-
 - Implement Forward only reads during Export Data for performance and memory optimization [\#40](https://github.com/christianhelle/sqlitequery/pull/40) ([christianhelle](https://github.com/christianhelle))
 - Show Filename in Window Title [\#39](https://github.com/christianhelle/sqlitequery/pull/39) ([christianhelle](https://github.com/christianhelle))
 - Restore Window State for Splitters upon startup [\#38](https://github.com/christianhelle/sqlitequery/pull/38) ([christianhelle](https://github.com/christianhelle))
 - Improve Export Data progress reporting [\#37](https://github.com/christianhelle/sqlitequery/pull/37) ([christianhelle](https://github.com/christianhelle))
+
+**Merged pull requests:**
+
+- Update Documentation [\#55](https://github.com/christianhelle/sqlitequery/pull/55) ([christianhelle](https://github.com/christianhelle))
+- GUI Refactoring [\#54](https://github.com/christianhelle/sqlitequery/pull/54) ([christianhelle](https://github.com/christianhelle))
+- Exclude vc\_redist.x64.exe from build artifacts [\#53](https://github.com/christianhelle/sqlitequery/pull/53) ([christianhelle](https://github.com/christianhelle))
+- Use Prompts everywhere [\#51](https://github.com/christianhelle/sqlitequery/pull/51) ([christianhelle](https://github.com/christianhelle))
+- Rename DbExport subclasses [\#46](https://github.com/christianhelle/sqlitequery/pull/46) ([christianhelle](https://github.com/christianhelle))
+- Reformat code [\#44](https://github.com/christianhelle/sqlitequery/pull/44) ([christianhelle](https://github.com/christianhelle))
+- Extract DbSchemaExport and DbDataExport from DbExport [\#43](https://github.com/christianhelle/sqlitequery/pull/43) ([christianhelle](https://github.com/christianhelle))
+- Restructure Build Pipelines [\#42](https://github.com/christianhelle/sqlitequery/pull/42) ([christianhelle](https://github.com/christianhelle))
+- Re-structure project files and folders [\#41](https://github.com/christianhelle/sqlitequery/pull/41) ([christianhelle](https://github.com/christianhelle))
 
 ## [0.1.18](https://github.com/christianhelle/sqlitequery/tree/0.1.18) (2025-03-26)
 
