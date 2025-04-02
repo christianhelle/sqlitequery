@@ -4,7 +4,11 @@ param (
 )
 
 if ($IsWindows) {
-    cmake . -DCMAKE_PREFIX_PATH=C:/Qt/6.8.2/msvc2022_64 -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" -B build
+    cmake . `
+      -DCMAKE_PREFIX_PATH=C:/Qt/6.8.2/msvc2022_64 `
+      -DCMAKE_CXX_STANDARD=17 `
+      -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" `
+      -B build
     cmake --build build --config Release --parallel 32
 }
 
