@@ -44,6 +44,8 @@ src/project/cmake-build-debug
 src/project/artifacts/SQLiteQueryAnalyzer-Setup.exe
 src/.vs
 *.nupkg
+src/project/SQLiteQueryAnalyzer.exe.md5
+src/project/SQLiteQueryAnalyzer.exe.sha1
 6.9.0
 *aqtinstall.log
 src/project/linux/usr/share/icons/hicolor/256x256/apps/sqlitequery.png
