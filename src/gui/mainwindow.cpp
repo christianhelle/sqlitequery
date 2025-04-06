@@ -51,6 +51,14 @@ MainWindow::~MainWindow() {
     this->tree->clear();
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event){
+    auto const keys = event->keyCombination();
+    auto const modifers= keys.keyboardModifiers();
+    if (keys.key() == Qt::Key_T && modifers == Qt::ControlModifier) {
+        ui->treeWidget->setFocus();
+    }
+}
+
 void MainWindow::connectSignalSlots() const {
     connect(ui->actionNew,
             SIGNAL(triggered()),
