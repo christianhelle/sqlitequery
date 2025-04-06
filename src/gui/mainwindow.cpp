@@ -51,6 +51,19 @@ MainWindow::~MainWindow() {
     this->tree->clear();
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event){
+    auto const keys = event->keyCombination();
+    auto const modifiers = keys.keyboardModifiers();
+    if (keys.key() == Qt::Key_T && modifiers == Qt::ControlModifier) {
+        ui->treeWidget->setFocus();
+    } else if (keys.key() == Qt::Key_E && modifiers == Qt::ControlModifier) {
+        ui->tabWidget->setCurrentIndex(-1);
+        ui->textEdit->setFocus();
+    } else if (keys.key() == Qt::Key_Q && modifiers == Qt::ControlModifier) {
+        this->appExit();
+    }
+}
+
 void MainWindow::connectSignalSlots() const {
     connect(ui->actionNew,
             SIGNAL(triggered()),

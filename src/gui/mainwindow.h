@@ -23,6 +23,8 @@ public:
 
     ~MainWindow() override;
 
+    void keyPressEvent(QKeyEvent *event) override;
+
     void connectSignalSlots() const;
 
     void resizeEvent(QResizeEvent *e) override;
