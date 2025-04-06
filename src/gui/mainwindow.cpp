@@ -56,6 +56,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
     auto const modifers= keys.keyboardModifiers();
     if (keys.key() == Qt::Key_T && modifers == Qt::ControlModifier) {
         ui->treeWidget->setFocus();
+    } else if (keys.key() == Qt::Key_E && modifers == Qt::ControlModifier) {
+        ui->tabWidget->setCurrentIndex(-1);
+        ui->textEdit->setFocus();
     }
 }
 
