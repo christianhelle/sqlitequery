@@ -7,13 +7,21 @@ on:
         description: 'Version number for the build'
         required: true
         type: string
+      os:
+        description: build agent
+        required: true
+        type: string
+      architecture:
+        description: cpu architecture
+        required: true
+        type: string
 
 jobs:
   template:
-    runs-on: macos-latest
+    runs-on: ${{ inputs.os }}
     steps:
       - uses: actions/checkout@v4
-
+ 
       - name: Update Version Number (Qt Project)
         shell: pwsh
         run: |
@@ -46,6 +54,6 @@ jobs:
       - name: Publish artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: SQLiteQuerAnalyzer_MacOS_v${{ inputs.version }}
+          name: SQLiteQuerAnalyzer_MacOS_v${{ inputs.version }}_${{ inputs.architecture }}
           path: |
             src/project/SQLiteQueryAnalyzer.dmg

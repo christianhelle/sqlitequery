@@ -14,7 +14,16 @@ on:
       - '*'
 
 jobs:
-  build:
+  macos-arm64:
     uses: ./.github/workflows/macos-template.yml
     with:
       version: '0.2.${{ github.run_number }}'
+      os: 'macos-latest'
+      architecture: 'arm64'
+     
+  macos-intel:
+    uses: ./.github/workflows/macos-template.yml
+    with:
+      version: '0.2.${{ github.run_number }}'
+      os: 'macos-13'
+      architecture: 'intel'
