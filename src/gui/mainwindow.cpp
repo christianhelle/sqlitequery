@@ -57,8 +57,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
     if (keys.key() == Qt::Key_T && modifiers == Qt::ControlModifier) {
         ui->treeWidget->setFocus();
     } else if (keys.key() == Qt::Key_E && modifiers == Qt::ControlModifier) {
-        ui->tabWidget->setCurrentIndex(-1);
+        ui->tabWidget->setCurrentIndex(0);
         ui->textEdit->setFocus();
+    } else if (keys.key() == Qt::Key_D && modifiers == Qt::ControlModifier) {
+        ui->tabWidget->setCurrentIndex(1);
+        ui->tableView->setFocus();
     } else if (keys.key() == Qt::Key_Q && modifiers == Qt::ControlModifier) {
         this->appExit();
     }
