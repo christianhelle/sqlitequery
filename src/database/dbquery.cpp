@@ -82,7 +82,7 @@ bool DbQuery::execute(const QStringList &queryList, QStringList *errors) {
             count++;
 
             auto *model = new QSqlQueryModel();
-            model->setQuery(sql);
+            model->setQuery(std::move(query));
             table->setModel(model);
             table->repaint();
         }
