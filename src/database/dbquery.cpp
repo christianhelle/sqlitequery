@@ -25,6 +25,14 @@ void DbQuery::clearResults() {
     this->scrollArea->setGeometry(this->widget->geometry());
     this->scrollArea->show();
 
+    for (const auto table: this->tableResults) {
+        const auto model = dynamic_cast<QSqlQueryModel *>(table->model());
+        if (model != Q_NULLPTR) {
+            model->clear();
+        }
+        table->setModel(Q_NULLPTR);
+        delete model;
+    }
     qDeleteAll(this->tableResults.begin(), this->tableResults.end());
     this->tableResults.clear();
 }
