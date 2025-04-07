@@ -502,13 +502,10 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item,
             return;
         }
 
-        const auto sqlModel = dynamic_cast<QSqlTableModel *>(ui->tableView->model());
-        if (sqlModel != Q_NULLPTR) {
-            sqlModel->clear();
+        const auto previousModel = dynamic_cast<QSqlTableModel *>(ui->tableView->model());
+        if (previousModel != Q_NULLPTR) {
+            previousModel->clear();
         }
-
-        // ReSharper disable once CppDFAMemoryLeak
-        delete sqlModel;
 
         // ReSharper disable once CppDFAMemoryLeak
         const auto model = new QSqlTableModel(nullptr,
@@ -519,6 +516,9 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item,
         ui->tableView->setModel(model);
         ui->tableView->setSortingEnabled(true);
         ui->tabWidget->setCurrentIndex(1);
+
+        // ReSharper disable once CppDFAMemoryLeak
+        delete previousModel;
     }
 }
 
