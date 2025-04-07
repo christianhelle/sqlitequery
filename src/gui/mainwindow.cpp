@@ -502,6 +502,14 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item,
             return;
         }
 
+        const auto sqlModel = dynamic_cast<QSqlTableModel *>(ui->tableView->model());
+        if (sqlModel != Q_NULLPTR) {
+            sqlModel->clear();
+        }
+
+        // ReSharper disable once CppDFAMemoryLeak
+        delete sqlModel;
+
         // ReSharper disable once CppDFAMemoryLeak
         delete ui->tableView->model();
         const auto model = new QSqlTableModel(nullptr,
