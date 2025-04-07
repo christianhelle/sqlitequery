@@ -2,27 +2,20 @@
 
 ## [Unreleased](https://github.com/christianhelle/sqlitequery/tree/HEAD)
 
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.27...HEAD)
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.28...HEAD)
 
 **Implemented enhancements:**
 
+- Fix Table Data Memory Leak [\#58](https://github.com/christianhelle/sqlitequery/pull/58) ([christianhelle](https://github.com/christianhelle))
 - Keyboard Shortcuts for switching between Editor and Tree [\#57](https://github.com/christianhelle/sqlitequery/pull/57) ([christianhelle](https://github.com/christianhelle))
-
-## [0.2.27](https://github.com/christianhelle/sqlitequery/tree/0.2.27) (2025-04-06)
-
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.28...0.2.27)
 
 ## [0.2.28](https://github.com/christianhelle/sqlitequery/tree/0.2.28) (2025-04-06)
 
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.26...0.2.28)
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.24...0.2.28)
 
 **Implemented enhancements:**
 
 - MacOS Intel Support [\#56](https://github.com/christianhelle/sqlitequery/pull/56) ([christianhelle](https://github.com/christianhelle))
-
-## [0.2.26](https://github.com/christianhelle/sqlitequery/tree/0.2.26) (2025-04-06)
-
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.24...0.2.26)
 
 ## [0.2.24](https://github.com/christianhelle/sqlitequery/tree/0.2.24) (2025-04-01)
 
