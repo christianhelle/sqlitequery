@@ -511,7 +511,6 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item,
         delete sqlModel;
 
         // ReSharper disable once CppDFAMemoryLeak
-        delete ui->tableView->model();
         const auto model = new QSqlTableModel(nullptr,
                                               this->database->getDatabase());
         model->setTable(item->text(column));
