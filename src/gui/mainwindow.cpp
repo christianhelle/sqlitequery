@@ -515,7 +515,6 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item,
                                               this->database->getDatabase());
         model->setTable(item->text(column));
         model->setEditStrategy(QSqlTableModel::OnFieldChange);
-        model->select();
 
         ui->tableView->setModel(model);
         ui->tableView->setSortingEnabled(true);
