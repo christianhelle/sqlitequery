@@ -51,7 +51,7 @@ MainWindow::~MainWindow() {
     this->tree->clear();
 }
 
-void MainWindow::keyPressEvent(QKeyEvent *event){
+void MainWindow::keyPressEvent(QKeyEvent *event) {
     auto const keys = event->keyCombination();
     auto const modifiers = keys.keyboardModifiers();
     if (keys.key() == Qt::Key_T && modifiers == Qt::ControlModifier) {
