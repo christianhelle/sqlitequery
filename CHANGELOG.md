@@ -6,8 +6,8 @@
 
 **Implemented enhancements:**
 
+- CTRL+D to set focus to Table Data [\#60](https://github.com/christianhelle/sqlitequery/pull/60) ([christianhelle](https://github.com/christianhelle))
 - Fix Table Data Memory Leak [\#58](https://github.com/christianhelle/sqlitequery/pull/58) ([christianhelle](https://github.com/christianhelle))
-- Keyboard Shortcuts for switching between Editor and Tree [\#57](https://github.com/christianhelle/sqlitequery/pull/57) ([christianhelle](https://github.com/christianhelle))
 
 **Merged pull requests:**
 
@@ -16,6 +16,10 @@
 ## [0.2.29](https://github.com/christianhelle/sqlitequery/tree/0.2.29) (2025-04-07)
 
 [Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.28...0.2.29)
+
+**Implemented enhancements:**
+
+- Keyboard Shortcuts for switching between Editor and Tree [\#57](https://github.com/christianhelle/sqlitequery/pull/57) ([christianhelle](https://github.com/christianhelle))
 
 ## [0.2.28](https://github.com/christianhelle/sqlitequery/tree/0.2.28) (2025-04-06)
 
