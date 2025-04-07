@@ -52,11 +52,10 @@ bool DbQuery::execute(const QStringList &queryList, QStringList *errors) {
     const int height = widgetRect.height();
 
     const QSqlDatabase db = this->database->getDatabase();
-    const QString empty;
     int count = 0;
 
     for (int i = 0; i < queryList.length(); ++i) {
-        const QString sql = queryList.at(i).trimmed().replace('\n', empty, Qt::CaseInsensitive);
+        const QString sql = queryList.at(i).trimmed().replace('\n', "", Qt::CaseInsensitive);
         if (sql.isEmpty())
             continue;
 
