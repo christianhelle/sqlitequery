@@ -25,6 +25,14 @@ void DbQuery::clearResults() {
     this->scrollArea->setGeometry(this->widget->geometry());
     this->scrollArea->show();
 
+    for (const auto table: this->tableResults) {
+        const auto model = dynamic_cast<QSqlQueryModel *>(table->model());
+        if (model != Q_NULLPTR) {
+            model->clear();
+        }
+        table->setModel(Q_NULLPTR);
+        delete model;
+    }
     qDeleteAll(this->tableResults.begin(), this->tableResults.end());
     this->tableResults.clear();
 }
@@ -44,11 +52,10 @@ bool DbQuery::execute(const QStringList &queryList, QStringList *errors) {
     const int height = widgetRect.height();
 
     const QSqlDatabase db = this->database->getDatabase();
-    const QString empty;
     int count = 0;
 
     for (int i = 0; i < queryList.length(); ++i) {
-        const QString sql = queryList.at(i).trimmed().replace('\n', empty, Qt::CaseInsensitive);
+        const QString sql = queryList.at(i).trimmed().replace('\n', "", Qt::CaseInsensitive);
         if (sql.isEmpty())
             continue;
 
@@ -74,7 +81,7 @@ bool DbQuery::execute(const QStringList &queryList, QStringList *errors) {
             count++;
 
             auto *model = new QSqlQueryModel();
-            model->setQuery(sql);
+            model->setQuery(std::move(query));
             table->setModel(model);
             table->repaint();
         }
