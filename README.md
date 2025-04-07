@@ -99,7 +99,7 @@ cmake --build . --config Release
 
 ### Building on MacOS
 
-Install CMAke and Qt6
+Install CMAke and Qt6. It's recommended to install Qt using the [official installer](https://www.qt.io/download-qt-installer-oss)
 
 ```sh
 brew update
@@ -115,7 +115,9 @@ cmake .
 cmake --build . --config Release
 ```
 
-Build MacOS disk image (Optional)
+Build MacOS disk image (Optional). 
+
+There is a bug in the Homebrew distribution of Qt which causes the use of `macdeployqt` to fail.
 
 ```sh
 macdeployqt SQLiteQueryAnalyzer.app -dmg
