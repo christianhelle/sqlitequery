@@ -99,8 +99,7 @@ cmake --build . --config Release
 
 ### Building on MacOS
 
-Install CMAke and Qt6. It's recommended to install Qt using the [official installer](https://www.qt.io/download-qt-installer-oss)
-
+Install CMake and Qt6. It's recommended to install Qt using the [official installer](https://www.qt.io/download-qt-installer-oss)
 ```sh
 brew update
 brew install cmake
