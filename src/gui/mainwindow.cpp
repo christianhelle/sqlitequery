@@ -502,11 +502,8 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item,
             return;
         }
 
-        if (ui->tableView->model() != Q_NULLPTR)
-            std::make_unique<QSqlTableModel>(ui->tableView->model());
-
-        // The model is no longer alive after the unique pointer destroys it...
         // ReSharper disable once CppDFAMemoryLeak
+        delete ui->tableView->model();
         const auto model = new QSqlTableModel(nullptr,
                                               this->database->getDatabase());
         model->setTable(item->text(column));
