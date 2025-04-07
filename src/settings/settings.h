@@ -29,10 +29,10 @@ public:
 
     static void setMainWindowState(const QSizeF &size,
                                    const QPoint &position,
-                                   const int treeWidth,
-                                   const int tabWidth,
-                                   const int queryTextHeight,
-                                   const int queryResultHeight);
+                                   int treeWidth,
+                                   int tabWidth,
+                                   int queryTextHeight,
+                                   int queryResultHeight);
 
     static void getSessionState(SessionState *state);
 
