@@ -35,7 +35,7 @@ void DbAnalyzer::loadTables(DatabaseInfo &info) const {
     while (query.next()) {
         Table table;
         table.name = query.value("name").toString();
-        if (table.name == "sqlite_sequence") {
+        if (table.name == "sqlite_sequence" || table.name == "sqlite_stat1") {
             continue;
         }
         info.tables.append(table);
