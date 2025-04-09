@@ -4,6 +4,6 @@
     "features": {
 	      "ghcr.io/devcontainers/features/powershell:1": {}
     },
-    "postCreateCommand": "./.devcontainer/postCreateCommand.sh",
+    "postCreateCommand": "sh ./devcontainer/postCreateCommand.sh",
     "remoteUser": "vscode"
 }
