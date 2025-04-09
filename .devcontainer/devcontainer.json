@@ -1,6 +1,6 @@
 {
     "name": "C++ Development with CMake and Qt",
-    "image": "mcr.microsoft.com/devcontainers/base:ubuntu", // Base image
+    "image": "mcr.microsoft.com/devcontainers/cpp:ubuntu-24.04", // Base image
     "features": {
 		"ghcr.io/devcontainers/features/powershell:1": {},
         "ghcr.io/devcontainers/features/cmake:1": {},
