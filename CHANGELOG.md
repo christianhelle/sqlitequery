@@ -6,9 +6,10 @@
 
 **Implemented enhancements:**
 
+- Hide internal SQLite tables from tree [\#62](https://github.com/christianhelle/sqlitequery/pull/62) ([christianhelle](https://github.com/christianhelle))
 - Fix query result memory leak [\#61](https://github.com/christianhelle/sqlitequery/pull/61) ([christianhelle](https://github.com/christianhelle))
 - CTRL+D to set focus to Table Data [\#60](https://github.com/christianhelle/sqlitequery/pull/60) ([christianhelle](https://github.com/christianhelle))
-- Fix Table Data Memory Leak [\#58](https://github.com/christianhelle/sqlitequery/pull/58) ([christianhelle](https://github.com/christianhelle))
+- Fix table data memory leak [\#58](https://github.com/christianhelle/sqlitequery/pull/58) ([christianhelle](https://github.com/christianhelle))
 - Keyboard Shortcuts for switching between Editor and Tree [\#57](https://github.com/christianhelle/sqlitequery/pull/57) ([christianhelle](https://github.com/christianhelle))
 - MacOS Intel Support [\#56](https://github.com/christianhelle/sqlitequery/pull/56) ([christianhelle](https://github.com/christianhelle))
 
