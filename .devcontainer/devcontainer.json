@@ -4,6 +4,6 @@
     "features": {
 	      "ghcr.io/devcontainers/features/powershell:1": {}
     },
-    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y qt6-base-dev",
+    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y python3 python3-pip && pip install aqtinstall --break-system-packages && aqt install-qt linux desktop 6.8.2",
     "remoteUser": "vscode"
 }
