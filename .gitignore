@@ -44,3 +44,5 @@ src/project/cmake-build-debug
 src/project/artifacts/SQLiteQueryAnalyzer-Setup.exe
 src/.vs
 *.nupkg
+6.8.2
+*aqtinstall.log
