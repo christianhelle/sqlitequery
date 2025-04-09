@@ -1,0 +1,20 @@
+{
+    "name": "C++ Development with CMake and Qt",
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu", // Base image
+    "features": {
+        "ghcr.io/devcontainers/features/cmake:1": {
+            "version": "latest"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools",
+                "ms-vscode.cmake-tools",
+                "twxs.cmake"
+            ]
+        }
+    },
+    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y qt6-base-dev qt6-tools-dev-tools",
+    "remoteUser": "vscode"
+}
