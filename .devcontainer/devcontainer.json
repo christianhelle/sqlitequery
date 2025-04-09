@@ -2,19 +2,10 @@
     "name": "C++ Development with CMake and Qt",
     "image": "mcr.microsoft.com/devcontainers/base:ubuntu", // Base image
     "features": {
-        "ghcr.io/devcontainers/features/cmake:1": {
-            "version": "latest"
+		"ghcr.io/devcontainers/features/powershell:1": {},
+        "ghcr.io/devcontainers/features/cmake:1": {},
+        "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+            "packages": " qt6-base-dev"
         }
-    },
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "ms-vscode.cpptools",
-                "ms-vscode.cmake-tools",
-                "twxs.cmake"
-            ]
-        }
-    },
-    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y qt6-base-dev qt6-tools-dev-tools && curl -sSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg && sudo sh -c 'echo \"deb [arch=amd64] https://packages.microsoft.com/ubuntu/$(lsb_release -rs)/prod $(lsb_release -cs) main\" > /etc/apt/sources.list.d/microsoft.list' && sudo apt-get update && sudo apt-get install -y powershell",
-    "remoteUser": "vscode"
+    }
 }
