@@ -2,10 +2,8 @@
     "name": "C++ Development with CMake and Qt",
     "image": "mcr.microsoft.com/devcontainers/cpp:ubuntu-24.04", // Base image
     "features": {
-		"ghcr.io/devcontainers/features/powershell:1": {},
-        "ghcr.io/devcontainers/features/cmake:1": {},
-        "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
-            "packages": " qt6-base-dev"
-        }
-    }
+	      "ghcr.io/devcontainers/features/powershell:1": {}
+    },
+    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y qt6-base-dev",
+    "remoteUser": "vscode"
 }
