@@ -54,8 +54,7 @@ int main(int argc, char *argv[]) {
             targetDir = QDir::currentPath();
         }
 
-        constexpr Export exporter;
-        exporter.exportDataToCsvFile(args.at(0),
+        Export::exportDataToCsvFile(args.at(0),
                                      targetDir,
                                      ",",
                                      showProgress);
