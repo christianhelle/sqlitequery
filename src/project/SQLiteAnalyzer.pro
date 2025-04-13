@@ -7,7 +7,7 @@
 QT       += core gui
 QT       += sql
 
-greaterThan(QT_MINOR_VERSION, 6.5): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = "SQLiteQueryAnalyzer"
 TEMPLATE = app
