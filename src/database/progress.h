@@ -16,7 +16,8 @@ public:
         affectedRows++;
         isComplete = false;
         if (printProgress) {
-            printf("Progress: %llu rows processed.\n", affectedRows);
+            printf("\rProgress: %llu rows processed", affectedRows);
+            fflush(stdout);
         }
     }
 
