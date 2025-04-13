@@ -34,5 +34,5 @@ void Export::exportDataToCsvFile(const QString &file,
                                    &cancellationToken,
                                    progress);
 
-    printf("Exported %llu row(s)\n", progress->getAffectedRows());
+    printf("\nExported %llu row(s)\n", progress->getAffectedRows());
 }
