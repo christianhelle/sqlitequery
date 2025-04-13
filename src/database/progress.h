@@ -16,7 +16,8 @@ public:
         affectedRows++;
         isComplete = false;
         if (printProgress) {
-            printf("\rProgress: %llu rows processed", affectedRows);
+            QTextStream out(stdout);
+            out << "\rProgress: " << affectedRows << " rows processed";
             fflush(stdout);
         }
     }
@@ -24,7 +25,7 @@ public:
     [[nodiscard]] uint64_t getAffectedRows() const { return affectedRows; }
     [[nodiscard]] bool isCompleted() const { return isComplete; }
     void setCompleted() { isComplete = true; }
-    void setShowProgress(bool value) { printProgress = value; }
+    void setShowProgress(const bool value) { printProgress = value; }
     [[nodiscard]] bool isShowProgress() const { return printProgress; }
 };
 
