@@ -1,5 +1,5 @@
 #include "export.h"
-#include "../../database/dbanalyzer.h"
+#include "../database/dbanalyzer.h"
 
 void Export::exportDataToCsvFile(const QString &file,
                                  const QString &outputFolder,
