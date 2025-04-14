@@ -6,6 +6,8 @@
 
 **Implemented enhancements:**
 
+- Introduce CLI arguments for exporting data to CSV [\#64](https://github.com/christianhelle/sqlitequery/pull/64) ([christianhelle](https://github.com/christianhelle))
+- Add  Dev Container configuration [\#63](https://github.com/christianhelle/sqlitequery/pull/63) ([christianhelle](https://github.com/christianhelle))
 - Hide internal SQLite tables from tree [\#62](https://github.com/christianhelle/sqlitequery/pull/62) ([christianhelle](https://github.com/christianhelle))
 - Fix query result memory leak [\#61](https://github.com/christianhelle/sqlitequery/pull/61) ([christianhelle](https://github.com/christianhelle))
 - CTRL+D to set focus to Table Data [\#60](https://github.com/christianhelle/sqlitequery/pull/60) ([christianhelle](https://github.com/christianhelle))
