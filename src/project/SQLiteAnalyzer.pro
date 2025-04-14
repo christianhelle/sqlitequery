@@ -30,6 +30,7 @@ SOURCES += \
     ../database/dbexportdata.cpp \
     ../threading/cancellation.cpp \
     ../gui/prompts.cpp \
+    ../cli/export.cpp
 
 HEADERS += \
     ../gui/mainwindow.h \
@@ -47,6 +48,7 @@ HEADERS += \
     ../threading/cancellation.h \
     ../threading/mainthread.h \
     ../database/progress.h \
-    ../gui/prompts.h
+    ../gui/prompts.h \
+    ../cli/export.h
 
 FORMS    += ../gui/mainwindow.ui
