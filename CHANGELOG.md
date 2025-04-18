@@ -7,6 +7,7 @@
 **Implemented enhancements:**
 
 - Upgrade to using Qt 6.9.0 [\#66](https://github.com/christianhelle/sqlitequery/issues/66)
+- Show status and error messages in status bar [\#69](https://github.com/christianhelle/sqlitequery/pull/69) ([christianhelle](https://github.com/christianhelle))
 - Fix memory leak when switching databases [\#68](https://github.com/christianhelle/sqlitequery/pull/68) ([christianhelle](https://github.com/christianhelle))
 - Qt 6.9.0 [\#67](https://github.com/christianhelle/sqlitequery/pull/67) ([christianhelle](https://github.com/christianhelle))
 - Introduce CLI arguments for exporting data to CSV [\#64](https://github.com/christianhelle/sqlitequery/pull/64) ([christianhelle](https://github.com/christianhelle))
