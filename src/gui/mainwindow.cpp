@@ -545,3 +545,8 @@ void MainWindow::about() {
                          "for querying and manipulating SQLite databases.";
     QMessageBox::about(this, "About", text);
 }
+
+void MainWindow::showMessage(const QString &message) const {
+    ui->queryResultMessagesTextEdit->setPlainText(message);
+    this->statusBar->showMessage(message, 5000);
+}

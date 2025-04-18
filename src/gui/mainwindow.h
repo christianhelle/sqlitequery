@@ -97,6 +97,8 @@ private:
     void saveWindowState(const QSize &size) const;
 
     void restoreWindowState();
+
+    void showMessage(const QString &message) const;
 };
 
 #endif // MAINWINDOW_H
