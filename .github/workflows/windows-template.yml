@@ -37,7 +37,7 @@ jobs:
           $version = (Get-Content -Path src/main.cpp -Raw) -replace '#define VERSION "1.0.0"', '#define VERSION "${{ inputs.version }}"'
           $version | Set-Content -Path src/main.cpp
 
-      - name: Install Qt
+      - name: Install Qt (Static)
         uses: jurplel/install-qt-action@v4
         with:
           version: '6.8.2'
@@ -46,49 +46,68 @@ jobs:
           arch: win64_msvc2022_64
           dir: ${{ runner.temp }}
           setup-python: false
-
-      - name: Download JOM
-        uses: suisei-cn/actions-download-file@v1
-        with:
-          url: http://download.qt.io/official_releases/jom/jom.zip
-          target: ${{ runner.temp }}\
-
-      - name: Unzip JOM
-        working-directory: ${{ runner.temp }}
-        run: |
-          7z x jom.zip -ojom
-              
-      - name: Create build directory
-        run: mkdir ${{ runner.temp }}\build
-
+          aqtversion: '==3.1.*'
+          modules: 'qtpositioning qtmultimedia'
+          archives: 'qtbase qtsvg qttools'
+          tools: 'tools_cmake tools_ninja'
+          set-env: true
+          
       - name: Set up Visual Studio shell
         uses: egor-tensin/vs-shell@v2
         with:
           arch: x64
 
-      - name: Build
+      - name: Create build directory
+        run: mkdir ${{ runner.temp }}\build
+
+      - name: Configure and Build Static Qt
+        working-directory: ${{ runner.temp }}\Qt\6.8.2\Src
+        shell: pwsh
+        run: |
+          # Create build directory for Qt static build
+          mkdir static-build
+          cd static-build
+          
+          # Configure Qt for static build
+          ..\configure.bat -static -release -no-pch -prefix "${{ runner.temp }}\Qt\6.8.2\msvc2022_64-static" -platform win32-msvc -qt-zlib -qt-libpng -qt-libjpeg -nomake examples -nomake tests
+          
+          # Build and install Qt
+          cmake --build . --parallel 4
+          cmake --install .
+
+      - name: Build Static SQLite Query Analyzer
         working-directory: ${{ github.workspace }}\src\project
         shell: pwsh
         run: |          
+          # Configure CMake for static build
           cmake . `
-            -DCMAKE_PREFIX_PATH=${{ runner.temp }}\Qt\6.8.2\msvc2022_64 `
+            -DCMAKE_PREFIX_PATH="${{ runner.temp }}\Qt\6.8.2\msvc2022_64-static" `
             -DCMAKE_CXX_STANDARD=17 `
             -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" `
+            -DBUILD_SHARED_LIBS=OFF `
+            -DQT_STATICPLUGIN=ON `
+            -DCMAKE_EXE_LINKER_FLAGS="/INCREMENTAL:NO /LTCG" `
+            -DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreaded" `
             -B build
-          cmake --build build --config Release
-          ${{ runner.temp }}\Qt\6.8.2\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
-          rm .\build\Release\vc_redist.x64.exe
+          
+          # Build static binary
+          cmake --build build --config Release --target SQLiteQueryAnalyzer
+          
+          # Verify it's a standalone exe (no DLL dependencies)
+          echo "Checking dependencies of built executable"
+          dumpbin /dependents .\build\Release\SQLiteQueryAnalyzer.exe
 
-      - name: Zip build
+      - name: Zip standalone binary
         working-directory: ${{ runner.temp }}
         run: |
-          7z a SQLiteQueryAnalyzer_Windows.zip ${{ github.workspace }}\src\project\build\Release\* -r
+          # Only include the standalone executable
+          7z a SQLiteQueryAnalyzer_Windows_Standalone.zip ${{ github.workspace }}\src\project\build\Release\SQLiteQueryAnalyzer.exe
               
-      - name: Publish Build
+      - name: Publish Standalone Build
         uses: actions/upload-artifact@master
         with:
-          name: SQLiteQuerAnalyzer_Windows_v${{ inputs.version }}
-          path: ${{ runner.temp }}\SQLiteQueryAnalyzer_Windows.zip
+          name: SQLiteQuerAnalyzer_Standalone_Windows_v${{ inputs.version }}
+          path: ${{ runner.temp }}\SQLiteQueryAnalyzer_Windows_Standalone.zip
 
       - name: Inno Setup
         working-directory: ${{ github.workspace }}\src\project
