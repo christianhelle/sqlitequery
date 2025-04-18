@@ -30,7 +30,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
-        version: '6.8.2'
+        version: '6.9.0'
     - name: QMake
       run: qmake
       working-directory: src/project
