@@ -62,7 +62,7 @@ Here are some screenshots of SQLite Query Analyzer in action:
 ### Prerequisites
 
 - CMake 3.16 or later - Install from [official website](https://cmake.org/download/)
-- Qt 6.8.2 - Install from [official website](https://www.qt.io/download-qt-installer-oss)
+- Qt 6.9.0 - Install from [official website](https://www.qt.io/download-qt-installer-oss)
 - Git
 - [Powershell Core](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell) (Optional)
 
@@ -128,9 +128,9 @@ Build the project (These instructions assumes that Qt root folder is C:\Qt)
 
 ```pwsh
 cd src
-cmake . -DCMAKE_PREFIX_PATH=C:/Qt/6.8.2/msvc2022_64 -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" -B build
+cmake . -DCMAKE_PREFIX_PATH=C:/Qt/6.9.0/msvc2022_64 -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" -B build
 cmake --build build --config Release
-C:\Qt\6.8.2\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
+C:\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
 ```
 
 Build the installer project using Inno Setup (Optional)
