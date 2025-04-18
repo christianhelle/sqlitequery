@@ -8,6 +8,11 @@
 #define MyAppExeName "SQLiteQueryAnalyzer.exe"
 #define MyAppIcon "icon.ico"
 
+; Check if it's a standalone build (defined by command line param)
+#ifndef StandaloneBuild
+  #define StandaloneBuild False
+#endif
+
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
@@ -36,7 +41,13 @@ ChangesAssociations=yes
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: ".\build\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+#if StandaloneBuild
+  ; For standalone build, use the files from deploy/bin
+  Source: "..\..\deploy\bin\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+#else
+  ; For regular build with Qt dependencies
+  Source: ".\build\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+#endif
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: "..\resources\icon.ico"; DestDir: "{app}"; DestName: "icon.ico"
 
