@@ -495,7 +495,6 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item,
     if (this->dataExportProgress.get() != nullptr) {
         const auto msg = "Unable to process request. Data export in progress - " + 
             QString("%1 row(s)").arg(this->dataExportProgress.get()->getAffectedRows());
-        ui->queryResultMessagesTextEdit->setPlainText(msg);
         this->showMessage(msg);
         ui->queryResultTab->setCurrentIndex(1);
         return;
