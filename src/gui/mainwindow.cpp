@@ -384,8 +384,9 @@ void MainWindow::showExportDataProgress(const ExportDataProgress *progress,
         do {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             MainThread::run([this, progress]() {
-                ui->queryResultMessagesTextEdit->setPlainText(
-                    QString("Exported %1 row(s)").arg(progress->getAffectedRows()));
+                const auto msg = QString("Exported %1 row(s)").arg(progress->getAffectedRows());
+                ui->queryResultMessagesTextEdit->setPlainText(msg);
+                this->statusBar->showMessage(msg, 5000);
             });
         } while (!cancellationToken.isCancellationRequested() &&
                  !progress->isCompleted());
@@ -405,8 +406,9 @@ void MainWindow::exportDataAsync(const QString &filepath,
     future.then([this, progress] {
         MainThread::run([this, progress]() {
             this->setEnabledActions(true);
-            ui->queryResultMessagesTextEdit->setPlainText(
-                QString("Exported %1 row(s)").arg(progress->getAffectedRows()));
+            const auto msg = QString("Exported %1 row(s)").arg(progress->getAffectedRows());
+            ui->queryResultMessagesTextEdit->setPlainText(msg);
+            this->statusBar->showMessage(msg, 5000);
         });
     });
 }
@@ -462,8 +464,10 @@ void MainWindow::exportDataToCsvFiles() {
     future.then([this, progress] {
         MainThread::run([this, progress]() {
             this->setEnabledActions(true);
-            ui->queryResultMessagesTextEdit->setPlainText(
-                QString("Exported %1 row(s)").arg(progress->getAffectedRows()));
+            const auto msg = QString("Exported %1 row(s)").arg(progress->getAffectedRows());
+            ui->queryResultMessagesTextEdit->setPlainText(msg);
+            this->statusBar->showMessage(msg, 5000);
+            ui->queryResultTab->setCurrentIndex(1);
         });
     });
     showExportDataProgress(progress, cancellationToken);
