@@ -13,12 +13,23 @@ option(BUILD_STATIC "Build as static library" OFF)
 if(BUILD_STATIC OR DEFINED ENV{BUILD_STATIC})
     set(BUILD_SHARED_LIBS OFF)
     set(CMAKE_FIND_LIBRARY_SUFFIXES .lib .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /MANIFEST:NO")
+    
     if(MSVC)
+        # Use static runtime libraries for MSVC
         set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+        
+        # Additional flags for static linking
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /MANIFEST:NO /LTCG")
+        set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} /LTCG")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MT$<$<CONFIG:Debug>:d> /GL")
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MT$<$<CONFIG:Debug>:d> /GL")
     endif()
+    
+    # Always define static plugin usage
+    add_definitions(-DQT_STATICPLUGIN)
 endif()
 
+# Find Qt components
 find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui Sql)
 find_package(Qt${QT_VERSION_MAJOR} OPTIONAL_COMPONENTS Widgets)
@@ -79,6 +90,7 @@ qt_add_executable(SQLiteQueryAnalyzer WIN32 MACOSX_BUNDLE
         $<$<OR:$<BOOL:${BUILD_STATIC}>,$<BOOL:$ENV{BUILD_STATIC}>>:${CMAKE_CURRENT_BINARY_DIR}/static_plugins.cpp>
 )
 
+# Basic Qt dependencies
 target_link_libraries(SQLiteQueryAnalyzer PRIVATE
         Qt::Core
         Qt::Gui
@@ -94,10 +106,44 @@ endif ()
 # For static builds, link with appropriate plugins
 if(BUILD_STATIC OR DEFINED ENV{BUILD_STATIC})
     if(WIN32)
+        # Windows static plugins
         target_link_libraries(SQLiteQueryAnalyzer PRIVATE
             Qt${QT_VERSION_MAJOR}::QWindowsIntegrationPlugin
             Qt${QT_VERSION_MAJOR}::QICOPlugin
         )
+        
+        # Windows static runtime libraries
+        if(MSVC)
+            target_link_options(SQLiteQueryAnalyzer PRIVATE 
+                "/NODEFAULTLIB:libucrt.lib" 
+                "/NODEFAULTLIB:libcmt.lib"
+                "/NODEFAULTLIB:msvcrtd.lib" 
+                "/NODEFAULTLIB:msvcrt.lib"
+            )
+            
+            # Link with static C/C++ runtime
+            target_link_libraries(SQLiteQueryAnalyzer PRIVATE
+                libucrt.lib
+                libcmt.lib
+                libvcruntime.lib
+                oldnames.lib
+            )
+            
+            # Windows specific libraries often needed for static builds
+            target_link_libraries(SQLiteQueryAnalyzer PRIVATE
+                user32.lib
+                gdi32.lib
+                winmm.lib
+                imm32.lib
+                ole32.lib
+                oleaut32.lib
+                opengl32.lib
+                ws2_32.lib
+                advapi32.lib
+                shell32.lib
+                uuid.lib
+            )
+        endif()
     elseif(APPLE)
         target_link_libraries(SQLiteQueryAnalyzer PRIVATE
             Qt${QT_VERSION_MAJOR}::QCocoaIntegrationPlugin
@@ -112,6 +158,8 @@ if(BUILD_STATIC OR DEFINED ENV{BUILD_STATIC})
             Qt${QT_VERSION_MAJOR}::QSvgIconPlugin
         )
     endif()
+    
+    # Common plugin for all platforms
     target_link_libraries(SQLiteQueryAnalyzer PRIVATE
         Qt${QT_VERSION_MAJOR}::QSQLiteDriverPlugin
     )

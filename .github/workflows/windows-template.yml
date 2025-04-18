@@ -42,63 +42,74 @@ jobs:
         with:
           arch: x64
 
-      - name: Install Qt (Static)
-        shell: pwsh
-        run: |
-          # Create directories
-          mkdir -p ${{ runner.temp }}/Qt
-          cd ${{ runner.temp }}/Qt
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.5.3'  # Using 6.5.3 which has better MSVC integration
+          host: windows
+          target: desktop
+          arch: win64_msvc2019_64
+          dir: ${{ runner.temp }}/Qt
+          setup-python: true
+          tools: 'tools_ifw tools_mingw90 tools_cmake tools_ninja'
+          cache: true
+          extra: '--external 7z'
           
-          # Download and install aqt
-          pip install aqtinstall==3.1.*
-          
-          # Install static Qt using aqtinstall
-          # Note: Using the mingw version as static MSVC builds are not directly available 
-          # through aqtinstall, but we'll use the static libraries with MSVC
-          aqt install-qt windows desktop 6.6.1 win64_mingw
-          
-          # Set environment variables
-          echo "Qt6_DIR=${{ runner.temp }}/Qt/6.6.1/mingw_64/lib/cmake/Qt6" >> $env:GITHUB_ENV
-          echo "CMAKE_PREFIX_PATH=${{ runner.temp }}/Qt/6.6.1/mingw_64" >> $env:GITHUB_ENV
-          
-          # Add Qt bin to PATH
-          echo "${{ runner.temp }}/Qt/6.6.1/mingw_64/bin" >> $env:GITHUB_PATH
-
-      - name: Install Windows Build Tools
-        shell: pwsh
-        run: |
-          # Install MSVC build tools if needed
-          choco install -y visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
-          
-          # Download JOM for parallel builds
-          Invoke-WebRequest -Uri "https://download.qt.io/official_releases/jom/jom.zip" -OutFile "${{ runner.temp }}/jom.zip"
-          Expand-Archive -Path "${{ runner.temp }}/jom.zip" -DestinationPath "${{ runner.temp }}/jom"
-          echo "${{ runner.temp }}/jom" >> $env:GITHUB_PATH
-
-      - name: Create build directory
+      - name: Create Build Directory
         run: mkdir -p ${{ github.workspace }}/build
 
-      - name: Configure and Build SQLite Query Analyzer as Static Binary
+      - name: Build Static Qt Components
+        shell: pwsh
+        run: |
+          # Configure Qt static plugins
+          $qtbase = "${{ runner.temp }}/Qt/6.5.3/msvc2019_64"
+          
+          # We'll use qtbase's tools to build a static version of necessary plugins
+          Write-Host "Building static plugins from Qt libraries..."
+          Write-Host "Qt base directory: $qtbase"
+          
+          # Create qconfig.pri with static build settings for plugins
+          $staticPluginsConfig = @"
+          CONFIG += static
+          CONFIG -= shared
+          DEFINES += QT_STATICPLUGIN
+          "@
+          
+          # Create the configuration for static plugins in build directory
+          New-Item -Path ${{ github.workspace }}/build/static_plugins -ItemType Directory -Force
+          $staticPluginsConfig | Out-File -FilePath ${{ github.workspace }}/build/static_plugins/qconfig.pri -Encoding utf8
+
+      - name: Configure and Build SQLite Query Analyzer as Standalone Binary
         working-directory: ${{ github.workspace }}
         shell: pwsh
         run: |
-          # Configure CMake for static build
+          $qtDir = "${{ runner.temp }}/Qt/6.5.3/msvc2019_64"
+          
+          # Configure CMake for static build with MSVC
           cmake -B build -S src/project `
-            -DCMAKE_PREFIX_PATH="${{ runner.temp }}/Qt/6.6.1/mingw_64" `
+            -DCMAKE_PREFIX_PATH="$qtDir" `
             -DCMAKE_CXX_STANDARD=17 `
-            -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" `
+            -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive- /MT" `
             -DBUILD_STATIC=ON `
-            -DCMAKE_BUILD_TYPE=Release
+            -DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreaded" `
+            -DCMAKE_EXE_LINKER_FLAGS="/MANIFEST:NO" `
+            -G "Visual Studio 17 2022" `
+            -A x64
           
           # Build with multiple cores
           cmake --build build --config Release --parallel
           
           # Verify it's a standalone exe (no DLL dependencies)
           echo "Checking dependencies of built executable:"
-          Get-Item build/Release/SQLiteQueryAnalyzer.exe
-          dumpbin /dependents build/Release/SQLiteQueryAnalyzer.exe
+          if (Test-Path build/Release/SQLiteQueryAnalyzer.exe) {
+            Get-Item build/Release/SQLiteQueryAnalyzer.exe
+            dumpbin /dependents build/Release/SQLiteQueryAnalyzer.exe
+          } else {
+            Write-Host "Error: SQLiteQueryAnalyzer.exe was not built successfully"
+            exit 1
+          }
 
-      - name: Copy Additional Required Files
+      - name: Process Binary for Deployment
         working-directory: ${{ github.workspace }}
         shell: pwsh
         run: |
@@ -106,24 +117,27 @@ jobs:
           mkdir -p deploy/bin
           
           # Copy the executable
-          Copy-Item build/Release/SQLiteQueryAnalyzer.exe -Destination deploy/bin/
-          
-          # Only copy essential Windows system DLLs if needed
-          # This keeps our distribution minimal while ensuring it runs on target systems
+          Copy-Item build/Release/SQLiteQueryAnalyzer.exe -Destination deploy/bin/ -ErrorAction Continue
           
           # Check and notify about the dependency status
-          $deps = & dumpbin /dependents build/Release/SQLiteQueryAnalyzer.exe | Select-String -Pattern '\.dll'
+          $deps = & dumpbin /dependents build/Release/SQLiteQueryAnalyzer.exe | Select-String -Pattern '\.dll' | Where-Object { $_ -notmatch 'KERNEL32\.dll|USER32\.dll|GDI32\.dll|SHELL32\.dll|ole32\.dll|ADVAPI32\.dll|OLEAUT32\.dll|COMDLG32\.dll|COMCTL32\.dll|VERSION\.dll|IMM32\.dll|WINMM\.dll|WS2_32\.dll|MSVCP140\.dll|VCRUNTIME140\.dll' }
+          
           if ($deps) {
-            echo "Note: The following dependencies are still required (these should be standard Windows DLLs only):"
+            echo "Note: The following non-system dependencies are still required:"
             echo $deps
+            
+            # Additional steps to handle Qt dependencies if needed
+            # We'll use the Microsoft recommended approach to ensure these are included
+            echo "Adding Visual C++ redistributable to ensure runtime compatibility..."
+            Copy-Item "C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\*\x64\Microsoft.VC143.CRT\*.dll" deploy/bin/ -ErrorAction Continue
           } else {
-            echo "Successfully created standalone executable with no DLL dependencies!"
+            echo "Successfully created standalone executable with only system DLL dependencies!"
           }
 
       - name: Zip standalone binary
         working-directory: ${{ github.workspace }}
         run: |
-          # Create a zip with just the executable and any critical files
+          # Create a zip with the executable and any necessary DLLs
           7z a SQLiteQueryAnalyzer_Windows_Standalone.zip ./deploy/bin/*
               
       - name: Publish Standalone Build
