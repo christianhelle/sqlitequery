@@ -215,8 +215,8 @@ void MainWindow::saveSession() const {
 
 void MainWindow::createNewFile() {
     if (this->dataExportProgress.get() != nullptr) {
-        ui->queryResultMessagesTextEdit->setPlainText(
-            "Unable to process request. Data export in progress");
+        const auto msg = "Unable to process request. Data export in progress";
+        this->statusBar->showMessage(msg, 5000);
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -229,8 +229,8 @@ void MainWindow::createNewFile() {
 
 void MainWindow::openDatabase(const QString &filename) {
     if (this->dataExportProgress.get() != nullptr) {
-        ui->queryResultMessagesTextEdit->setPlainText(
-            "Unable to process request. Data export in progress");
+        const auto msg = "Unable to process request. Data export in progress";
+        this->statusBar->showMessage(msg, 5000);
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -264,8 +264,8 @@ void MainWindow::openDatabase(const QString &filename) {
 
 void MainWindow::openExistingFile() {
     if (this->dataExportProgress.get() != nullptr) {
-        ui->queryResultMessagesTextEdit->setPlainText(
-            "Unable to process request. Data export in progress");
+        const auto msg = "Unable to process request. Data export in progress";
+        this->statusBar->showMessage(msg, 5000);
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -283,8 +283,8 @@ void MainWindow::appExit() const {
 
 void MainWindow::shrink() const {
     if (this->dataExportProgress.get() != nullptr) {
-        ui->queryResultMessagesTextEdit->setPlainText(
-            "Unable to process request. Data export in progress");
+        const auto msg = "Unable to process request. Data export in progress";
+        this->statusBar->showMessage(msg, 5000);
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -302,8 +302,8 @@ void MainWindow::refreshDatabase() const {
 
 void MainWindow::analyzeDatabase() const {
     if (this->dataExportProgress.get() != nullptr) {
-        ui->queryResultMessagesTextEdit->setPlainText(
-            "Unable to process request. Data export in progress");
+        const auto msg = "Unable to process request. Data export in progress";
+        this->statusBar->showMessage(msg, 5000);
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -321,8 +321,8 @@ void MainWindow::analyzeDatabase() const {
 
 void MainWindow::executeQuery() const {
     if (this->dataExportProgress.get() != nullptr) {
-        ui->queryResultMessagesTextEdit->setPlainText(
-            "Unable to process request. Data export in progress");
+        const auto msg = "Unable to process request. Data export in progress";
+        this->statusBar->showMessage(msg, 5000);
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -340,8 +340,7 @@ void MainWindow::executeQuery() const {
 
     const auto milliseconds = static_cast<double>(time.elapsed());
     const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
-    ui->queryResultMessagesTextEdit->setPlainText(msg);
-    this->statusBar->showMessage(msg, 5000);
+    this->showMessage(msg);
 
     foreach(const QString sql, list) {
         if (sql.contains("create", Qt::CaseInsensitive) ||
@@ -384,9 +383,7 @@ void MainWindow::showExportDataProgress(const ExportDataProgress *progress,
         do {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             MainThread::run([this, progress]() {
-                const auto msg = QString("Exported %1 row(s)").arg(progress->getAffectedRows());
-                ui->queryResultMessagesTextEdit->setPlainText(msg);
-                this->statusBar->showMessage(msg, 5000);
+                this->showMessage(QString("Exported %1 row(s)").arg(progress->getAffectedRows()));
             });
         } while (!cancellationToken.isCancellationRequested() &&
                  !progress->isCompleted());
@@ -406,9 +403,7 @@ void MainWindow::exportDataAsync(const QString &filepath,
     future.then([this, progress] {
         MainThread::run([this, progress]() {
             this->setEnabledActions(true);
-            const auto msg = QString("Exported %1 row(s)").arg(progress->getAffectedRows());
-            ui->queryResultMessagesTextEdit->setPlainText(msg);
-            this->statusBar->showMessage(msg, 5000);
+            this->showMessage(QString("Exported %1 row(s)").arg(progress->getAffectedRows()));
         });
     });
 }
@@ -464,9 +459,7 @@ void MainWindow::exportDataToCsvFiles() {
     future.then([this, progress] {
         MainThread::run([this, progress]() {
             this->setEnabledActions(true);
-            const auto msg = QString("Exported %1 row(s)").arg(progress->getAffectedRows());
-            ui->queryResultMessagesTextEdit->setPlainText(msg);
-            this->statusBar->showMessage(msg, 5000);
+            this->showMessage(QString("Exported %1 row(s)").arg(progress->getAffectedRows()));
             ui->queryResultTab->setCurrentIndex(1);
         });
     });
@@ -500,10 +493,10 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item) const {
 void MainWindow::treeNodeChanged(QTreeWidgetItem *item,
                                  const int column) const {
     if (this->dataExportProgress.get() != nullptr) {
-        ui->queryResultMessagesTextEdit->setPlainText(
-            "Unable to process request. Data export in progress - " + QString(
-                "%1 row(s)").arg(
-                this->dataExportProgress.get()->getAffectedRows()));
+        const auto msg = "Unable to process request. Data export in progress - " + 
+            QString("%1 row(s)").arg(this->dataExportProgress.get()->getAffectedRows());
+        ui->queryResultMessagesTextEdit->setPlainText(msg);
+        this->showMessage(msg);
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
