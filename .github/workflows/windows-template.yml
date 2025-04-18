@@ -49,45 +49,60 @@ jobs:
           host: windows
           target: desktop
           arch: win64_msvc2019_64
-          dir: ${{ runner.temp }}/Qt
+          dir: ${{ runner.temp }}\Qt
           setup-python: true
           cache: true
           
       - name: Create Build Directory
-        run: mkdir -p ${{ github.workspace }}/build
+        run: mkdir -p ${{ github.workspace }}\build
 
       - name: Configure and Build SQLite Query Analyzer
         working-directory: ${{ github.workspace }}
         shell: pwsh
         run: |
-          $qtDir = "${{ runner.temp }}/Qt/6.5.3/msvc2019_64"
+          # Use consistent Windows path format
+          $qtDir = "${{ runner.temp }}\Qt\6.5.3\msvc2019_64"
           
           # First build dynamic version to preserve compatibility with Qt's binary distribution
           Write-Host "Configuring and building with dynamic Qt libraries..."
           
           # Configure with CMake
-          cmake -B build -S src/project `
+          cmake -B build -S src\project `
             -DCMAKE_PREFIX_PATH="$qtDir" `
             -DCMAKE_CXX_STANDARD=17 `
-            -DCMAKE_BUILD_TYPE=Release `
             -G "Visual Studio 17 2022" `
             -A x64
           
           # Build
           cmake --build build --config Release --parallel
           
+          # Verify the executable exists before proceeding
+          if (-not (Test-Path "build\Release\SQLiteQueryAnalyzer.exe")) {
+            Write-Host "Error: Build failed, executable not found"
+            exit 1
+          }
+          
           # Use windeployqt to collect all required DLLs
           Write-Host "Running windeployqt to collect dependencies..."
-          & "$qtDir\bin\windeployqt.exe" --release --no-translations --no-opengl-sw --no-system-d3d-compiler --no-virtualkeyboard --compiler-runtime "${{ github.workspace }}/build/Release/SQLiteQueryAnalyzer.exe"
+          $windeployqt = Join-Path -Path $qtDir -ChildPath "bin\windeployqt.exe"
+          if (-not (Test-Path $windeployqt)) {
+            Write-Host "Error: windeployqt.exe not found at: $windeployqt"
+            Get-ChildItem "$qtDir\bin"
+            exit 1
+          }
+          
+          # Run windeployqt with proper path formatting
+          & $windeployqt --release --no-translations --no-opengl-sw --no-system-d3d-compiler --no-virtualkeyboard --compiler-runtime "${{ github.workspace }}\build\Release\SQLiteQueryAnalyzer.exe"
           
           # Create a standalone package with all the DLLs reduced to bare minimum
           Write-Host "Creating standalone deployment package..."
           
           # Create deployment directory
-          mkdir -p ${{ github.workspace }}/deploy/bin
+          $deployDir = "${{ github.workspace }}\deploy\bin"
+          New-Item -Path $deployDir -ItemType Directory -Force
           
           # Copy the executable and required files to deployment directory
-          Copy-Item build/Release/SQLiteQueryAnalyzer.exe -Destination deploy/bin/
+          Copy-Item "build\Release\SQLiteQueryAnalyzer.exe" -Destination $deployDir
           
           # Copy only the necessary Qt DLLs (core functionality)
           $qtDlls = @(
@@ -98,8 +113,12 @@ jobs:
           )
           
           foreach ($dll in $qtDlls) {
-            if (Test-Path "build/Release/$dll") {
-              Copy-Item "build/Release/$dll" -Destination "deploy/bin/"
+            $dllPath = "build\Release\$dll"
+            if (Test-Path $dllPath) {
+              Write-Host "Copying $dll to deployment directory"
+              Copy-Item $dllPath -Destination $deployDir
+            } else {
+              Write-Host "Warning: Could not find $dll in build output"
             }
           }
           
@@ -111,20 +130,24 @@ jobs:
           )
           
           foreach ($folder in $requiredPluginFolders) {
-            if (Test-Path "build/Release/$folder") {
-              Copy-Item "build/Release/$folder" -Destination "deploy/bin/" -Recurse
+            $folderPath = "build\Release\$folder"
+            if (Test-Path $folderPath) {
+              Write-Host "Copying $folder to deployment directory"
+              Copy-Item $folderPath -Destination "$deployDir\" -Recurse
+            } else {
+              Write-Host "Warning: Could not find $folder in build output"
             }
           }
           
-          # Check for missing dependencies that would prevent proper execution
+          # Check for missing dependencies
           Write-Host "Checking deployment package for any missing dependencies..."
           $missingDeps = $false
           
-          foreach ($file in (Get-ChildItem -Path "deploy/bin" -Filter "*.exe" -Recurse)) {
+          foreach ($file in (Get-ChildItem -Path $deployDir -Filter "*.exe" -Recurse)) {
             $deps = & dumpbin /dependents $file.FullName | Select-String -Pattern "\.dll"
             foreach ($dep in $deps) {
               $dllName = $dep -replace ".*\s+([^\s]+\.dll).*", '$1'
-              if (($dllName -like "Qt*") -and -not (Test-Path "deploy/bin/$dllName")) {
+              if (($dllName -like "Qt*") -and -not (Test-Path "$deployDir\$dllName")) {
                 Write-Host "Warning: Missing dependency $dllName for $($file.Name)"
                 $missingDeps = $true
               }
@@ -132,27 +155,28 @@ jobs:
           }
           
           if ($missingDeps) {
-            Write-Host "Some Qt dependencies might be missing. Copying all from windeployqt output..."
-            Copy-Item build/Release/*.dll -Destination deploy/bin/ -ErrorAction SilentlyContinue
+            Write-Host "Some Qt dependencies might be missing. Copying all from build output..."
+            Copy-Item "build\Release\*.dll" -Destination $deployDir -ErrorAction SilentlyContinue
           }
 
       - name: Zip standalone binary package
         working-directory: ${{ github.workspace }}
         run: |
           # Create a zip with just the executable and required DLLs
-          7z a SQLiteQueryAnalyzer_Windows.zip ./deploy/bin/*
+          7z a SQLiteQueryAnalyzer_Windows.zip .\deploy\bin\*
               
       - name: Publish Windows Build
         uses: actions/upload-artifact@master
         with:
           name: SQLiteQuerAnalyzer_Windows_v${{ inputs.version }}
-          path: ${{ github.workspace }}/SQLiteQueryAnalyzer_Windows.zip
+          path: ${{ github.workspace }}\SQLiteQueryAnalyzer_Windows.zip
 
       - name: Inno Setup
         working-directory: ${{ github.workspace }}\src\project
         run: |
           # Configure the Inno Setup script to use our deployment
-          ..\..\deps\innosetup\ISCC.exe setup.iss "/DAppFolder=${{ github.workspace }}\deploy\bin"
+          $deployPath = "${{ github.workspace }}\deploy\bin"
+          ..\..\deps\innosetup\ISCC.exe setup.iss "/DAppFolder=$deployPath"
 
       - name: Publish Installer
         uses: actions/upload-artifact@master
