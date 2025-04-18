@@ -11,6 +11,7 @@
 #include <QInputDialog>
 #include <QSqlTableModel>
 #include <QTreeWidget>
+#include <QStatusBar>
 #include <QTableView>
 #include <QtConcurrent/QtConcurrent>
 #include <chrono>
@@ -36,6 +37,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
     this->recentFilesMenu = std::make_unique<QMenu>("Recent Files");
     ui->menuFile->insertMenu(ui->actionSave, recentFilesMenu.get());
+
+    this->statusBar = std::make_unique<QStatusBar>(this);
+    this->setStatusBar(statusBar.get());
 
     Settings::init();
     this->loadRecentFiles();

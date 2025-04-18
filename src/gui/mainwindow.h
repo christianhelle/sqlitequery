@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QStatusBar>
 
 #include "../threading/cancellation.h"
 #include "../database/dbanalyzer.h"
@@ -79,6 +80,7 @@ public slots:
 private:
     std::unique_ptr<Ui::MainWindow> ui;
     std::unique_ptr<QMenu> recentFilesMenu;
+    std::unique_ptr<QStatusBar> statusBar;
     std::unique_ptr<Database> database;
     std::unique_ptr<DbAnalyzer> analyzer;
     std::unique_ptr<DbQuery> query;
