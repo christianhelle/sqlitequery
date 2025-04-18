@@ -13,6 +13,11 @@
   #define StandaloneBuild False
 #endif
 
+; Check if AppFolder is provided (path to the folder containing the executable)
+#ifndef AppFolder
+  #define AppFolder ".\build\Release"
+#endif
+
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
@@ -41,13 +46,9 @@ ChangesAssociations=yes
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-#if StandaloneBuild
-  ; For standalone build, use the files from deploy/bin
-  Source: "..\..\deploy\bin\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-#else
-  ; For regular build with Qt dependencies
-  Source: ".\build\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-#endif
+; Use the AppFolder path provided from command line
+Source: "{#AppFolder}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#AppFolder}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: "..\resources\icon.ico"; DestDir: "{app}"; DestName: "icon.ico"
 

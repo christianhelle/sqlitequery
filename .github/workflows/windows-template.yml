@@ -45,112 +45,114 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: '6.5.3'  # Using 6.5.3 which has better MSVC integration
+          version: '6.5.3'
           host: windows
           target: desktop
           arch: win64_msvc2019_64
           dir: ${{ runner.temp }}/Qt
           setup-python: true
-          tools: 'tools_ifw tools_mingw90 tools_cmake tools_ninja'
           cache: true
-          extra: '--external 7z'
           
       - name: Create Build Directory
         run: mkdir -p ${{ github.workspace }}/build
 
-      - name: Build Static Qt Components
-        shell: pwsh
-        run: |
-          # Configure Qt static plugins
-          $qtbase = "${{ runner.temp }}/Qt/6.5.3/msvc2019_64"
-          
-          # We'll use qtbase's tools to build a static version of necessary plugins
-          Write-Host "Building static plugins from Qt libraries..."
-          Write-Host "Qt base directory: $qtbase"
-          
-          # Create qconfig.pri with static build settings for plugins
-          $staticPluginsConfig = @"
-          CONFIG += static
-          CONFIG -= shared
-          DEFINES += QT_STATICPLUGIN
-          "@
-          
-          # Create the configuration for static plugins in build directory
-          New-Item -Path ${{ github.workspace }}/build/static_plugins -ItemType Directory -Force
-          $staticPluginsConfig | Out-File -FilePath ${{ github.workspace }}/build/static_plugins/qconfig.pri -Encoding utf8
-
-      - name: Configure and Build SQLite Query Analyzer as Standalone Binary
+      - name: Configure and Build SQLite Query Analyzer
         working-directory: ${{ github.workspace }}
         shell: pwsh
         run: |
           $qtDir = "${{ runner.temp }}/Qt/6.5.3/msvc2019_64"
           
-          # Configure CMake for static build with MSVC
+          # First build dynamic version to preserve compatibility with Qt's binary distribution
+          Write-Host "Configuring and building with dynamic Qt libraries..."
+          
+          # Configure with CMake
           cmake -B build -S src/project `
             -DCMAKE_PREFIX_PATH="$qtDir" `
             -DCMAKE_CXX_STANDARD=17 `
-            -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive- /MT" `
-            -DBUILD_STATIC=ON `
-            -DCMAKE_MSVC_RUNTIME_LIBRARY="MultiThreaded" `
-            -DCMAKE_EXE_LINKER_FLAGS="/MANIFEST:NO" `
+            -DCMAKE_BUILD_TYPE=Release `
             -G "Visual Studio 17 2022" `
             -A x64
           
-          # Build with multiple cores
+          # Build
           cmake --build build --config Release --parallel
           
-          # Verify it's a standalone exe (no DLL dependencies)
-          echo "Checking dependencies of built executable:"
-          if (Test-Path build/Release/SQLiteQueryAnalyzer.exe) {
-            Get-Item build/Release/SQLiteQueryAnalyzer.exe
-            dumpbin /dependents build/Release/SQLiteQueryAnalyzer.exe
-          } else {
-            Write-Host "Error: SQLiteQueryAnalyzer.exe was not built successfully"
-            exit 1
-          }
-
-      - name: Process Binary for Deployment
-        working-directory: ${{ github.workspace }}
-        shell: pwsh
-        run: |
+          # Use windeployqt to collect all required DLLs
+          Write-Host "Running windeployqt to collect dependencies..."
+          & "$qtDir\bin\windeployqt.exe" --release --no-translations --no-opengl-sw --no-system-d3d-compiler --no-virtualkeyboard --compiler-runtime "${{ github.workspace }}/build/Release/SQLiteQueryAnalyzer.exe"
+          
+          # Create a standalone package with all the DLLs reduced to bare minimum
+          Write-Host "Creating standalone deployment package..."
+          
           # Create deployment directory
-          mkdir -p deploy/bin
+          mkdir -p ${{ github.workspace }}/deploy/bin
           
-          # Copy the executable
-          Copy-Item build/Release/SQLiteQueryAnalyzer.exe -Destination deploy/bin/ -ErrorAction Continue
+          # Copy the executable and required files to deployment directory
+          Copy-Item build/Release/SQLiteQueryAnalyzer.exe -Destination deploy/bin/
           
-          # Check and notify about the dependency status
-          $deps = & dumpbin /dependents build/Release/SQLiteQueryAnalyzer.exe | Select-String -Pattern '\.dll' | Where-Object { $_ -notmatch 'KERNEL32\.dll|USER32\.dll|GDI32\.dll|SHELL32\.dll|ole32\.dll|ADVAPI32\.dll|OLEAUT32\.dll|COMDLG32\.dll|COMCTL32\.dll|VERSION\.dll|IMM32\.dll|WINMM\.dll|WS2_32\.dll|MSVCP140\.dll|VCRUNTIME140\.dll' }
+          # Copy only the necessary Qt DLLs (core functionality)
+          $qtDlls = @(
+            "Qt6Core.dll",
+            "Qt6Gui.dll", 
+            "Qt6Widgets.dll", 
+            "Qt6Sql.dll"
+          )
           
-          if ($deps) {
-            echo "Note: The following non-system dependencies are still required:"
-            echo $deps
-            
-            # Additional steps to handle Qt dependencies if needed
-            # We'll use the Microsoft recommended approach to ensure these are included
-            echo "Adding Visual C++ redistributable to ensure runtime compatibility..."
-            Copy-Item "C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\*\x64\Microsoft.VC143.CRT\*.dll" deploy/bin/ -ErrorAction Continue
-          } else {
-            echo "Successfully created standalone executable with only system DLL dependencies!"
+          foreach ($dll in $qtDlls) {
+            if (Test-Path "build/Release/$dll") {
+              Copy-Item "build/Release/$dll" -Destination "deploy/bin/"
+            }
+          }
+          
+          # Copy required plugin directories
+          $requiredPluginFolders = @(
+            "platforms",
+            "styles",
+            "sqldrivers"
+          )
+          
+          foreach ($folder in $requiredPluginFolders) {
+            if (Test-Path "build/Release/$folder") {
+              Copy-Item "build/Release/$folder" -Destination "deploy/bin/" -Recurse
+            }
+          }
+          
+          # Check for missing dependencies that would prevent proper execution
+          Write-Host "Checking deployment package for any missing dependencies..."
+          $missingDeps = $false
+          
+          foreach ($file in (Get-ChildItem -Path "deploy/bin" -Filter "*.exe" -Recurse)) {
+            $deps = & dumpbin /dependents $file.FullName | Select-String -Pattern "\.dll"
+            foreach ($dep in $deps) {
+              $dllName = $dep -replace ".*\s+([^\s]+\.dll).*", '$1'
+              if (($dllName -like "Qt*") -and -not (Test-Path "deploy/bin/$dllName")) {
+                Write-Host "Warning: Missing dependency $dllName for $($file.Name)"
+                $missingDeps = $true
+              }
+            }
+          }
+          
+          if ($missingDeps) {
+            Write-Host "Some Qt dependencies might be missing. Copying all from windeployqt output..."
+            Copy-Item build/Release/*.dll -Destination deploy/bin/ -ErrorAction SilentlyContinue
           }
 
-      - name: Zip standalone binary
+      - name: Zip standalone binary package
         working-directory: ${{ github.workspace }}
         run: |
-          # Create a zip with the executable and any necessary DLLs
-          7z a SQLiteQueryAnalyzer_Windows_Standalone.zip ./deploy/bin/*
+          # Create a zip with just the executable and required DLLs
+          7z a SQLiteQueryAnalyzer_Windows.zip ./deploy/bin/*
               
-      - name: Publish Standalone Build
+      - name: Publish Windows Build
         uses: actions/upload-artifact@master
         with:
-          name: SQLiteQuerAnalyzer_Standalone_Windows_v${{ inputs.version }}
-          path: ${{ github.workspace }}/SQLiteQueryAnalyzer_Windows_Standalone.zip
+          name: SQLiteQuerAnalyzer_Windows_v${{ inputs.version }}
+          path: ${{ github.workspace }}/SQLiteQueryAnalyzer_Windows.zip
 
       - name: Inno Setup
         working-directory: ${{ github.workspace }}\src\project
         run: |
-          # Update the Inno Setup script to use the standalone executable
-          ..\..\deps\innosetup\ISCC.exe setup.iss /DStandaloneBuild
+          # Configure the Inno Setup script to use our deployment
+          ..\..\deps\innosetup\ISCC.exe setup.iss "/DAppFolder=${{ github.workspace }}\deploy\bin"
 
       - name: Publish Installer
         uses: actions/upload-artifact@master
