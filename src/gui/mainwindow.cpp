@@ -249,8 +249,10 @@ void MainWindow::openDatabase(const QString &filename) {
     ui->textEdit->clear();
 
     if (ui->tableView->model() != Q_NULLPTR) {
-        std::make_unique<QSqlTableModel>(ui->tableView->model());
+        const auto model = dynamic_cast<QSqlTableModel*>(ui->tableView->model());
+        model->clear();
         ui->tableView->setModel(Q_NULLPTR);
+        delete model;
     }
 
     this->setWindowTitle("SQLite Query Analyzer - " + filename);
