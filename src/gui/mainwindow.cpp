@@ -339,9 +339,9 @@ void MainWindow::executeQuery() const {
     }
 
     const auto milliseconds = static_cast<double>(time.elapsed());
-    const auto msg = "Query execution took " + QString::number(
-                         milliseconds / 1000) + " seconds";
+    const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
     ui->queryResultMessagesTextEdit->setPlainText(msg);
+    this->statusBar->showMessage(msg, 5000);
 
     foreach(const QString sql, list) {
         if (sql.contains("create", Qt::CaseInsensitive) ||
