@@ -17,7 +17,8 @@
 #include <chrono>
 #include <thread>
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent) {
     qDebug("MainWindow::MainWindow(QWidget*)");
 
     ui = std::make_unique<Ui::MainWindow>();
@@ -68,6 +69,32 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         ui->tableView->setFocus();
     } else if (keys.key() == Qt::Key_Q && modifiers == Qt::ControlModifier) {
         this->appExit();
+    } else if (keys.key() == Qt::Key_Delete) {
+        deleteSelectedTable();
+    }
+}
+
+void MainWindow::deleteSelectedTable() {
+    const auto indexes = ui->treeWidget->selectionModel()->selectedIndexes();
+    if (indexes.size() <= 0)
+        return;
+
+    const auto selectedIndex = indexes.at(0);
+    const auto item = ui->treeWidget->itemFromIndex(selectedIndex);
+    if (item->parent() == nullptr || item->parent()->text(0) != "Tables")
+        return;
+
+    const auto tableName = item->text(0);
+    if (!Prompts::confirmDelete(this, tableName)) {
+        return;
+    }
+
+    const auto list = QStringList() << "DROP TABLE " + tableName;
+    QStringList errors;
+    if (!this->query->execute(list, &errors)) {
+        Prompts::showError(this, errors.join("\r\n"));
+    } else {
+        this->analyzeDatabase();
     }
 }
 
@@ -142,16 +169,16 @@ void MainWindow::restoreWindowState() {
     if (windowState.treeWidth > 0 &&
         windowState.tabWidth > 0) {
         ui->splitterMain->setSizes({
-            windowState.treeWidth,
-            windowState.tabWidth
+                windowState.treeWidth,
+                windowState.tabWidth
         });
     }
 
     if (windowState.queryTextHeight > 0 &&
         windowState.queryResultHeight > 0)
         ui->splitterQueryTab->setSizes({
-            windowState.queryTextHeight,
-            windowState.queryResultHeight
+                windowState.queryTextHeight,
+                windowState.queryResultHeight
         });
 }
 
@@ -253,7 +280,7 @@ void MainWindow::openDatabase(const QString &filename) {
     ui->textEdit->clear();
 
     if (ui->tableView->model() != Q_NULLPTR) {
-        const auto model = dynamic_cast<QSqlTableModel*>(ui->tableView->model());
+        const auto model = dynamic_cast<QSqlTableModel *>(ui->tableView->model());
         model->clear();
         ui->tableView->setModel(Q_NULLPTR);
         delete model;
@@ -395,11 +422,11 @@ void MainWindow::exportDataAsync(const QString &filepath,
                                  const std::unique_ptr<ExportDataProgress>::pointer progress,
                                  const CancellationToken cancellationToken) {
     auto future = QtConcurrent::run(
-        [this, info, filepath, cancellationToken, progress]() {
-            const auto exporter = std::make_unique<DbDataExport>(info);
-            exporter->exportDataToSqlFile(database.get(), filepath, &cancellationToken,
-                                          progress);
-        });
+            [this, info, filepath, cancellationToken, progress]() {
+                const auto exporter = std::make_unique<DbDataExport>(info);
+                exporter->exportDataToSqlFile(database.get(), filepath, &cancellationToken,
+                                              progress);
+            });
     future.then([this, progress] {
         MainThread::run([this, progress]() {
             this->setEnabledActions(true);
@@ -449,13 +476,13 @@ void MainWindow::exportDataToCsvFiles() {
     const auto cancellationToken = tcs->get();
 
     auto future = QtConcurrent::run(
-        [this, info, outputFolder, cancellationToken, progress, delimeter]() {
-            const auto exporter = std::make_unique<DbDataExport>(info);
-            exporter->exportDataToCsvFile(database.get(),
-                                          outputFolder,
-                                          delimeter,
-                                          &cancellationToken, progress);
-        });
+            [this, info, outputFolder, cancellationToken, progress, delimeter]() {
+                const auto exporter = std::make_unique<DbDataExport>(info);
+                exporter->exportDataToCsvFile(database.get(),
+                                              outputFolder,
+                                              delimeter,
+                                              &cancellationToken, progress);
+            });
     future.then([this, progress] {
         MainThread::run([this, progress]() {
             this->setEnabledActions(true);
@@ -493,13 +520,16 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item) const {
 void MainWindow::treeNodeChanged(QTreeWidgetItem *item,
                                  const int column) const {
     if (this->dataExportProgress.get() != nullptr) {
-        const auto msg = "Unable to process request. Data export in progress - " + 
-            QString("%1 row(s)").arg(this->dataExportProgress.get()->getAffectedRows());
+        const auto msg = "Unable to process request. Data export in progress - " +
+                         QString("%1 row(s)").arg(this->dataExportProgress.get()->getAffectedRows());
         this->showMessage(msg);
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
-    if (item && item->type() == QTreeWidgetItem::UserType + 1) {
+    if (item && item
+        ->
+        type() == QTreeWidgetItem::UserType + 1
+    ) {
         qDebug("table selected");
 
         if (!this->database->open()) {
