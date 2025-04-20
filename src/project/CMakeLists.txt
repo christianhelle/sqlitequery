@@ -3,6 +3,7 @@ project(SQLiteQueryAnalyzer VERSION 1.0 LANGUAGES C CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(app_icon_resource_windows "../resources/icon.rc")
 set(MACOSX_BUNDLE_ICON_FILE icon.icns)
 set(app_icon_macos "../resources/icon.icns")
