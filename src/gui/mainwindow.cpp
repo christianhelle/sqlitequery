@@ -79,8 +79,7 @@ void MainWindow::deleteSelectedTable() {
     if (indexes.size() <= 0)
         return;
 
-    const auto selectedIndex = indexes.at(0);
-    const auto item = ui->treeWidget->itemFromIndex(selectedIndex);
+    const auto item = ui->treeWidget->itemFromIndex(indexes.at(0));
     if (item->parent() == nullptr || item->parent()->text(0) != "Tables")
         return;
 
