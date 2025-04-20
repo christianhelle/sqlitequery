@@ -5,7 +5,7 @@ param (
 
 if ($IsWindows) {
     cmake . `
-      -DCMAKE_PREFIX_PATH=C:/Qt/6.8.2/msvc2022_64 `
+      -DCMAKE_PREFIX_PATH=C:/Qt/6.9.0/msvc2022_64 `
       -DCMAKE_CXX_STANDARD=17 `
       -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" `
       -B build
@@ -37,7 +37,7 @@ if ($IsLinux) {
 }
 
 if ($IsWindows -And $package) {
-    C:\Qt\6.8.2\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
+    C:\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
 
     (Get-FileHash build/Release/SQLiteQueryAnalyzer.exe -Algorithm SHA1 | Select-Object).Hash 
     | Set-Content build/Release/SQLiteQueryAnalyzer.exe.sha1
