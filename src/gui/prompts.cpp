@@ -2,6 +2,7 @@
 
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QMessageBox>
 
 #include "../settings/settings.h"
 
@@ -61,4 +62,16 @@ QString Prompts::getFilePath(QWidget *parent,
 
     qDebug("File dialog cancelled");
     return Q_NULLPTR;
+}
+
+bool Prompts::confirmDelete(QWidget *parent, const QString &tableName) {
+    return QMessageBox::question(parent, "Delete table",
+                                 "Are you sure you want to delete table " + tableName + "?",
+                                 QMessageBox::Yes | QMessageBox::No,
+                                 QMessageBox::No)
+           == QMessageBox::Yes;
+}
+
+void Prompts::showError(QWidget *parent, const QString &message) {
+    QMessageBox::warning(parent, "Error", message);
 }
