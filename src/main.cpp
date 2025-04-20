@@ -35,7 +35,6 @@ int main(int argc, char *argv[]) {
 
     if (parser.isSet(versionOption)) {
         parser.showVersion();
-        return 0;
     }
 
     const auto args = parser.positionalArguments();
