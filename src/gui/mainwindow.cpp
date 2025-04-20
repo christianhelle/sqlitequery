@@ -91,8 +91,18 @@ void MainWindow::deleteSelectedTable() {
 
     const auto list = QStringList() << "DROP TABLE " + tableName;
     QStringList errors;
-    if (!this->query->execute(list, &errors)) {
-        Prompts::showError(this, errors.join("\r\n"));
+    QElapsedTimer time;
+    time.start();
+
+    const auto deleted = this->query->execute(list, &errors);
+    const auto milliseconds = static_cast<double>(time.elapsed());
+    const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
+    this->showMessage(msg);
+
+    if (!deleted) {
+        const auto errorMessage = errors.join("\r\n");
+        ui->queryResultMessagesTextEdit->setPlainText(errorMessage);
+        Prompts::showError(this, errorMessage);
     } else {
         this->analyzeDatabase();
     }
