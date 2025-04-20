@@ -1,8 +1,8 @@
 #include "dbtree.h"
 
-DbTree::DbTree(QTreeWidget *tree)
-    : tree(tree),
-      treeNodes(QList<QTreeWidgetItem *>()) {
+DbTree::DbTree(QTreeWidget *tree) :
+    tree(tree),
+    treeNodes(QList<QTreeWidgetItem *>()) {
 }
 
 void DbTree::clear() {
@@ -78,9 +78,11 @@ void DbTree::populateTree(const DatabaseInfo &info) {
             colPrimaryKey->setText(0, QString("Is Primary Key: ").append(col.primaryKey ? "True" : "False"));
             this->treeNodes.prepend(colPrimaryKey);
 
-            const auto defaultValue = new QTreeWidgetItem(colName);
-            defaultValue->setText(0, QString("Default Value: ").append(col.defaultValue));
-            this->treeNodes.prepend(defaultValue);
+            if (col.defaultValue != Q_NULLPTR) {
+                const auto defaultValue = new QTreeWidgetItem(colName);
+                defaultValue->setText(0, QString("Default Value: ").append(col.defaultValue));
+                this->treeNodes.prepend(defaultValue);
+            }
         }
     }
 
