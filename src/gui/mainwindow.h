@@ -24,6 +24,8 @@ public:
 
     ~MainWindow() override;
 
+    void deleteSelectedTable();
+
     void keyPressEvent(QKeyEvent *event) override;
 
     void connectSignalSlots() const;

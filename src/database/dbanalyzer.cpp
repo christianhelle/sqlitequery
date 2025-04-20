@@ -67,7 +67,8 @@ void DbAnalyzer::loadColumns(DatabaseInfo &info) const {
             col.defaultValue = query.value("dflt_value").toString();
             col.primaryKey = query.value("pk").toBool();
             table.columns.append(col);
-            qDebug() << col.ordinal << col.name << col.dataType << col.notNull;
+            qDebug() << col.ordinal << col.name << col.dataType
+                    << col.notNull << col.defaultValue << col.primaryKey;
         }
     }
 }
