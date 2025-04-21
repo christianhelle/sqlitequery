@@ -45,7 +45,7 @@ jobs:
           version: '6.9.0'
 
       - name: Build Qt from source
-        condition: ${{ inputs.qt-build }}
+        if: ${{ inputs.qt-build }}
         run: |
           mkdir qt-build
           cd qt-build
