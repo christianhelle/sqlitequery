@@ -19,7 +19,7 @@ on:
         description: 'Build Qt from source and only include SQLite SQL driver'
         required: false
         type: boolean
-        default: false
+        default: true
 
 jobs:
   template:
