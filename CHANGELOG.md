@@ -2,7 +2,15 @@
 
 ## [Unreleased](https://github.com/christianhelle/sqlitequery/tree/HEAD)
 
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.29...HEAD)
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.32...HEAD)
+
+**Implemented enhancements:**
+
+- Apple AppStore Compliance [\#72](https://github.com/christianhelle/sqlitequery/pull/72) ([christianhelle](https://github.com/christianhelle))
+
+## [0.2.32](https://github.com/christianhelle/sqlitequery/tree/0.2.32) (2025-04-20)
+
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.24...0.2.32)
 
 **Implemented enhancements:**
 
@@ -17,34 +25,13 @@
 - Fix query result memory leak [\#61](https://github.com/christianhelle/sqlitequery/pull/61) ([christianhelle](https://github.com/christianhelle))
 - CTRL+D to set focus to Table Data [\#60](https://github.com/christianhelle/sqlitequery/pull/60) ([christianhelle](https://github.com/christianhelle))
 - Fix table data memory leak [\#58](https://github.com/christianhelle/sqlitequery/pull/58) ([christianhelle](https://github.com/christianhelle))
+- Keyboard Shortcuts for switching between Editor and Tree [\#57](https://github.com/christianhelle/sqlitequery/pull/57) ([christianhelle](https://github.com/christianhelle))
+- MacOS Intel Support [\#56](https://github.com/christianhelle/sqlitequery/pull/56) ([christianhelle](https://github.com/christianhelle))
 
 **Merged pull requests:**
 
+- Add FUNDING.yml to support various funding platforms [\#71](https://github.com/christianhelle/sqlitequery/pull/71) ([christianhelle](https://github.com/christianhelle))
 - Update MacOS recommended build instructions in README [\#59](https://github.com/christianhelle/sqlitequery/pull/59) ([christianhelle](https://github.com/christianhelle))
-
-## [0.2.29](https://github.com/christianhelle/sqlitequery/tree/0.2.29) (2025-04-07)
-
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.27...0.2.29)
-
-**Implemented enhancements:**
-
-- Keyboard Shortcuts for switching between Editor and Tree [\#57](https://github.com/christianhelle/sqlitequery/pull/57) ([christianhelle](https://github.com/christianhelle))
-
-## [0.2.27](https://github.com/christianhelle/sqlitequery/tree/0.2.27) (2025-04-06)
-
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.28...0.2.27)
-
-## [0.2.28](https://github.com/christianhelle/sqlitequery/tree/0.2.28) (2025-04-06)
-
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.26...0.2.28)
-
-**Implemented enhancements:**
-
-- MacOS Intel Support [\#56](https://github.com/christianhelle/sqlitequery/pull/56) ([christianhelle](https://github.com/christianhelle))
-
-## [0.2.26](https://github.com/christianhelle/sqlitequery/tree/0.2.26) (2025-04-06)
-
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.24...0.2.26)
 
 ## [0.2.24](https://github.com/christianhelle/sqlitequery/tree/0.2.24) (2025-04-01)
 
