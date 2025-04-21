@@ -83,6 +83,39 @@ pwsh build.ps1
 
 The build output folder is under `src/project/build` for MacOS and Linux, and `src/project/build/Release` for Windows
 
+### Building Static Binaries
+
+To build a static version of the application with Qt statically linked, you can use the provided PowerShell script:
+
+```sh
+cd src/project
+pwsh build-static.ps1
+```
+
+This will create binaries with all Qt dependencies statically linked, resulting in a standalone executable that doesn't require Qt runtime libraries.
+
+#### Static Builds Prerequisites
+
+- For Windows: Qt static build (usually configured with `-static` during Qt compilation)
+- For macOS: Qt static build installed at `$HOME/Qt/6.9.0/macos_static`
+- For Linux: All Qt development packages and their dependencies
+
+#### Manual Static Build
+
+You can also manually configure a static build using CMake:
+
+```sh
+cd src/project
+cmake -B build -DBUILD_STATIC=ON
+cmake --build build --config Release
+```
+
+On Windows, you might need to specify the path to your static Qt installation:
+
+```sh
+cmake -B build -DCMAKE_PREFIX_PATH=C:/Qt/6.9.0/msvc2022_64_static -DBUILD_STATIC=ON
+```
+
 ### Building on Linux
 
 Install CMAke and Qt6
