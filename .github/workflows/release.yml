@@ -19,12 +19,14 @@ jobs:
       version: '0.2.${{ github.run_number }}'
       os: macos-latest
       architecture: arm64
+      build-qt: true
   macos-intel:
     uses: ./.github/workflows/macos-template.yml
     with:
       version: '0.2.${{ github.run_number }}'
       os: macos-13
       architecture: intel
+      build-qt: true
   windows:
     uses: ./.github/workflows/windows-template.yml
     with:
