@@ -49,7 +49,7 @@ jobs:
         run: |
           mkdir qt-build
           cd qt-build
-          ../Qt/6.9.0/Src/configure -sql-sqlite
+          /Users/runner/work/sqlitequery/Qt/6.9.0/Src/configure -sql-sqlite
           cmake --build . --parallel
           sudo cmake --install .
 
