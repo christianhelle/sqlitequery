@@ -43,6 +43,7 @@ jobs:
         uses: jurplel/install-qt-action@v4
         with:
           version: '6.9.0'
+          source: true
 
       - name: Build Qt from source
         if: ${{ inputs.build-qt }}
