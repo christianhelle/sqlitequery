@@ -18,5 +18,5 @@ if ($IsLinux -or $IsMacOS) {
 }
 
 if ($IsMacOS -And $package) {
-    macdeployqt build/SQLiteQueryAnalyzer.app -dmg
+    macdeployqt build/SQLiteQueryAnalyzer.app -dmg -appstore-compliant
 }
