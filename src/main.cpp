@@ -7,6 +7,20 @@
 
 #define VERSION "1.0.0"
 
+int exportDataToCsvFiles(const QStringList args, bool showProgress, QString targetDir) {
+    if (targetDir.isEmpty()) {
+        qWarning("Target directory is required for export.");
+        qWarning("Setting target directory to current working directory.");
+        targetDir = QDir::currentPath();
+    }
+
+    Export::exportDataToCsvFile(args.at(0),
+                                targetDir,
+                                ",",
+                                showProgress);
+    return 0;
+}
+
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     QApplication::setApplicationVersion(VERSION);
@@ -16,7 +30,7 @@ int main(int argc, char *argv[]) {
 
     QCommandLineParser parser;
     parser.setApplicationDescription(
-        "A fast and lightweight cross-platform command line and GUI tool for querying and manipulating SQLite databases");
+            "A fast and lightweight cross-platform command line and GUI tool for querying and manipulating SQLite databases");
     parser.addPositionalArgument("database", "Database file to open.");
     const QCommandLineOption progressOption(QStringList() << "p" << "progress", "Show progress during copy");
     const QCommandLineOption exportCsvOption(QStringList() << "e" << "export-csv", "Export data to CSV.");
@@ -47,17 +61,7 @@ int main(int argc, char *argv[]) {
             qWarning("Export option requires a database file.");
             return 1;
         }
-        if (targetDir.isEmpty()) {
-            qWarning("Target directory is required for export.");
-            qWarning("Setting target directory to current working directory.");
-            targetDir = QDir::currentPath();
-        }
-
-        Export::exportDataToCsvFile(args.at(0),
-                                     targetDir,
-                                     ",",
-                                     showProgress);
-        return 0;
+        return exportDataToCsvFiles(args, showProgress, targetDir);
     }
 
     if (args.length() == 1) {
