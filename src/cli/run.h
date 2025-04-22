@@ -4,10 +4,10 @@
 #include <QString>
 
 
-class Run {
+class Runner {
 public:
-    static void run(const QString &sqlFilePath,
-                    const QString &dbFilePath);
+    static void executeSqlFile(const QString &sqlFilePath,
+                               const QString &dbFilePath);
 };
 
 #endif //RUN_H

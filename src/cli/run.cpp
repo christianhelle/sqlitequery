@@ -6,8 +6,8 @@
 #include "../database/database.h"
 #include "../database/dbanalyzer.h"
 
-void Run::run(const QString &sqlFilePath,
-              const QString &dbFilePath) {
+void Runner::executeSqlFile(const QString &sqlFilePath,
+                            const QString &dbFilePath) {
     const auto sqlFile = std::make_unique<QFile>(sqlFilePath);
     if (!sqlFile->open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug("Unable to open SQL file");
