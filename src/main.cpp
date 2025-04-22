@@ -3,6 +3,7 @@
 #include <QDir>
 
 #include "cli/export.h"
+#include "cli/run.h"
 #include "gui/mainwindow.h"
 
 #define VERSION "1.0.0"
@@ -36,11 +37,14 @@ int main(int argc, char *argv[]) {
     const QCommandLineOption exportCsvOption(QStringList() << "e" << "export-csv", "Export data to CSV.");
     const QCommandLineOption targetDirectoryOption(QStringList() << "d" << "target-directory",
                                                    "Target directory for export.");
+    const QCommandLineOption importSqlOption(QStringList() << "r" << "run-sql", "Execute SQL file.");
     const auto helpOption = parser.addHelpOption();
     const auto versionOption = parser.addVersionOption();
+
     parser.addOption(progressOption);
     parser.addOption(exportCsvOption);
     parser.addOption(targetDirectoryOption);
+    parser.addOption(importSqlOption);
     parser.process(app);
 
     if (parser.isSet(helpOption)) {
@@ -54,6 +58,7 @@ int main(int argc, char *argv[]) {
     const auto args = parser.positionalArguments();
     bool showProgress = parser.isSet(progressOption);
     bool exportOption = parser.isSet(exportCsvOption);
+    auto importSql = parser.value(importSqlOption);
     auto targetDir = parser.value(targetDirectoryOption);
 
     if (exportOption) {
@@ -62,6 +67,16 @@ int main(int argc, char *argv[]) {
             return 1;
         }
         return exportDataToCsvFiles(args, showProgress, targetDir);
+    }
+
+    if (!importSql.isEmpty()) {
+        if (args.length() != 1) {
+            qWarning("Execute SQL option requires a database file.");
+            return 1;
+        }
+        const auto& dbFile = args.at(0);
+        Runner::executeSqlFile(importSql, dbFile);
+        return 0;
     }
 
     if (args.length() == 1) {
