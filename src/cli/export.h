@@ -8,7 +8,7 @@ class Export {
 public:
     static void exportDataToCsvFile(const QString &file,
                                     const QString &outputFolder,
-                                    const QString &delimiter, bool showProgress);
+                                    bool showProgress);
 };
 
 #endif // EXPORT_H
