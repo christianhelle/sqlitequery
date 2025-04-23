@@ -8,20 +8,6 @@
 
 #define VERSION "1.0.0"
 
-int exportDataToCsvFiles(const QStringList args, bool showProgress, QString targetDir) {
-    if (targetDir.isEmpty()) {
-        qWarning("Target directory is required for export.");
-        qWarning("Setting target directory to current working directory.");
-        targetDir = QDir::currentPath();
-    }
-
-    Export::exportDataToCsvFile(args.at(0),
-                                targetDir,
-                                ",",
-                                showProgress);
-    return 0;
-}
-
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     QApplication::setApplicationVersion(VERSION);
@@ -59,14 +45,21 @@ int main(int argc, char *argv[]) {
     bool showProgress = parser.isSet(progressOption);
     bool exportOption = parser.isSet(exportCsvOption);
     auto importSql = parser.value(importSqlOption);
-    auto targetDir = parser.value(targetDirectoryOption);
+    auto outputFolder = parser.value(targetDirectoryOption);
 
     if (exportOption) {
         if (args.length() != 1) {
             qWarning("Export option requires a database file.");
             return 1;
         }
-        return exportDataToCsvFiles(args, showProgress, targetDir);
+        if (outputFolder.isEmpty()) {
+            qWarning("Target directory is required for export.");
+            qWarning("Setting target directory to current working directory.");
+            outputFolder = QDir::currentPath();
+        }
+
+        Export::exportDataToCsvFile(args.at(0), outputFolder, showProgress);
+        return 0;
     }
 
     if (!importSql.isEmpty()) {
@@ -74,7 +67,7 @@ int main(int argc, char *argv[]) {
             qWarning("Execute SQL option requires a database file.");
             return 1;
         }
-        const auto& dbFile = args.at(0);
+        const auto &dbFile = args.at(0);
         Runner::executeSqlFile(importSql, dbFile);
         return 0;
     }
