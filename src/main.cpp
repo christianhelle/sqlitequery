@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
     const auto args = parser.positionalArguments();
     bool showProgress = parser.isSet(progressOption);
     bool exportOption = parser.isSet(exportCsvOption);
-    auto importSql = parser.value(importSqlOption);
+    auto importSql = parser.isSet(importSqlOption);
     auto outputFolder = parser.value(targetDirectoryOption);
 
     if (exportOption) {
@@ -62,13 +62,14 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    if (!importSql.isEmpty()) {
-        if (args.length() != 1) {
+    if (importSql){
+        if (args.length() != 2) {
             qWarning("Execute SQL option requires a database file.");
             return 1;
         }
-        const auto &dbFile = args.at(0);
-        Runner::executeSqlFile(importSql, dbFile);
+        const auto &dbFile = args.at(1);
+        const auto &sqlFile = args.at(0);
+        Runner::executeSqlFile(sqlFile, dbFile);
         return 0;
     }
 
