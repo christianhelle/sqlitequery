@@ -1,4 +1,4 @@
-#include "run.h"
+#include "script.h"
 
 #include <QFile>
 #include <QSqlError>
@@ -6,7 +6,7 @@
 #include "../database/database.h"
 #include "../database/dbanalyzer.h"
 
-void Runner::executeSqlFile(const QString &sqlFilePath,
+void Script::executeSqlFile(const QString &sqlFilePath,
                             const QString &dbFilePath) {
     const auto sqlFile = std::make_unique<QFile>(sqlFilePath);
     if (!sqlFile->open(QIODevice::ReadOnly | QIODevice::Text)) {

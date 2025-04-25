@@ -31,7 +31,7 @@ SOURCES += \
     ../threading/cancellation.cpp \
     ../gui/prompts.cpp \
     ../cli/export.cpp \
-    ../cli/run.cpp
+    ../cli/script.cpp
 
 HEADERS += \
     ../gui/mainwindow.h \
@@ -51,6 +51,6 @@ HEADERS += \
     ../database/progress.h \
     ../gui/prompts.h \
     ../cli/export.h \
-    ../cli/run.h
+    ../cli/script.h
 
 FORMS    += ../gui/mainwindow.ui

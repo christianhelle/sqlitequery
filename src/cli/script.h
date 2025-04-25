@@ -4,7 +4,7 @@
 #include <QString>
 
 
-class Runner {
+class Script {
 public:
     static void executeSqlFile(const QString &sqlFilePath,
                                const QString &dbFilePath);

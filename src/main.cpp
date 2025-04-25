@@ -3,7 +3,7 @@
 #include <QDir>
 
 #include "cli/export.h"
-#include "cli/run.h"
+#include "cli/script.h"
 #include "gui/mainwindow.h"
 
 #define VERSION "1.0.0"
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
         }
         const auto &dbFile = args.at(1);
         const auto &sqlFile = args.at(0);
-        Runner::executeSqlFile(sqlFile, dbFile);
+        Script::executeSqlFile(sqlFile, dbFile);
         return 0;
     }
 
