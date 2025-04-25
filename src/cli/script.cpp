@@ -43,4 +43,10 @@ void Script::executeSqlFile(const QString &sqlFilePath,
                               : "'" + sql + "' failed");
         }
     }
+
+    const auto milliseconds = static_cast<double>(time.elapsed());
+    const auto msg = "Script execution took " + QString::number(milliseconds / 1000) + " seconds";
+    QTextStream out(stdout);
+    out << msg;
+    fflush(stdout);
 }
