@@ -2,6 +2,7 @@
 
 #include <QFile>
 #include <QSqlError>
+#include <QElapsedTimer>
 
 #include "../database/database.h"
 #include "../database/dbanalyzer.h"
@@ -14,7 +15,10 @@ void Script::executeSqlFile(const QString &sqlFilePath,
         return;
     }
 
+    QElapsedTimer time;
+    time.start();
     QTextStream in(sqlFile.get());
+
     const QString sqlScript = in.readAll();
     const QStringList queryList(sqlScript.split(";", Qt::SkipEmptyParts));
     QStringList errors;
@@ -36,7 +40,7 @@ void Script::executeSqlFile(const QString &sqlFilePath,
             QSqlError error;
             errors.append((error = db.lastError()).isValid()
                               ? error.text()
-                              : "Query execution failed");
+                              : "'" + sql + "' failed");
         }
     }
 }
