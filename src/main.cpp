@@ -3,6 +3,7 @@
 #include <QDir>
 
 #include "cli/export.h"
+#include "cli/script.h"
 #include "gui/mainwindow.h"
 
 #define VERSION "1.0.0"
@@ -16,17 +17,20 @@ int main(int argc, char *argv[]) {
 
     QCommandLineParser parser;
     parser.setApplicationDescription(
-        "A fast and lightweight cross-platform command line and GUI tool for querying and manipulating SQLite databases");
+            "A fast and lightweight cross-platform command line and GUI tool for querying and manipulating SQLite databases");
     parser.addPositionalArgument("database", "Database file to open.");
     const QCommandLineOption progressOption(QStringList() << "p" << "progress", "Show progress during copy");
     const QCommandLineOption exportCsvOption(QStringList() << "e" << "export-csv", "Export data to CSV.");
     const QCommandLineOption targetDirectoryOption(QStringList() << "d" << "target-directory",
                                                    "Target directory for export.");
+    const QCommandLineOption importSqlOption(QStringList() << "r" << "run-sql", "Execute SQL file.");
     const auto helpOption = parser.addHelpOption();
     const auto versionOption = parser.addVersionOption();
+
     parser.addOption(progressOption);
     parser.addOption(exportCsvOption);
     parser.addOption(targetDirectoryOption);
+    parser.addOption(importSqlOption);
     parser.process(app);
 
     if (parser.isSet(helpOption)) {
@@ -40,23 +44,32 @@ int main(int argc, char *argv[]) {
     const auto args = parser.positionalArguments();
     bool showProgress = parser.isSet(progressOption);
     bool exportOption = parser.isSet(exportCsvOption);
-    auto targetDir = parser.value(targetDirectoryOption);
+    auto importSql = parser.isSet(importSqlOption);
+    auto outputFolder = parser.value(targetDirectoryOption);
 
     if (exportOption) {
         if (args.length() != 1) {
             qWarning("Export option requires a database file.");
             return 1;
         }
-        if (targetDir.isEmpty()) {
+        if (outputFolder.isEmpty()) {
             qWarning("Target directory is required for export.");
             qWarning("Setting target directory to current working directory.");
-            targetDir = QDir::currentPath();
+            outputFolder = QDir::currentPath();
         }
 
-        Export::exportDataToCsvFile(args.at(0),
-                                     targetDir,
-                                     ",",
-                                     showProgress);
+        Export::exportDataToCsvFile(args.at(0), outputFolder, showProgress);
+        return 0;
+    }
+
+    if (importSql){
+        if (args.length() != 2) {
+            qWarning("Execute SQL option requires a database file.");
+            return 1;
+        }
+        const auto &dbFile = args.at(1);
+        const auto &sqlFile = args.at(0);
+        Script::executeSqlFile(sqlFile, dbFile);
         return 0;
     }
 

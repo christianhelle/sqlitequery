@@ -40,6 +40,8 @@ qt_add_executable(SQLiteQueryAnalyzer WIN32 MACOSX_BUNDLE
         ../gui/prompts.h
         ../cli/export.cpp
         ../cli/export.h
+        ../cli/script.cpp
+        ../cli/script.h
 )
 target_link_libraries(SQLiteQueryAnalyzer PRIVATE
         Qt::Core

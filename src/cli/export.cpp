@@ -3,7 +3,6 @@
 
 void Export::exportDataToCsvFile(const QString &file,
                                  const QString &outputFolder,
-                                 const QString &delimiter,
                                  const bool showProgress) {
     const auto dataExportProgress = std::make_unique<ExportDataProgress>();
     if (showProgress) {
@@ -30,7 +29,7 @@ void Export::exportDataToCsvFile(const QString &file,
     DbDataExport dataExport(info);
     dataExport.exportDataToCsvFile(database.get(),
                                    outputFolder,
-                                   delimiter,
+                                   ",",
                                    &cancellationToken,
                                    progress);
 
