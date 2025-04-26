@@ -11,7 +11,7 @@
 
 ## [0.2.32](https://github.com/christianhelle/sqlitequery/tree/0.2.32) (2025-04-20)
 
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.24...0.2.32)
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.25...0.2.32)
 
 **Implemented enhancements:**
 
@@ -33,10 +33,6 @@
 
 - Add FUNDING.yml to support various funding platforms [\#71](https://github.com/christianhelle/sqlitequery/pull/71) ([christianhelle](https://github.com/christianhelle))
 - Update MacOS recommended build instructions in README [\#59](https://github.com/christianhelle/sqlitequery/pull/59) ([christianhelle](https://github.com/christianhelle))
-
-## [0.2.24](https://github.com/christianhelle/sqlitequery/tree/0.2.24) (2025-04-01)
-
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.25...0.2.24)
 
 ## [0.2.25](https://github.com/christianhelle/sqlitequery/tree/0.2.25) (2025-04-01)
 
