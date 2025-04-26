@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Execute SQL script from command line [\#73](https://github.com/christianhelle/sqlitequery/pull/73) ([christianhelle](https://github.com/christianhelle))
 - Apple AppStore Compliance [\#72](https://github.com/christianhelle/sqlitequery/pull/72) ([christianhelle](https://github.com/christianhelle))
 
 ## [0.2.32](https://github.com/christianhelle/sqlitequery/tree/0.2.32) (2025-04-20)
@@ -14,7 +15,7 @@
 
 **Implemented enhancements:**
 
-- Upgrade to using Qt 6.9.0 [\#66](https://github.com/christianhelle/sqlitequery/issues/66)
+- Upgrade to Qt 6.9.0 [\#66](https://github.com/christianhelle/sqlitequery/issues/66)
 - Delete table shortcut [\#70](https://github.com/christianhelle/sqlitequery/pull/70) ([christianhelle](https://github.com/christianhelle))
 - Show status and error messages in status bar [\#69](https://github.com/christianhelle/sqlitequery/pull/69) ([christianhelle](https://github.com/christianhelle))
 - Fix memory leak when switching databases [\#68](https://github.com/christianhelle/sqlitequery/pull/68) ([christianhelle](https://github.com/christianhelle))
