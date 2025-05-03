@@ -12,13 +12,20 @@ set_source_files_properties(${app_icon_macos}
     MACOSX_PACKAGE_LOCATION
     "../resources")
 
+# Set the executable name based on platform or custom parameter
+if(DEFINED EXECUTABLE_NAME)
+    set(APP_NAME ${EXECUTABLE_NAME})
+else()
+    set(APP_NAME SQLiteQueryAnalyzer)
+endif()
+
 find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui Sql)
 find_package(Qt${QT_VERSION_MAJOR} OPTIONAL_COMPONENTS Widgets)
 
 qt_standard_project_setup()
 
-qt_add_executable(SQLiteQueryAnalyzer WIN32 MACOSX_BUNDLE
+qt_add_executable(${APP_NAME} WIN32 MACOSX_BUNDLE
         ${app_icon_resource_windows}
         ${app_icon_macos}
         ../database/database.cpp ../database/database.h
@@ -46,7 +53,7 @@ qt_add_executable(SQLiteQueryAnalyzer WIN32 MACOSX_BUNDLE
         ../cli/script.cpp
         ../cli/script.h
 )
-target_link_libraries(SQLiteQueryAnalyzer PRIVATE
+target_link_libraries(${APP_NAME} PRIVATE
         Qt::Core
         Qt::Gui
         Qt::Sql
@@ -64,7 +71,7 @@ install(TARGETS SQLiteQueryAnalyzer
 )
 
 qt_generate_deploy_app_script(
-        TARGET SQLiteQueryAnalyzer
+        TARGET ${APP_NAME}
         FILENAME_VARIABLE deploy_script
         NO_UNSUPPORTED_PLATFORM_ERROR
 )

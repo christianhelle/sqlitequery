@@ -25,7 +25,7 @@ architectures:
 
 apps:
   sqlitequery:
-    command: usr/bin/SQLiteQueryAnalyzer
+    command: usr/bin/sqlitequery
     desktop: usr/share/applications/sqlitequery.desktop
     extensions: [gnome]
     plugs:
@@ -50,6 +50,7 @@ parts:
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr
       - -DCMAKE_BUILD_TYPE=Release
+      - -DEXECUTABLE_NAME=sqlitequery
     build-packages:
       - build-essential
       - libgl1-mesa-dev
