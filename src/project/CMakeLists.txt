@@ -23,36 +23,133 @@ find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui Sql)
 find_package(Qt${QT_VERSION_MAJOR} OPTIONAL_COMPONENTS Widgets)
 
-qt_standard_project_setup()
+# Snapcraft workaround - skip qt_standard_project_setup as it's not available in older Qt versions
+if(COMMAND qt_standard_project_setup)
+    qt_standard_project_setup()
+endif()
 
-qt_add_executable(${APP_NAME} WIN32 MACOSX_BUNDLE
-        ${app_icon_resource_windows}
-        ${app_icon_macos}
-        ../database/database.cpp ../database/database.h
-        ../database/databaseinfo.h
-        ../database/dbanalyzer.cpp ../database/dbanalyzer.h
-        ../database/dbquery.cpp ../database/dbquery.h
-        ../database/dbtree.cpp ../database/dbtree.h
-        ../gui/highlighter.cpp ../gui/highlighter.h
-        ../main.cpp
-        ../gui/mainwindow.cpp ../gui/mainwindow.h ../gui/mainwindow.ui
-        ../settings/recentfiles.cpp ../settings/recentfiles.h
-        ../settings/settings.cpp ../settings/settings.h
-        ../database/dbexport.cpp ../database/dbexport.h
-        ../threading/cancellation.cpp ../threading/cancellation.h
-        ../threading/mainthread.h
-        ../database/dbexportschema.cpp
-        ../database/dbexportschema.h
-        ../database/dbexportdata.cpp
-        ../database/dbexportdata.h
-        ../database/progress.h
-        ../gui/prompts.cpp
-        ../gui/prompts.h
-        ../cli/export.cpp
-        ../cli/export.h
-        ../cli/script.cpp
-        ../cli/script.h
-)
+# Use manual functions if qt_add_executable is not available
+if(COMMAND qt_add_executable)
+    qt_add_executable(${APP_NAME} WIN32 MACOSX_BUNDLE
+            ${app_icon_resource_windows}
+            ${app_icon_macos}
+            ../database/database.cpp ../database/database.h
+            ../database/databaseinfo.h
+            ../database/dbanalyzer.cpp ../database/dbanalyzer.h
+            ../database/dbquery.cpp ../database/dbquery.h
+            ../database/dbtree.cpp ../database/dbtree.h
+            ../gui/highlighter.cpp ../gui/highlighter.h
+            ../main.cpp
+            ../gui/mainwindow.cpp ../gui/mainwindow.h ../gui/mainwindow.ui
+            ../settings/recentfiles.cpp ../settings/recentfiles.h
+            ../settings/settings.cpp ../settings/settings.h
+            ../database/dbexport.cpp ../database/dbexport.h
+            ../threading/cancellation.cpp ../threading/cancellation.h
+            ../threading/mainthread.h
+            ../database/dbexportschema.cpp
+            ../database/dbexportschema.h
+            ../database/dbexportdata.cpp
+            ../database/dbexportdata.h
+            ../database/progress.h
+            ../gui/prompts.cpp
+            ../gui/prompts.h
+            ../cli/export.cpp
+            ../cli/export.h
+            ../cli/script.cpp
+            ../cli/script.h
+    )
+else()
+    # Fallback for older Qt versions
+    if(WIN32)
+        add_executable(${APP_NAME} WIN32
+                ${app_icon_resource_windows}
+                ${app_icon_macos}
+                ../database/database.cpp ../database/database.h
+                ../database/databaseinfo.h
+                ../database/dbanalyzer.cpp ../database/dbanalyzer.h
+                ../database/dbquery.cpp ../database/dbquery.h
+                ../database/dbtree.cpp ../database/dbtree.h
+                ../gui/highlighter.cpp ../gui/highlighter.h
+                ../main.cpp
+                ../gui/mainwindow.cpp ../gui/mainwindow.h ../gui/mainwindow.ui
+                ../settings/recentfiles.cpp ../settings/recentfiles.h
+                ../settings/settings.cpp ../settings/settings.h
+                ../database/dbexport.cpp ../database/dbexport.h
+                ../threading/cancellation.cpp ../threading/cancellation.h
+                ../threading/mainthread.h
+                ../database/dbexportschema.cpp
+                ../database/dbexportschema.h
+                ../database/dbexportdata.cpp
+                ../database/dbexportdata.h
+                ../database/progress.h
+                ../gui/prompts.cpp
+                ../gui/prompts.h
+                ../cli/export.cpp
+                ../cli/export.h
+                ../cli/script.cpp
+                ../cli/script.h
+        )
+    elseif(APPLE)
+        add_executable(${APP_NAME} MACOSX_BUNDLE
+                ${app_icon_resource_windows}
+                ${app_icon_macos}
+                ../database/database.cpp ../database/database.h
+                ../database/databaseinfo.h
+                ../database/dbanalyzer.cpp ../database/dbanalyzer.h
+                ../database/dbquery.cpp ../database/dbquery.h
+                ../database/dbtree.cpp ../database/dbtree.h
+                ../gui/highlighter.cpp ../gui/highlighter.h
+                ../main.cpp
+                ../gui/mainwindow.cpp ../gui/mainwindow.h ../gui/mainwindow.ui
+                ../settings/recentfiles.cpp ../settings/recentfiles.h
+                ../settings/settings.cpp ../settings/settings.h
+                ../database/dbexport.cpp ../database/dbexport.h
+                ../threading/cancellation.cpp ../threading/cancellation.h
+                ../threading/mainthread.h
+                ../database/dbexportschema.cpp
+                ../database/dbexportschema.h
+                ../database/dbexportdata.cpp
+                ../database/dbexportdata.h
+                ../database/progress.h
+                ../gui/prompts.cpp
+                ../gui/prompts.h
+                ../cli/export.cpp
+                ../cli/export.h
+                ../cli/script.cpp
+                ../cli/script.h
+        )
+    else()
+        add_executable(${APP_NAME}
+                ${app_icon_resource_windows}
+                ${app_icon_macos}
+                ../database/database.cpp ../database/database.h
+                ../database/databaseinfo.h
+                ../database/dbanalyzer.cpp ../database/dbanalyzer.h
+                ../database/dbquery.cpp ../database/dbquery.h
+                ../database/dbtree.cpp ../database/dbtree.h
+                ../gui/highlighter.cpp ../gui/highlighter.h
+                ../main.cpp
+                ../gui/mainwindow.cpp ../gui/mainwindow.h ../gui/mainwindow.ui
+                ../settings/recentfiles.cpp ../settings/recentfiles.h
+                ../settings/settings.cpp ../settings/settings.h
+                ../database/dbexport.cpp ../database/dbexport.h
+                ../threading/cancellation.cpp ../threading/cancellation.h
+                ../threading/mainthread.h
+                ../database/dbexportschema.cpp
+                ../database/dbexportschema.h
+                ../database/dbexportdata.cpp
+                ../database/dbexportdata.h
+                ../database/progress.h
+                ../gui/prompts.cpp
+                ../gui/prompts.h
+                ../cli/export.cpp
+                ../cli/export.h
+                ../cli/script.cpp
+                ../cli/script.h
+        )
+    endif()
+endif()
+
 target_link_libraries(${APP_NAME} PRIVATE
         Qt::Core
         Qt::Gui
