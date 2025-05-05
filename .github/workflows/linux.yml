@@ -36,4 +36,5 @@ jobs:
         cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/sqlitequery ..
         cmake --build build --config Release --parallel 32
         cmake --install build --config Release --prefix /tmp/sqlitequery
+        tar -czf SQLiteQueryAnalyzer.tar.gz -C /tmp/sqlitequery .
       working-directory: src/project
