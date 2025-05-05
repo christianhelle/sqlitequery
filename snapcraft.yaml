@@ -32,14 +32,10 @@ apps:
       - home
       - desktop
       - desktop-legacy
-      - wayland
       - x11
-      - unity7
       - browser-support
       - network
       - gsettings
-      - audio-playback
-      - pulseaudio
       - opengl
 
 parts:
@@ -53,40 +49,44 @@ parts:
       - -DEXECUTABLE_NAME=sqlitequery
     build-packages:
       - build-essential
-      - libgl1-mesa-dev
-      - qt6-base-dev
-      - qt6-base-private-dev
-      - qt6-declarative-dev
-      - qt6-tools-dev
-      - qt6-tools-dev-tools
-      - qt6-l10n-tools
-      - libqt6sql6-sqlite
       - imagemagick
-    stage-packages:
-      - libqt6core6
-      - libqt6gui6
-      - libqt6widgets6
-      - libqt6sql6
-      - libqt6sql6-sqlite
-      - libglu1-mesa
-      - libgl1
-      - libgl1-mesa-glx
-      - qtwayland5
-      - qt6-qpa-plugins
+      - libglx-dev
+      - libgl1-mesa-dev
+      - libxkbcommon-x11-dev
       - libfontconfig1
-      - libfreetype6
-      - libx11-6
-      - libxcb1
-      - libxext6
-      - libglib2.0-0
+      - libdbus-1-dev
+      - python3
+      - python3-pip
+
     override-build: |
-      # Remove any existing CMake cache
-      rm -f $SNAPCRAFT_PART_SRC/project/CMakeCache.txt
-      # Continue with normal build
-      craftctl default
+      python3 -m venv ./venv
+      ./venv/bin/pip install aqtinstall
+      ./venv/bin/aqt install-qt linux desktop 6.9.0
+
+      # Setup environment variables for Qt
+      export QT_DIR=/root/project/6.9.0/gcc_64
+      export Qt6_DIR=$QT_DIR
+      export PATH=$PATH:$QT_DIR/bin
+      export QMAKE=$QT_DIR/bin/qmake
+      export QT_PLUGIN_PATH=$QT_DIR/plugins
+      
+      # Fix CMake finder for Qt6
+      mkdir -p $SNAPCRAFT_PART_BUILD/build
+      cd $SNAPCRAFT_PART_BUILD/build
+      
+      # Configure with qmake instead of CMake for more reliable Qt dependency handling
+      qmake $SNAPCRAFT_PART_SRC/project/SQLiteAnalyzer.pro CONFIG+=release PREFIX=/usr
+      
+      # Build
+      make -j$(nproc)
+      
+      # Install
+      make install INSTALL_ROOT=$CRAFT_PART_INSTALL
+      
+      # Create desktop file and icons
       mkdir -p $CRAFT_PART_INSTALL/usr/share/applications
       mkdir -p $CRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps
-      cp $CRAFT_PART_BUILD/../resources/icon.ico $CRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/sqlitequery.ico
+      cp $SNAPCRAFT_PART_SRC/resources/icon.ico $CRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/sqlitequery.ico
       cat > $CRAFT_PART_INSTALL/usr/share/applications/sqlitequery.desktop << EOF
       [Desktop Entry]
       Version=1.0
@@ -100,4 +100,4 @@ parts:
       MimeType=application/vnd.sqlite3;application/x-sqlite3;
       Keywords=sqlite;database;sql;query;
       EOF
-      convert $CRAFT_PART_BUILD/../resources/icon.ico -resize 256x256 $CRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/sqlitequery.png
+      convert $SNAPCRAFT_PART_SRC/resources/icon.ico -resize 256x256 $CRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/sqlitequery.png
