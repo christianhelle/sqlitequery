@@ -13,8 +13,9 @@ if ($IsWindows) {
 } 
 
 if ($IsLinux -or $IsMacOS) {
-    cmake -B build
+    cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/sqlitequery ..
     cmake --build build --config Release --parallel 32
+    cmake --install build
 }
 
 if ($IsMacOS -And $package) {
