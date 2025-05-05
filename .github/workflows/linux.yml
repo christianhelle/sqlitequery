@@ -54,6 +54,14 @@ jobs:
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: SQLiteQuerAnalyzer_Linux_v${{ inputs.version }}_${{ inputs.architecture }}
+        name: SQLiteQuerAnalyzer_Linux_v${{ env.VERSION }}
         path: |
-          src/project/SQLiteQueryAnalyzer.tar.gz
+          src/project/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.tar.gz
+          src/project/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.7z
+          src/project/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.zip
+          src/project/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.tbz2
+          src/project/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.tgz
+          src/project/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.txz
+          src/project/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.tz
+          src/project/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.deb
+          src/project/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.rpm
