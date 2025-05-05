@@ -48,7 +48,6 @@ jobs:
         cpack -G TZ
         cpack -G DEB
         cpack -G RPM
-        cpack -G IFW
       working-directory: src/project
     - name: Publish artifacts
       uses: actions/upload-artifact@v4

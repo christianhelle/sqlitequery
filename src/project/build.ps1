@@ -26,7 +26,6 @@ if ($IsLinux) {
         cpack -G TZ
         cpack -G DEB
         cpack -G RPM
-        cpack -G IFW
     }
 }
 
