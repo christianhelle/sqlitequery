@@ -36,7 +36,19 @@ jobs:
         cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/sqlitequery .
         cmake --build . --config Release --parallel 32
         cmake --install . --config Release --prefix /tmp/sqlitequery
+      working-directory: src/project
+    - name: Package
+      run: |
         tar -czf SQLiteQueryAnalyzer.tar.gz -C /tmp/sqlitequery .
+        cpack -G 7Z
+        cpack -G ZIP
+        cpack -G TBZ2
+        cpack -G TGZ
+        cpack -G TXZ
+        cpack -G TZ
+        cpack -G DEB
+        cpack -G RPM
+        cpack -G IFW
       working-directory: src/project
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
