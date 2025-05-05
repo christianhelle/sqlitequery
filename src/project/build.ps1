@@ -12,12 +12,29 @@ if ($IsWindows) {
     }
 } 
 
-if ($IsLinux -or $IsMacOS) {
-    cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/sqlitequery ..
+if ($IsLinux) {
+    cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/sqlitequery
     cmake --build build --config Release --parallel 32
     cmake --install build
+    if ($package) {
+        tar -czf SQLiteQueryAnalyzer.tar.gz /tmp/sqlitequery .
+        cpack -G 7Z
+        cpack -G ZIP
+        cpack -G TBZ2
+        cpack -G TGZ
+        cpack -G TXZ
+        cpack -G TZ
+        cpack -G DEB
+        cpack -G RPM
+        cpack -G IFW
+    }
 }
 
 if ($IsMacOS -And $package) {
-    macdeployqt build/SQLiteQueryAnalyzer.app -dmg -appstore-compliant
+    
+    cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/sqlitequery
+    cmake --build build --config Release --parallel 32
+    if ($package) {
+        macdeployqt build/SQLiteQueryAnalyzer.app -dmg -appstore-compliant
+    }
 }
