@@ -56,8 +56,8 @@ if ((QT_VERSION_MAJOR GREATER 4))
 endif ()
 
 install(TARGETS SQLiteQueryAnalyzer
-        BUNDLE DESTINATION ..
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/build
+        BUNDLE DESTINATION .
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 qt_generate_deploy_app_script(
