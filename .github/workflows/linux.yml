@@ -38,3 +38,9 @@ jobs:
         cmake --install build --config Release --prefix /tmp/sqlitequery
         tar -czf SQLiteQueryAnalyzer.tar.gz -C /tmp/sqlitequery .
       working-directory: src/project
+    - name: Publish artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: SQLiteQuerAnalyzer_Linux_v${{ inputs.version }}_${{ inputs.architecture }}
+        path: |
+          src/project/SQLiteQueryAnalyzer.tar.gz
