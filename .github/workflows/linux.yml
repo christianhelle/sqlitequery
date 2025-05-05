@@ -24,6 +24,8 @@ jobs:
     - name: Update Version in code
       shell: pwsh
       run: |
+        $version = (Get-Content -Path src/project/CMakeLists.txt -Raw) -replace 'VERSION 1.0', 'VERSION "${{ env.VERSION }}"'
+        $version | Set-Content -Path src/project/CMakeLists.txt
         $version = (Get-Content -Path src/main.cpp -Raw) -replace '#define VERSION "1.0.0"', '#define VERSION "${{ env.VERSION }}"'
         $version | Set-Content -Path src/main.cpp
         cat src/main.cpp
