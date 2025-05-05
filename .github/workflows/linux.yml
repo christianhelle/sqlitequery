@@ -31,9 +31,9 @@ jobs:
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.9.0'
-    - name: QMake
-      run: qmake
-      working-directory: src/project
-    - name: Make
-      run: make -j 32
+    - name: CMake
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/sqlitequery ..
+        cmake --build build --config Release --parallel 32
+        cmake --install build --config Release --prefix /tmp/sqlitequery
       working-directory: src/project
