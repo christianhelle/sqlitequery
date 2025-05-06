@@ -41,7 +41,6 @@ jobs:
       working-directory: src/project
     - name: Package
       run: |
-        cpack -G TGZ
         cpack -G 7Z
         cpack -G ZIP
         cpack -G TBZ2
