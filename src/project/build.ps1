@@ -1,6 +1,9 @@
 param (
     [switch]
-    $package = $false
+    $Package = $false,
+
+    [switch]
+    $Install = $false
 )
 
 if ($IsWindows) {
