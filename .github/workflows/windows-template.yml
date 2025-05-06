@@ -45,7 +45,7 @@ jobs:
           target: desktop
           arch: win64_msvc2022_64
           dir: ${{ runner.temp }}
-          setup-python: false
+          setup-python: true
 
       - name: Download JOM
         uses: suisei-cn/actions-download-file@v1
