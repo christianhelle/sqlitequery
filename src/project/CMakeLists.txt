@@ -53,7 +53,7 @@ target_link_libraries(SQLiteQueryAnalyzer PRIVATE
 )
 
 if ((QT_VERSION_MAJOR GREATER 4))
-    target_link_libraries(SQLiteQueryAnalyzer PRIVATE
+  target_link_libraries(SQLiteQueryAnalyzer PRIVATE
             Qt::Widgets
     )
 endif ()
@@ -77,6 +77,8 @@ set(CPACK_PACKAGE_INSTALL_DIRECTORY ${CPACK_PACKAGE_NAME})
 set(CPACK_VERBATIM_VARIABLES ON)
 set(CPACK_PACKAGING_INSTALL_PREFIX "/opt/sqlitequery")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Christian Resma Helle <crhelle@proton.me>")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS libc6 libstdc++6 libgcc-s1)
-set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "postinst.sh;prerm.sh")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS libxcb-xinerama0)
+set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/postinst" PARENT_SCOPE)
+set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/prerm" PARENT_SCOPE)
 include(CPack)
+
