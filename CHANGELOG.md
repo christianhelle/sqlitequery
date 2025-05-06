@@ -6,8 +6,18 @@
 
 **Implemented enhancements:**
 
+- Build Linux Packages [\#74](https://github.com/christianhelle/sqlitequery/issues/74)
 - Execute SQL script from command line [\#73](https://github.com/christianhelle/sqlitequery/pull/73) ([christianhelle](https://github.com/christianhelle))
 - Apple AppStore Compliance [\#72](https://github.com/christianhelle/sqlitequery/pull/72) ([christianhelle](https://github.com/christianhelle))
+
+**Fixed bugs:**
+
+- Fix Windows build workflow [\#76](https://github.com/christianhelle/sqlitequery/issues/76)
+
+**Merged pull requests:**
+
+- Build Linux Packages [\#78](https://github.com/christianhelle/sqlitequery/pull/78) ([christianhelle](https://github.com/christianhelle))
+- Fix Windows build [\#77](https://github.com/christianhelle/sqlitequery/pull/77) ([christianhelle](https://github.com/christianhelle))
 
 ## [0.2.32](https://github.com/christianhelle/sqlitequery/tree/0.2.32) (2025-04-20)
 
