@@ -7,7 +7,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(app_icon_resource_windows "../resources/icon.rc")
 set(MACOSX_BUNDLE_ICON_FILE icon.icns)
 set(app_icon_macos "../resources/icon.icns")
-set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION "../resources")
+set_source_files_properties(${app_icon_macos}
+    PROPERTIES
+    MACOSX_PACKAGE_LOCATION
+    "../resources")
 
 find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui Sql)
