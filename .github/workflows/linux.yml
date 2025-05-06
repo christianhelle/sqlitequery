@@ -54,6 +54,6 @@ jobs:
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: SQLiteQuerAnalyzer_Linux_v${{ env.VERSION }}
+        name: SQLiteQueryAnalyzer_Linux_v${{ env.VERSION }}
         path: |
           src/project/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.*
