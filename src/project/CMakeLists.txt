@@ -7,7 +7,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(app_icon_resource_windows "../resources/icon.rc")
 set(MACOSX_BUNDLE_ICON_FILE icon.icns)
 set(app_icon_macos "../resources/icon.icns")
-set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION "../resources")
+set_source_files_properties(${app_icon_macos}
+    PROPERTIES
+    MACOSX_PACKAGE_LOCATION
+    "../resources")
 
 find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui Sql)
@@ -50,14 +53,14 @@ target_link_libraries(SQLiteQueryAnalyzer PRIVATE
 )
 
 if ((QT_VERSION_MAJOR GREATER 4))
-    target_link_libraries(SQLiteQueryAnalyzer PRIVATE
+  target_link_libraries(SQLiteQueryAnalyzer PRIVATE
             Qt::Widgets
     )
 endif ()
 
 install(TARGETS SQLiteQueryAnalyzer
-        BUNDLE DESTINATION ..
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/build
+        BUNDLE DESTINATION .
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 qt_generate_deploy_app_script(
@@ -66,3 +69,16 @@ qt_generate_deploy_app_script(
         NO_UNSUPPORTED_PLATFORM_ERROR
 )
 install(SCRIPT ${deploy_script})
+
+set(CPACK_PACKAGE_NAME SQLiteQueryAnalyzer)
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "SQLite Query Analyzer")
+set(CPACK_PACKAGE_VENDOR "Christian Resma Helle")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY ${CPACK_PACKAGE_NAME})
+set(CPACK_VERBATIM_VARIABLES ON)
+set(CPACK_PACKAGING_INSTALL_PREFIX "/opt/sqlitequery")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Christian Resma Helle <crhelle@proton.me>")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS libxcb-xinerama0)
+set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/postinst" PARENT_SCOPE)
+set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/prerm" PARENT_SCOPE)
+include(CPack)
+
