@@ -32,7 +32,8 @@ if ($IsLinux) {
 
     if ($Install) {
         cmake --install build
-        ln -s ~/.local/bin/sqlitequery /tmp/sqlitequery/bin/SQLiteQueryAnalyzer
+        mkdir -p ~/.local/bin
+        ln -s /tmp/sqlitequery/bin/SQLiteQueryAnalyzer ~/.local/bin/sqlitequery
     }
 }
 
