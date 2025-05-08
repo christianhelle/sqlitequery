@@ -35,11 +35,12 @@ jobs:
         
     - name: CMake
       run: |
-        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/sqlitequery .
+        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux .
         cmake --build . --config Release --parallel 32
-        cmake --install . --config Release --prefix /tmp/sqlitequery
+        cmake --install .
+        cp ../../images/sqlite-icon.png linux/usr/share/icons/hicolor/256x256/apps/sqlitequery.png
       working-directory: src/project
-      
+
     - name: Package
       run: |
         cpack -G 7Z
@@ -51,10 +52,15 @@ jobs:
         cpack -G DEB
         cpack -G RPM
       working-directory: src/project
-      
+
+    - name: Snap Package
+      run: snapcraft
+      working-directory: src/project
+
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
       with:
         name: SQLiteQueryAnalyzer_Linux_v${{ inputs.version }}
         path: |
           src/project/SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.*
+          src/project/*.snap
