@@ -19,6 +19,7 @@ if ($IsLinux) {
     cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/
     cmake --build build --config Release --parallel 32
     cmake --install build
+    cp ../../images/sqlite-icon.png linux/usr/share/icons/hicolor/256x256/apps/sqlitequery.png
 
     if ($Install) {
         mkdir -p ~/.local/bin
