@@ -19,77 +19,42 @@ description: |
 
 version: '0.2.32'
 grade: stable
-confinement: strict
-architectures:
-  - amd64
+confinement: classic
 
 apps:
   sqlitequery:
-    command: usr/bin/sqlitequery
+    command: usr/bin/SQLiteQueryAnalyzer
     desktop: usr/share/applications/sqlitequery.desktop
-    extensions: [gnome]
-    plugs:
-      - home
-      - desktop
-      - desktop-legacy
-      - wayland
-      - x11
-      - unity7
-      - browser-support
-      - network
-      - gsettings
-      - audio-playback
-      - pulseaudio
-      - opengl
 
 parts:
   sqlitequery:
-    plugin: cmake
-    source: ../..
-    source-subdir: src/project
-    cmake-parameters:
-      - -DCMAKE_INSTALL_PREFIX=/usr
-      - -DCMAKE_BUILD_TYPE=Release
-      - -DEXECUTABLE_NAME=sqlitequery
-    build-packages:
-      - build-essential
-      - libgl1-mesa-dev
-      - qt6-base-dev
-      - libqt6sql6-sqlite
-      - imagemagick
+    plugin: dump
+    source: linux
+    source-type: local
     stage-packages:
       - libqt6core6
       - libqt6gui6
       - libqt6widgets6
       - libqt6sql6
-      - libqt6sql6-sqlite
-      - libglu1-mesa
-      - libgl1
-      - libgl1-mesa-glx
-      - qtwayland5
+      - libqt6svg6
       - qt6-qpa-plugins
-      - libfontconfig1
-      - libfreetype6
-      - libx11-6
+      - libgl1
       - libxcb1
-      - libxext6
-      - libglib2.0-0
-    override-build: |
-      craftctl default
-      mkdir -p $CRAFT_PART_INSTALL/usr/share/applications
-      mkdir -p $CRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps
-      cp $CRAFT_PART_BUILD/src/resources/icon.ico $CRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/sqlitequery.ico
-      cat > $CRAFT_PART_INSTALL/usr/share/applications/sqlitequery.desktop << EOF
-      [Desktop Entry]
-      Version=1.0
-      Type=Application
-      Name=SQLite Query Analyzer
-      Comment=Lightweight cross-platform SQLite database explorer
-      Icon=sqlitequery
-      Exec=sqlitequery %F
-      Terminal=false
-      Categories=Development;Utility;Database;
-      MimeType=application/vnd.sqlite3;application/x-sqlite3;
-      Keywords=sqlite;database;sql;query;
-      EOF
-      convert $CRAFT_PART_BUILD/src/resources/icon.ico -resize 256x256 $CRAFT_PART_INSTALL/usr/share/icons/hicolor/256x256/apps/sqlitequery.png
+      - libx11-6
+      - libxau6
+      - libxdmcp6
+      - libfontconfig1
+      - libxkbcommon0
+      - libxcb-icccm4
+      - libxcb-image0
+      - libxcb-keysyms1
+      - libxcb-randr0
+      - libxcb-render-util0
+      - libxcb-render0
+      - libxcb-shape0
+      - libxcb-shm0
+      - libxcb-sync1
+      - libxcb-util1
+      - libxcb-xfixes0
+      - libxcb-xkb1
+      - libxkbcommon-x11-0
