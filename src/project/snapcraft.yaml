@@ -17,7 +17,7 @@ description: |
   - Export data as an SQL script containing INSERT statements or as CSV files
   - Desktop color theme awareness with automatic switching between dark/light themes
 
-version: '0.2.32'
+version: 1.0.0
 grade: stable
 confinement: classic
 
