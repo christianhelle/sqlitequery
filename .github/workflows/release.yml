@@ -31,11 +31,16 @@ jobs:
       version: 0.2.${{ github.run_number }}
       release: true
     secrets: inherit
+  linux:
+    uses: ./.github/workflows/linux-template.yml
+    with:
+      version: '0.2.${{ github.run_number }}'
   release:
     needs: [
       macos-arm64,
       macos-intel,
-      windows
+      windows,
+      linux
     ]
     runs-on: ubuntu-latest
     steps:
@@ -99,3 +104,30 @@ jobs:
           asset_path: artifacts/SQLiteQuerAnalyzer_MacOS_v${{ env.VERSION }}_intel/SQLiteQueryAnalyzer.dmg
           asset_name: SQLiteQuerAnalyzer for MacOS (Intel) v${{ env.VERSION }}.dmg
           asset_content_type: application/zip
+      - name: Upload Linux DEB Package
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: artifacts/SQLiteQueryAnalyzer_Linux_v${{ env.VERSION }}/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.deb
+          asset_name: SQLiteQueryAnalyzer for Linux (DEB) v${{ env.VERSION }}.deb
+          asset_content_type: application/octet-stream
+      - name: Upload Linux RPM Package
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: artifacts/SQLiteQueryAnalyzer_Linux_v${{ env.VERSION }}/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.rpm
+          asset_name: SQLiteQueryAnalyzer for Linux (RPM) v${{ env.VERSION }}.rpm
+          asset_content_type: application/octet-stream
+      - name: Upload Linux TGZ Package
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: artifacts/SQLiteQueryAnalyzer_Linux_v${{ env.VERSION }}/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.tar.gz
+          asset_name: SQLiteQueryAnalyzer for Linux (TGZ) v${{ env.VERSION }}.tar.gz
+          asset_content_type: application/gzip
