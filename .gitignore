@@ -46,3 +46,12 @@ src/.vs
 *.nupkg
 6.9.0
 *aqtinstall.log
+src/project/linux/usr/share/icons/hicolor/256x256/apps/sqlitequery.png
+src/project/SQLiteQueryAnalyzer-1.0-Linux.7z
+src/project/SQLiteQueryAnalyzer-1.0-Linux.deb
+src/project/SQLiteQueryAnalyzer-1.0-Linux.rpm
+src/project/SQLiteQueryAnalyzer-1.0-Linux.tar.Z
+src/project/SQLiteQueryAnalyzer-1.0-Linux.tar.bz2
+src/project/SQLiteQueryAnalyzer-1.0-Linux.tar.gz
+src/project/SQLiteQueryAnalyzer-1.0-Linux.tar.xz
+src/project/SQLiteQueryAnalyzer-1.0-Linux.zip
