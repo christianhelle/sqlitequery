@@ -120,7 +120,7 @@ jobs:
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: artifacts/SQLiteQueryAnalyzer_Linux_v${{ env.VERSION }}/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.rpm
-          asset_name: SQLiteQuerAnalyzer for Linux (RPM) v${{ env.VERSION }}.rpm
+          asset_name: SQLiteQueryAnalyzer for Linux (RPM) v${{ env.VERSION }}.rpm
           asset_content_type: application/octet-stream
       - name: Upload Linux TGZ Package
         uses: actions/upload-release-asset@v1
