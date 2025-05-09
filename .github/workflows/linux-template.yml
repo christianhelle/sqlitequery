@@ -57,6 +57,7 @@ jobs:
     - name: Snap Package
       run: |
         sudo snap install lxd
+        sudo snap install snapcraft --classic
         snapcraft
       working-directory: src/project
 
