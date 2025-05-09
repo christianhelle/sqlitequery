@@ -53,7 +53,9 @@ jobs:
       working-directory: src/project
 
     - name: Snap Package
-      run: snapcraft
+      run: |
+        sudo snap install snapcraft --classic
+        snapcraft
       working-directory: src/project
 
     - name: Publish artifacts
