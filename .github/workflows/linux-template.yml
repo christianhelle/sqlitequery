@@ -54,12 +54,14 @@ jobs:
         cpack -G RPM
       working-directory: src/project
 
-    - name: Snap Package
+    - name: Install Snap
       run: |
         sudo snap install lxd
         getent group lxd | grep -qwF "$USER" || sudo usermod -aG lxd "$USER"
         sudo snap install snapcraft --classic
-        snapcraft
+
+    - name: Snap Package
+      run: snapcraft
       working-directory: src/project
 
     - name: Publish artifacts
