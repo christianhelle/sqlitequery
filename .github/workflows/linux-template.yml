@@ -59,10 +59,11 @@ jobs:
         sudo snap install lxd multipass
         sudo usermod -a -G lxd $USER
         sudo snap install snapcraft --classic
-        lxd init --minimal
 
     - name: Build Snap Package
-      run: snapcraft
+      run: |
+        lxd init --minimal
+        snapcraft
       working-directory: src/project
 
     - name: Publish artifacts
