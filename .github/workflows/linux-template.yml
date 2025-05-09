@@ -56,8 +56,8 @@ jobs:
 
     - name: Install Snap
       run: |
-        sudo snap install lxd
-        getent group lxd | grep -qwF "$USER" || sudo usermod -aG lxd "$USER"
+        sudo snap install lxd multipass
+        sudo usermod -a -G lxd $USER
         sudo snap install snapcraft --classic
         lxd init --minimal
 
