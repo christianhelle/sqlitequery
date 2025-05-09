@@ -60,10 +60,12 @@ jobs:
         sudo usermod -a -G lxd $USER
         sudo snap install snapcraft --classic
 
+    - name: Initialize LXD 
+      run: sudo lxd init --minimal
+      working-directory: src/project
+    
     - name: Build Snap Package
-      run: |
-        lxd init --minimal
-        snapcraft
+      run: snapcraft
       working-directory: src/project
 
     - name: Publish artifacts
