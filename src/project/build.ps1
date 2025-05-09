@@ -1,9 +1,6 @@
 param (
     [switch]
-    $Package = $false,
-
-    [switch]
-    $Install = $false
+    $Package = $false
 )
 
 if ($IsWindows) {
@@ -19,12 +16,6 @@ if ($IsLinux) {
     cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/
     cmake --build build --config Release --parallel 32
     cmake --install build
-
-    if ($Install) {
-        mkdir -p ~/.local/bin
-        cp -rf ./linux /tmp/sqlitequery
-        ln -s /tmp/sqlitequery/bin/SQLiteQueryAnalyzer ~/.local/bin/sqlitequery
-    }
 
     if ($Package) {
         cpack -G 7Z --config ./build/CPackConfig.cmake
