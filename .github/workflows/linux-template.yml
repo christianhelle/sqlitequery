@@ -38,7 +38,6 @@ jobs:
         cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux .
         cmake --build . --config Release --parallel 32
         cmake --install .
-        cp ../../images/sqlite-icon.png linux/usr/share/icons/hicolor/256x256/apps/sqlitequery.png
       working-directory: src/project
 
     - name: Package
