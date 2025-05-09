@@ -57,8 +57,8 @@ jobs:
     - name: Snap Package
       run: |
         sudo snap install lxd
-        sudo snap install snapcraft --classic
         getent group lxd | grep -qwF "$USER" || sudo usermod -aG lxd "$USER"
+        sudo snap install snapcraft --classic
         snapcraft
       working-directory: src/project
 
