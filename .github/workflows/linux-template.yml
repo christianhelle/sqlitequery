@@ -54,19 +54,13 @@ jobs:
         cpack -G RPM
       working-directory: src/project
 
-    - name: Install Snap
-      run: |
-        sudo snap install lxd multipass
-        sudo usermod -a -G lxd $USER
-        sudo snap install snapcraft --classic
-
-    - name: Initialize LXD 
-      run: sudo lxd init --minimal
-      working-directory: src/project
-    
     - name: Build Snap Package
-      run: snapcraft
+      run: |
+        sudo snap install snapcraft --classic
+        snapcraft
       working-directory: src/project
+      env:
+        SNAPCRAFT_BUILD_ENVIRONMENT: host
 
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
