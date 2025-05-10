@@ -9,7 +9,7 @@ QT       += sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = "sqlitequery"
+TARGET = "SQLiteQueryAnalyzer"
 TEMPLATE = app
 VERSION = 1.0.0.0
 RC_ICONS = ../resources/icon.ico
