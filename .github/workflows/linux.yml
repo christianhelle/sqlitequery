@@ -5,7 +5,7 @@ on:
   push:
     paths-ignore:
       - '**/*'
-      - '!.github/workflows/linux.yml'
+      - '!.github/workflows/linux*.yml'
       - '!src/project/*'
       - '!src/**/*.cpp'
       - '!src/**/*.h'
