@@ -56,3 +56,8 @@ src/project/SQLiteQueryAnalyzer-1.0-Linux.tar.gz
 src/project/SQLiteQueryAnalyzer-1.0-Linux.tar.xz
 src/project/SQLiteQueryAnalyzer-1.0-Linux.zip
 src/project/sqlitequery_1.0.0_amd64.snap
+src/project/_CPack_Packages
+src/project/linux/bin
+src/project/linux/lib
+src/project/linux/plugins
+src/project/linux/translations
