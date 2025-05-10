@@ -137,6 +137,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: artifacts/sqlitequery_${{ env.VERSION }}_amd64/sqlitequery_${{ env.VERSION }}_amd64.snap
+          asset_path: artifacts/SQLiteQueryAnalyzer_Linux_v${{ env.VERSION }}/sqlitequery_${{ env.VERSION }}_amd64.snap
           asset_name: SQLiteQueryAnalyzer for Linux (Snap) v${{ env.VERSION }}.snap
           asset_content_type: application/octet-stream
