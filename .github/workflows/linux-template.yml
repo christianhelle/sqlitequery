@@ -42,7 +42,7 @@ jobs:
         cmake --install .
       working-directory: src/project
 
-    - name: Package
+    - name: CPack
       run: |
         cpack -G 7Z
         cpack -G ZIP
@@ -54,7 +54,7 @@ jobs:
         cpack -G RPM
       working-directory: src/project
 
-    - name: Build Snap Package
+    - name: Snapcraft
       run: |
         sudo snap install snapcraft --classic
         snapcraft
