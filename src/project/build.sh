@@ -31,9 +31,9 @@ OS=$(uname)
 
 if [ "$OS" = "Linux" ]; then
     echo "Building for Linux..."
-    # cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/
-    # cmake --build build --config Release --parallel $(nproc)
-    # cmake --install build
+    cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/
+    cmake --build build --config Release --parallel $(nproc)
+    cmake --install build
 
     if [ "$INSTALL" = true ]; then
         mkdir -p ~/.local/bin
