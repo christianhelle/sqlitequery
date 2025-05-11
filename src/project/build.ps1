@@ -14,7 +14,7 @@ if ($IsWindows) {
 
 if ($IsLinux) {
     cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/
-    cmake --build build --config Release --parallel 32
+    cmake --build build --config Release --parallel $(nproc)
     cmake --install build
 
     if ($Package) {
