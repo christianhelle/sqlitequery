@@ -37,7 +37,7 @@ if [ "$OS" = "Linux" ]; then
 
     if [ "$INSTALL" = true ]; then
         mkdir -p ~/.local/bin
-        cp -rf ./linux /tmp/sqlitequery
+        cp -rf ./linux/* /tmp/sqlitequery
         ln -sf /tmp/sqlitequery/bin/SQLiteQueryAnalyzer ~/.local/bin/sqlitequery
         echo "Installed to ~/.local/bin/sqlitequery"
     fi
