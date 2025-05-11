@@ -26,7 +26,13 @@ if ($IsLinux) {
         cpack -G TZ --config ./build/CPackConfig.cmake
         cpack -G DEB --config ./build/CPackConfig.cmake
         cpack -G RPM --config ./build/CPackConfig.cmake
-        snapcraft
+
+        if (Get-Command snapcraft -ErrorAction SilentlyContinue) {
+            snapcraft
+        } else {
+            Write-Warning "snapcraft not found. Snap package will not be created."
+            Write-Warning "To install snapcraft, run: sudo snap install snapcraft --classic"
+        }
     }
 }
 
