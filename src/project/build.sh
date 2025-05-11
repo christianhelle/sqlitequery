@@ -53,9 +53,9 @@ if [ "$OS" = "Linux" ]; then
         cpack -G DEB --config ./build/CPackConfig.cmake
         cpack -G RPM --config ./build/CPackConfig.cmake
         
-        # Since we're getting the snapd.socket error, skip snap package creation in all environments
-        if true; then
-            echo "Snap package creation is disabled."
+        # Check if snap package creation is disabled via the DISABLE_SNAP environment variable
+        if [ "${DISABLE_SNAP}" = "true" ]; then
+            echo "Snap package creation is disabled (DISABLE_SNAP=true)."
             echo "To create snap packages on a host system, use one of these approaches:"
             echo ""
             echo "Option 1: Use the snapcraft Docker image (recommended):"
