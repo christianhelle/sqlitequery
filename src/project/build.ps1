@@ -1,9 +1,6 @@
 param (
     [switch]
-    $Package = $false,
-
-    [switch]
-    $Install = $false
+    $Package = $false
 )
 
 if ($IsWindows) {
@@ -16,8 +13,9 @@ if ($IsWindows) {
 } 
 
 if ($IsLinux) {
-    cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/sqlitequery
-    cmake --build build --config Release --parallel 32
+    cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/
+    cmake --build build --config Release --parallel $(nproc)
+    cmake --install build
 
     if ($Package) {
         cpack -G 7Z --config ./build/CPackConfig.cmake
@@ -28,12 +26,13 @@ if ($IsLinux) {
         cpack -G TZ --config ./build/CPackConfig.cmake
         cpack -G DEB --config ./build/CPackConfig.cmake
         cpack -G RPM --config ./build/CPackConfig.cmake
-    }
 
-    if ($Install) {
-        cmake --install build
-        mkdir -p ~/.local/bin
-        ln -s /tmp/sqlitequery/bin/SQLiteQueryAnalyzer ~/.local/bin/sqlitequery
+        if (Get-Command snapcraft -ErrorAction SilentlyContinue) {
+            snapcraft
+        } else {
+            Write-Warning "snapcraft not found. Snap package will not be created."
+            Write-Warning "To install snapcraft, run: sudo snap install snapcraft --classic"
+        }
     }
 }
 

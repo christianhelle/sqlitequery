@@ -125,3 +125,12 @@ jobs:
           asset_path: artifacts/SQLiteQueryAnalyzer_Linux_v${{ env.VERSION }}/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.tar.gz
           asset_name: SQLiteQueryAnalyzer for Linux (TGZ) v${{ env.VERSION }}.tar.gz
           asset_content_type: application/gzip
+      - name: Upload Linux Snap Package
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: artifacts/SQLiteQueryAnalyzer_Linux_v${{ env.VERSION }}/sqlitequery_${{ env.VERSION }}_amd64.snap
+          asset_name: SQLiteQueryAnalyzer for Linux (Snap) v${{ env.VERSION }}.snap
+          asset_content_type: application/octet-stream
