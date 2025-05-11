@@ -65,10 +65,6 @@ if [ "$OS" = "Linux" ]; then
             echo "  sudo snap install snapcraft --classic"
             echo "  snapcraft"
             echo ""
-            # Create a placeholder snap directory to indicate the step was processed
-            mkdir -p ./build/snap
-            touch ./build/snap/snap_package_placeholder.txt
-            echo "Snap package creation skipped. See instructions above."
         else
             # For standard non-container environments
             echo "Checking for snapcraft dependencies..."
@@ -96,9 +92,6 @@ if [ "$OS" = "Linux" ]; then
             echo "  sudo snap install snapcraft --classic"
             echo "  snapcraft"
             echo ""
-            # Create a placeholder snap directory to indicate the step was processed
-            mkdir -p ./build/snap
-            touch ./build/snap/snap_package_placeholder.txt
         fi
         
         echo "Package creation complete"
