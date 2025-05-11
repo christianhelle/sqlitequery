@@ -28,126 +28,41 @@ if(COMMAND qt_standard_project_setup)
     qt_standard_project_setup()
 endif()
 
-# Use manual functions if qt_add_executable is not available
+# Define common source list once
+set(COMMON_SRCS
+  ../main.cpp
+  ../database/database.cpp ../database/database.h
+  ../database/databaseinfo.h
+  ../database/dbanalyzer.cpp ../database/dbanalyzer.h
+  ../database/dbquery.cpp ../database/dbquery.h
+  ../database/dbtree.cpp ../database/dbtree.h
+  ../gui/highlighter.cpp ../gui/highlighter.h
+  ../gui/mainwindow.cpp ../gui/mainwindow.h ../gui/mainwindow.ui
+  ../settings/recentfiles.cpp ../settings/recentfiles.h
+  ../settings/settings.cpp ../settings/settings.h
+  ../database/dbexport.cpp ../database/dbexport.h
+  ../threading/cancellation.cpp ../threading/cancellation.h
+  ../threading/mainthread.h
+  ../database/dbexportschema.cpp
+  ../database/dbexportschema.h
+  ../database/dbexportdata.cpp
+  ../database/dbexportdata.h
+  ../database/progress.h
+  ../gui/prompts.cpp
+  ../gui/prompts.h
+  ../cli/export.cpp
+  ../cli/export.h
+  ../cli/script.cpp
+  ../cli/script.h)
+
 if(COMMAND qt_add_executable)
-    qt_add_executable(${APP_NAME} WIN32 MACOSX_BUNDLE
-            ${app_icon_resource_windows}
-            ${app_icon_macos}
-            ../database/database.cpp ../database/database.h
-            ../database/databaseinfo.h
-            ../database/dbanalyzer.cpp ../database/dbanalyzer.h
-            ../database/dbquery.cpp ../database/dbquery.h
-            ../database/dbtree.cpp ../database/dbtree.h
-            ../gui/highlighter.cpp ../gui/highlighter.h
-            ../main.cpp
-            ../gui/mainwindow.cpp ../gui/mainwindow.h ../gui/mainwindow.ui
-            ../settings/recentfiles.cpp ../settings/recentfiles.h
-            ../settings/settings.cpp ../settings/settings.h
-            ../database/dbexport.cpp ../database/dbexport.h
-            ../threading/cancellation.cpp ../threading/cancellation.h
-            ../threading/mainthread.h
-            ../database/dbexportschema.cpp
-            ../database/dbexportschema.h
-            ../database/dbexportdata.cpp
-            ../database/dbexportdata.h
-            ../database/progress.h
-            ../gui/prompts.cpp
-            ../gui/prompts.h
-            ../cli/export.cpp
-            ../cli/export.h
-            ../cli/script.cpp
-            ../cli/script.h
-    )
+  qt_add_executable(${APP_NAME} WIN32 MACOSX_BUNDLE ${COMMON_SRCS})
 else()
-    # Fallback for older Qt versions
-    if(WIN32)
-        add_executable(${APP_NAME} WIN32
-                ${app_icon_resource_windows}
-                ${app_icon_macos}
-                ../database/database.cpp ../database/database.h
-                ../database/databaseinfo.h
-                ../database/dbanalyzer.cpp ../database/dbanalyzer.h
-                ../database/dbquery.cpp ../database/dbquery.h
-                ../database/dbtree.cpp ../database/dbtree.h
-                ../gui/highlighter.cpp ../gui/highlighter.h
-                ../main.cpp
-                ../gui/mainwindow.cpp ../gui/mainwindow.h ../gui/mainwindow.ui
-                ../settings/recentfiles.cpp ../settings/recentfiles.h
-                ../settings/settings.cpp ../settings/settings.h
-                ../database/dbexport.cpp ../database/dbexport.h
-                ../threading/cancellation.cpp ../threading/cancellation.h
-                ../threading/mainthread.h
-                ../database/dbexportschema.cpp
-                ../database/dbexportschema.h
-                ../database/dbexportdata.cpp
-                ../database/dbexportdata.h
-                ../database/progress.h
-                ../gui/prompts.cpp
-                ../gui/prompts.h
-                ../cli/export.cpp
-                ../cli/export.h
-                ../cli/script.cpp
-                ../cli/script.h
-        )
-    elseif(APPLE)
-        add_executable(${APP_NAME} MACOSX_BUNDLE
-                ${app_icon_resource_windows}
-                ${app_icon_macos}
-                ../database/database.cpp ../database/database.h
-                ../database/databaseinfo.h
-                ../database/dbanalyzer.cpp ../database/dbanalyzer.h
-                ../database/dbquery.cpp ../database/dbquery.h
-                ../database/dbtree.cpp ../database/dbtree.h
-                ../gui/highlighter.cpp ../gui/highlighter.h
-                ../main.cpp
-                ../gui/mainwindow.cpp ../gui/mainwindow.h ../gui/mainwindow.ui
-                ../settings/recentfiles.cpp ../settings/recentfiles.h
-                ../settings/settings.cpp ../settings/settings.h
-                ../database/dbexport.cpp ../database/dbexport.h
-                ../threading/cancellation.cpp ../threading/cancellation.h
-                ../threading/mainthread.h
-                ../database/dbexportschema.cpp
-                ../database/dbexportschema.h
-                ../database/dbexportdata.cpp
-                ../database/dbexportdata.h
-                ../database/progress.h
-                ../gui/prompts.cpp
-                ../gui/prompts.h
-                ../cli/export.cpp
-                ../cli/export.h
-                ../cli/script.cpp
-                ../cli/script.h
-        )
-    else()
-        add_executable(${APP_NAME}
-                ${app_icon_resource_windows}
-                ${app_icon_macos}
-                ../database/database.cpp ../database/database.h
-                ../database/databaseinfo.h
-                ../database/dbanalyzer.cpp ../database/dbanalyzer.h
-                ../database/dbquery.cpp ../database/dbquery.h
-                ../database/dbtree.cpp ../database/dbtree.h
-                ../gui/highlighter.cpp ../gui/highlighter.h
-                ../main.cpp
-                ../gui/mainwindow.cpp ../gui/mainwindow.h ../gui/mainwindow.ui
-                ../settings/recentfiles.cpp ../settings/recentfiles.h
-                ../settings/settings.cpp ../settings/settings.h
-                ../database/dbexport.cpp ../database/dbexport.h
-                ../threading/cancellation.cpp ../threading/cancellation.h
-                ../threading/mainthread.h
-                ../database/dbexportschema.cpp
-                ../database/dbexportschema.h
-                ../database/dbexportdata.cpp
-                ../database/dbexportdata.h
-                ../database/progress.h
-                ../gui/prompts.cpp
-                ../gui/prompts.h
-                ../cli/export.cpp
-                ../cli/export.h
-                ../cli/script.cpp
-                ../cli/script.h
-        )
-    endif()
+  add_executable(${APP_NAME}
+    $<$<PLATFORM_ID:Windows>:WIN32>
+    $<$<PLATFORM_ID:Darwin>:MACOSX_BUNDLE>
+    ${COMMON_SRCS}
+  )
 endif()
 
 target_link_libraries(${APP_NAME} PRIVATE
