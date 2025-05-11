@@ -101,7 +101,7 @@ fi
 if [ "$OS" = "Darwin" ]; then
   echo "Building for macOS..."
   cmake -B build -DCMAKE_BUILD_TYPE=Release
-  cmake --build build --config Release --parallel $(sysctl -n hw.ncpu)
+  cmake --build build --config Release --parallel "$(sysctl -n hw.ncpu)"
 
   if [ "$PACKAGE" = true ]; then
     echo "Creating macOS package..."
