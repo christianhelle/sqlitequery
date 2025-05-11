@@ -44,14 +44,9 @@ if [ "$OS" = "Linux" ]; then
 
   if [ "$PACKAGE" = true ]; then
     echo "Creating packages..."
-    cpack -G 7Z --config ./build/CPackConfig.cmake
-    cpack -G ZIP --config ./build/CPackConfig.cmake
-    cpack -G TBZ2 --config ./build/CPackConfig.cmake
-    cpack -G TGZ --config ./build/CPackConfig.cmake
-    cpack -G TXZ --config ./build/CPackConfig.cmake
-    cpack -G TZ --config ./build/CPackConfig.cmake
-    cpack -G DEB --config ./build/CPackConfig.cmake
-    cpack -G RPM --config ./build/CPackConfig.cmake
+    for GEN in 7Z ZIP TBZ2 TGZ TXZ TZ DEB RPM; do
+      cpack -G "$GEN" --config ./build/CPackConfig.cmake
+    done
 
     # Check if snap package creation is disabled via the DISABLE_SNAP environment variable
     if [ "${DISABLE_SNAP}" = "true" ]; then
