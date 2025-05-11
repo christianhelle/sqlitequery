@@ -2,11 +2,39 @@
 
 ## [Unreleased](https://github.com/christianhelle/sqlitequery/tree/HEAD)
 
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.32...HEAD)
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.44...HEAD)
 
 **Implemented enhancements:**
 
-- Build Linux Packages [\#74](https://github.com/christianhelle/sqlitequery/issues/74)
+- Build Snap Package [\#81](https://github.com/christianhelle/sqlitequery/pull/81) ([christianhelle](https://github.com/christianhelle))
+
+## [0.2.44](https://github.com/christianhelle/sqlitequery/tree/0.2.44) (2025-05-10)
+
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.43...0.2.44)
+
+## [0.2.43](https://github.com/christianhelle/sqlitequery/tree/0.2.43) (2025-05-10)
+
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.41...0.2.43)
+
+## [0.2.41](https://github.com/christianhelle/sqlitequery/tree/0.2.41) (2025-05-08)
+
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.40...0.2.41)
+
+**Merged pull requests:**
+
+- Linux workflow template [\#79](https://github.com/christianhelle/sqlitequery/pull/79) ([christianhelle](https://github.com/christianhelle))
+- Build Linux Packages [\#78](https://github.com/christianhelle/sqlitequery/pull/78) ([christianhelle](https://github.com/christianhelle))
+
+## [0.2.40](https://github.com/christianhelle/sqlitequery/tree/0.2.40) (2025-05-08)
+
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.37...0.2.40)
+
+## [0.2.37](https://github.com/christianhelle/sqlitequery/tree/0.2.37) (2025-05-06)
+
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.32...0.2.37)
+
+**Implemented enhancements:**
+
 - Execute SQL script from command line [\#73](https://github.com/christianhelle/sqlitequery/pull/73) ([christianhelle](https://github.com/christianhelle))
 - Apple AppStore Compliance [\#72](https://github.com/christianhelle/sqlitequery/pull/72) ([christianhelle](https://github.com/christianhelle))
 
@@ -16,7 +44,6 @@
 
 **Merged pull requests:**
 
-- Build Linux Packages [\#78](https://github.com/christianhelle/sqlitequery/pull/78) ([christianhelle](https://github.com/christianhelle))
 - Fix Windows build [\#77](https://github.com/christianhelle/sqlitequery/pull/77) ([christianhelle](https://github.com/christianhelle))
 
 ## [0.2.32](https://github.com/christianhelle/sqlitequery/tree/0.2.32) (2025-04-20)
