@@ -29,6 +29,12 @@ done
 # Detect OS
 OS=$(uname)
 
+# Check for Windows with MSYS2/Git Bash
+if [[ "$OS" == MINGW* ]] || [[ "$OS" == CYGWIN* ]]; then
+  echo "This script is not designed for Windows. Please use build.ps1 instead."
+  exit 1
+fi
+
 if [ "$OS" = "Linux" ]; then
   echo "Building for Linux..."
   cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/
