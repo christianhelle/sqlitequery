@@ -3,8 +3,9 @@ Version=1.0
 Type=Application
 Name=SQLite Query Analyzer
 Comment=Lightweight cross-platform SQLite database explorer
-Exec=sqlitequery
+Exec=sqlitequery %F
 Icon=${SNAP}/usr/share/icons/hicolor/256x256/apps/sqlitequery.png
 Categories=Development;Database
 Terminal=false
-
+StartupNotify=true
+MimeType=application/x-sqlite3
