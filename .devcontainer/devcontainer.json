@@ -7,7 +7,7 @@
     },
     "forwardPorts": [22],
     "runArgs": ["--privileged"],
-    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y python3 python3-pip && sudo apt install -y libglx-dev libgl1-mesa-dev libxkbcommon-x11-dev libfontconfig1 libdbus-1-dev snapd && sudo snap install snapcraft && pip install aqtinstall --break-system-packages && aqt install-qt linux desktop 6.9.0",
+    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y python3 python3-pip && sudo apt install -y libglx-dev libgl1-mesa-dev libxkbcommon-x11-dev libfontconfig1 libdbus-1-dev snapd && pip install aqtinstall --break-system-packages && aqt install-qt linux desktop 6.9.0",
     "remoteUser": "vscode",
     "remoteEnv": {
         "QT_DIR": "/workspaces/sqlitequery/6.9.0/gcc_64",
