@@ -7,7 +7,7 @@
         "ghcr.io/devcontainers/features/docker-in-docker:2": {}
     },
     "forwardPorts": [22],
-    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y python3 python3-pip && sudo apt install -y libglx-dev libgl1-mesa-dev libxkbcommon-x11-dev libfontconfig1 libdbus-1-dev && pip install aqtinstall --break-system-packages && aqt install-qt linux desktop 6.9.0 && cp /workspaces/sqlitequery/.devcontainer/snap-build.sh /usr/local/bin/snap-build && chmod +x /usr/local/bin/snap-build",
+    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y python3 python3-pip && sudo apt install -y libglx-dev libgl1-mesa-dev libxkbcommon-x11-dev libfontconfig1 libdbus-1-dev && pip install aqtinstall --break-system-packages && aqt install-qt linux desktop 6.9.0 && sudo cp /workspaces/sqlitequery/.devcontainer/snap-build.sh /usr/local/bin/snap-build && sudo chmod +x /usr/local/bin/snap-build",
     "remoteUser": "vscode",
     "remoteEnv": {
         "QT_DIR": "/workspaces/sqlitequery/6.9.0/gcc_64",
