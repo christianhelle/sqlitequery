@@ -47,7 +47,7 @@ if [ "$OS" = "Linux" ]; then
     mkdir -p /tmp/sqlitequery
     cp -rf ./linux/* /tmp/sqlitequery
     rm -f ~/.local/bin/sqlitequery
-    ln -sf /tmp/sqlitequery/bin/SQLiteQueryAnalyzer ~/.local/bin/sqlitequery
+    ln -sf /tmp/sqlitequery/bin/sqlitequery ~/.local/bin/sqlitequery
     echo "Installed to ~/.local/bin/sqlitequery"
   fi
 
@@ -109,7 +109,7 @@ if [ "$OS" = "Darwin" ]; then
 
   if [ "$PACKAGE" = true ]; then
     echo "Creating macOS package..."
-    macdeployqt build/SQLiteQueryAnalyzer.app -dmg -appstore-compliant
+    macdeployqt build/sqlitequery.app -dmg -appstore-compliant
     echo "Package creation complete"
   fi
 fi

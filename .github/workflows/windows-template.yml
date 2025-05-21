@@ -71,7 +71,7 @@ jobs:
             -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" `
             -B build
           cmake --build build --config Release
-          ${{ runner.temp }}\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
+          ${{ runner.temp }}\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\sqlitequery.exe
           rm .\build\Release\vc_redist.x64.exe
 
       - name: Zip build

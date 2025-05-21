@@ -5,7 +5,7 @@
 #define MyAppVersion "1.0.0"
 #define MyAppPublisher "Christian Resma Helle"
 #define MyAppURL "https://github.com/christianhelle/sqlitequery"
-#define MyAppExeName "SQLiteQueryAnalyzer.exe"
+#define MyAppExeName "sqlitequery.exe"
 #define MyAppIcon "icon.ico"
 
 [Setup]

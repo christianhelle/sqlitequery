@@ -68,5 +68,5 @@ jobs:
       with:
         name: SQLiteQueryAnalyzer_Linux_v${{ inputs.version }}
         path: |
-          src/project/SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.*
+          src/project/sqlitequery-${{ inputs.version }}-Linux.*
           src/project/*.snap
