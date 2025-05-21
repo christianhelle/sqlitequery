@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ln -s /opt/sqlitequery/bin/SQLiteQueryAnalyzer /usr/bin/sqlitequery
+ln -s /opt/sqlitequery/bin/sqlitequery /usr/bin/sqlitequery

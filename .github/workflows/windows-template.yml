@@ -71,19 +71,19 @@ jobs:
             -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" `
             -B build
           cmake --build build --config Release
-          ${{ runner.temp }}\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
+          ${{ runner.temp }}\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\sqlitequery.exe
           rm .\build\Release\vc_redist.x64.exe
 
       - name: Zip build
         working-directory: ${{ runner.temp }}
         run: |
-          7z a SQLiteQueryAnalyzer_Windows.zip ${{ github.workspace }}\src\project\build\Release\* -r
+          7z a sqlitequery_Windows.zip ${{ github.workspace }}\src\project\build\Release\* -r
               
       - name: Publish Build
         uses: actions/upload-artifact@master
         with:
           name: SQLiteQuerAnalyzer_Windows_v${{ inputs.version }}
-          path: ${{ runner.temp }}\SQLiteQueryAnalyzer_Windows.zip
+          path: ${{ runner.temp }}\sqlitequery_Windows.zip
 
       - name: Inno Setup
         working-directory: ${{ github.workspace }}\src\project
@@ -94,7 +94,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: SQLiteQuerAnalyzer_Windows_Installer_v${{ inputs.version }}
-          path: ${{ github.workspace }}\src\artifacts\SQLiteQueryAnalyzer-Setup.exe
+          path: ${{ github.workspace }}\src\artifacts\sqlitequery-Setup.exe
     
       - name: Build Chocolatey Package
         working-directory: ${{ github.workspace }}\src\project\chocolatey

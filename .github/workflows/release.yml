@@ -68,7 +68,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: artifacts/SQLiteQuerAnalyzer_Windows_Installer_v${{ env.VERSION }}/SQLiteQueryAnalyzer-Setup.exe
+          asset_path: artifacts/SQLiteQuerAnalyzer_Windows_Installer_v${{ env.VERSION }}/sqlitequery-Setup.exe
           asset_name: SQLiteQuerAnalyzer for Windows (Installer) v${{ env.VERSION }}.exe
           asset_content_type: application/zip
       - name: Upload Windows Binary
@@ -77,7 +77,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: artifacts/SQLiteQuerAnalyzer_Windows_v${{ env.VERSION }}/SQLiteQueryAnalyzer_Windows.zip
+          asset_path: artifacts/SQLiteQuerAnalyzer_Windows_v${{ env.VERSION }}/sqlitequery_Windows.zip
           asset_name: SQLiteQuerAnalyzer for Windows (Binaries) v${{ env.VERSION }}.zip
           asset_content_type: application/zip
       - name: Upload MacOS (ARM64) disk image
@@ -86,7 +86,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: artifacts/SQLiteQuerAnalyzer_MacOS_v${{ env.VERSION }}_arm64/SQLiteQueryAnalyzer.dmg
+          asset_path: artifacts/SQLiteQuerAnalyzer_MacOS_v${{ env.VERSION }}_arm64/sqlitequery.dmg
           asset_name: SQLiteQuerAnalyzer for MacOS (ARM64) v${{ env.VERSION }}.dmg
           asset_content_type: application/zip
       - name: Upload MacOS (Intel) disk image
@@ -95,7 +95,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: artifacts/SQLiteQuerAnalyzer_MacOS_v${{ env.VERSION }}_intel/SQLiteQueryAnalyzer.dmg
+          asset_path: artifacts/SQLiteQuerAnalyzer_MacOS_v${{ env.VERSION }}_intel/sqlitequery.dmg
           asset_name: SQLiteQuerAnalyzer for MacOS (Intel) v${{ env.VERSION }}.dmg
           asset_content_type: application/zip
       - name: Upload Linux DEB Package
@@ -104,7 +104,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: artifacts/SQLiteQueryAnalyzer_Linux_v${{ env.VERSION }}/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.deb
+          asset_path: artifacts/sqlitequery_Linux_v${{ env.VERSION }}/sqlitequery-${{ env.VERSION }}-Linux.deb
           asset_name: SQLiteQueryAnalyzer for Linux (DEB) v${{ env.VERSION }}.deb
           asset_content_type: application/octet-stream
       - name: Upload Linux RPM Package
@@ -113,7 +113,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: artifacts/SQLiteQueryAnalyzer_Linux_v${{ env.VERSION }}/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.rpm
+          asset_path: artifacts/sqlitequery_Linux_v${{ env.VERSION }}/sqlitequery-${{ env.VERSION }}-Linux.rpm
           asset_name: SQLiteQueryAnalyzer for Linux (RPM) v${{ env.VERSION }}.rpm
           asset_content_type: application/octet-stream
       - name: Upload Linux TGZ Package
@@ -122,7 +122,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: artifacts/SQLiteQueryAnalyzer_Linux_v${{ env.VERSION }}/SQLiteQueryAnalyzer-${{ env.VERSION }}-Linux.tar.gz
+          asset_path: artifacts/sqlitequery_Linux_v${{ env.VERSION }}/sqlitequery-${{ env.VERSION }}-Linux.tar.gz
           asset_name: SQLiteQueryAnalyzer for Linux (TGZ) v${{ env.VERSION }}.tar.gz
           asset_content_type: application/gzip
       - name: Upload Linux Snap Package
@@ -131,6 +131,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: artifacts/SQLiteQueryAnalyzer_Linux_v${{ env.VERSION }}/sqlitequery_${{ env.VERSION }}_amd64.snap
+          asset_path: artifacts/sqlitequery_Linux_v${{ env.VERSION }}/sqlitequery_${{ env.VERSION }}_amd64.snap
           asset_name: SQLiteQueryAnalyzer for Linux (Snap) v${{ env.VERSION }}.snap
           asset_content_type: application/octet-stream

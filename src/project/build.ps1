@@ -7,7 +7,7 @@ if ($IsWindows) {
     cmake . -DCMAKE_PREFIX_PATH=C:/Qt/6.9.0/msvc2022_64 -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" -B build
     cmake --build build --config Release --parallel 32
     if ($Package) {
-        C:\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
+        C:\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\sqlitequery.exe
         ../../deps/innosetup/ISCC.exe setup.iss
     }
 } 
@@ -41,6 +41,6 @@ if ($IsMacOS -And $Package) {
     cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/sqlitequery
     cmake --build build --config Release --parallel 32
     if ($Package) {
-        macdeployqt build/SQLiteQueryAnalyzer.app -dmg -appstore-compliant
+        macdeployqt build/sqlitequery.app -dmg -appstore-compliant
     }
 }

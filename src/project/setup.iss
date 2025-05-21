@@ -5,7 +5,7 @@
 #define MyAppVersion "1.0.0"
 #define MyAppPublisher "Christian Resma Helle"
 #define MyAppURL "https://github.com/christianhelle/sqlitequery"
-#define MyAppExeName "SQLiteQueryAnalyzer.exe"
+#define MyAppExeName "sqlitequery.exe"
 #define MyAppIcon "icon.ico"
 
 [Setup]
@@ -26,7 +26,7 @@ DefaultDirName={pf64}\SQLite Query Analyzer
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=..\artifacts
-OutputBaseFilename=SQLiteQueryAnalyzer-Setup
+OutputBaseFilename=sqlitequery-Setup
 SetupIconFile=..\resources\{#MyAppIcon}
 Compression=lzma
 SolidCompression=yes

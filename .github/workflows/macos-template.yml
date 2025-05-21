@@ -49,11 +49,11 @@ jobs:
 
       - name: macdeployqt
         working-directory: src/project
-        run: macdeployqt SQLiteQueryAnalyzer.app -dmg -appstore-compliant
+        run: macdeployqt sqlitequery.app -dmg -appstore-compliant
 
       - name: Publish artifacts
         uses: actions/upload-artifact@v4
         with:
           name: SQLiteQuerAnalyzer_MacOS_v${{ inputs.version }}_${{ inputs.architecture }}
           path: |
-            src/project/SQLiteQueryAnalyzer.dmg
+            src/project/sqlitequery.dmg

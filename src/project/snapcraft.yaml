@@ -23,7 +23,7 @@ confinement: classic
 
 apps:
   sqlitequery:
-    command: bin/SQLiteQueryAnalyzer
+    command: bin/sqlitequery
     desktop: usr/share/applications/sqlitequery.desktop
 
 parts:

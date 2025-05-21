@@ -16,7 +16,7 @@ set_source_files_properties(${app_icon_macos}
 if(DEFINED EXECUTABLE_NAME)
     set(APP_NAME ${EXECUTABLE_NAME})
 else()
-    set(APP_NAME SQLiteQueryAnalyzer)
+    set(APP_NAME sqlitequery)
 endif()
 
 find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core)
@@ -72,12 +72,12 @@ target_link_libraries(${APP_NAME} PRIVATE
 )
 
 if ((QT_VERSION_MAJOR GREATER 4))
-  target_link_libraries(SQLiteQueryAnalyzer PRIVATE
+  target_link_libraries(${APP_NAME} PRIVATE
             Qt::Widgets
     )
 endif ()
 
-install(TARGETS SQLiteQueryAnalyzer
+install(TARGETS ${APP_NAME}
         BUNDLE DESTINATION .
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
@@ -89,7 +89,7 @@ qt_generate_deploy_app_script(
 )
 install(SCRIPT ${deploy_script})
 
-set(CPACK_PACKAGE_NAME SQLiteQueryAnalyzer)
+set(CPACK_PACKAGE_NAME sqlitequery)
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "SQLite Query Analyzer")
 set(CPACK_PACKAGE_VENDOR "Christian Resma Helle")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY ${CPACK_PACKAGE_NAME})
