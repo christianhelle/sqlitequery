@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# build.sh - Build script for SQLiteQueryAnalyzer
+# build.sh - Build script for sqlitequery
 
 # Exit on error
 set -e

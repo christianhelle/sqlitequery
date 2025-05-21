@@ -122,7 +122,7 @@ Build MacOS disk image (Optional).
 There is a bug in the Homebrew distribution of Qt which causes the use of `macdeployqt` to fail.
 
 ```sh
-macdeployqt SQLiteQueryAnalyzer.app -dmg
+macdeployqt sqlitequery.app -dmg
 ```
 
 ### Building on Windows
@@ -133,7 +133,7 @@ Build the project (These instructions assumes that Qt root folder is C:\Qt)
 cd src
 cmake . -DCMAKE_PREFIX_PATH=C:/Qt/6.9.0/msvc2022_64 -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" -B build
 cmake --build build --config Release
-C:\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
+C:\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\sqlitequery.exe
 ```
 
 Build the installer project using Inno Setup (Optional)
