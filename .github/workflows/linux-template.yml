@@ -63,10 +63,30 @@ jobs:
       env:
         SNAPCRAFT_BUILD_ENVIRONMENT: host
 
-    - name: Publish artifacts
+    - name: Publish Zip archive
       uses: actions/upload-artifact@v4
       with:
-        name: SQLiteQueryAnalyzer_Linux_v${{ inputs.version }}
+        name: Linux_Binary_v${{ inputs.version }}
         path: |
-          src/project/SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.*
+          src/project/SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.zip
+
+    - name: Publish Debian package
+      uses: actions/upload-artifact@v4
+      with:
+        name: Debian_Package_v${{ inputs.version }}
+        path: |
+          src/project/SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.deb
+
+    - name: Publish RPM package
+      uses: actions/upload-artifact@v4
+      with:
+        name: RPM_Package_v${{ inputs.version }}
+        path: |
+          src/project/SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.rpm
+
+    - name: Publish Snap package
+      uses: actions/upload-artifact@v4
+      with:
+        name: Snap_v${{ inputs.version }}
+        path: |
           src/project/*.snap
