@@ -85,11 +85,11 @@ The build output folder is under `src/project/build` for MacOS and Linux, and `s
 
 ### Building on Linux
 
-Install CMAke and Qt6
+Install CMAke and Qt6 and XKB
 
 ```sh
 sudo apt-get update
-sudo apt-get install -y cmake qt6-base-dev
+sudo apt-get install -y cmake qt6-base-dev libxkbcommon-dev
 ```
 
 Build project
