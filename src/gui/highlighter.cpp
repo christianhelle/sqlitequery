@@ -1,6 +1,7 @@
 #include "highlighter.h"
 #include <QGuiApplication>
 #include <QStyleHints>
+#include <QPalette>
 
 Highlighter::Highlighter(QTextDocument *parent)
     : QSyntaxHighlighter(parent) {
@@ -52,8 +53,19 @@ Highlighter::Highlighter(QTextDocument *parent)
 }
 
 bool Highlighter::isDarkMode() {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
+    // Qt 6.5+ has colorScheme() method
     const auto scheme = QGuiApplication::styleHints()->colorScheme();
     return scheme == Qt::ColorScheme::Dark;
+#else
+    // Fallback for older Qt versions: check palette colors
+    const QPalette palette = QGuiApplication::palette();
+    const QColor windowColor = palette.color(QPalette::Window);
+    const QColor textColor = palette.color(QPalette::WindowText);
+    
+    // Simple heuristic: if window is darker than text, it's likely dark mode
+    return windowColor.lightness() < textColor.lightness();
+#endif
 }
 
 void Highlighter::highlightBlock(const QString &text) {
