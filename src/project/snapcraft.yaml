@@ -38,6 +38,8 @@ parts:
       - libqt6sql6
       - libqt6svg6
       - qt6-qpa-plugins
+      - qt6-wayland
+      - libqt6waylandclient6
       - libgl1
       - libxcb1
       - libx11-6
