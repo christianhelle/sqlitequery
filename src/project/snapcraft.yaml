@@ -19,7 +19,7 @@ description: |
 
 version: 1.0.0
 grade: stable
-confinement: classic
+confinement: strict 
 
 apps:
   sqlitequery:
