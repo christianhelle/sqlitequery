@@ -23,7 +23,7 @@ confinement: strict
 
 apps:
   sqlitequery:
-    command: bin/SQLiteQueryAnalyzer
+    command: bin/sqlitequery
     desktop: usr/share/applications/sqlitequery.desktop
 
 parts:
@@ -58,3 +58,22 @@ parts:
       - libxcb-xfixes0
       - libxcb-xkb1
       - libxkbcommon-x11-0
+      - libxcb-cursor0
+      - libicu70
+      - libtiff5
+      - libwebp7
+      - libwebpdemux2
+      - libwebpmux3
+    override-prime: |
+      snapcraftctl prime
+      # Create symlinks for missing library versions
+      cd $SNAPCRAFT_PRIME/usr/lib/x86_64-linux-gnu
+      if [ -f libtiff.so.5 ] && [ ! -f libtiff.so.6 ]; then
+        ln -sf libtiff.so.5 libtiff.so.6
+      fi
+      if [ -f libicui18n.so.70 ] && [ ! -f libicui18n.so.74 ]; then
+        ln -sf libicui18n.so.70 libicui18n.so.74
+      fi
+      if [ -f libicuuc.so.70 ] && [ ! -f libicuuc.so.74 ]; then
+        ln -sf libicuuc.so.70 libicuuc.so.74
+      fi
