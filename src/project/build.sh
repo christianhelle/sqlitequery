@@ -37,7 +37,7 @@ fi
 
 if [ "$OS" = "Linux" ]; then
   echo "Building for Linux..."
-  cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/
+  cmake -B build -DCMAKE_PREFIX_PATH=~/qt-6.9.1-static/ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/
   cmake --build build --config Release --parallel $(nproc)
   cmake --install build
 

@@ -25,6 +25,13 @@ apps:
   sqlitequery:
     command: bin/sqlitequery
     desktop: usr/share/applications/sqlitequery.desktop
+    plugs:
+      - desktop
+      - desktop-legacy
+      - wayland
+      - x11
+      - opengl
+      - home
 
 parts:
   sqlitequery:
