@@ -29,6 +29,7 @@ jobs:
     uses: ./.github/workflows/linux-template.yml
     with:
       version: '0.2.${{ github.run_number }}'
+      snapcraft_token: ${{ secrets.SNAPCRAFT_TOKEN }}
   release:
     needs: [
       macos-arm64,

@@ -12,6 +12,9 @@ on:
         required: false
         default: '6.9.0'
         type: string
+      snapcraft_token:
+        type: string
+        required: true
 
 jobs:
   build:
@@ -63,7 +66,7 @@ jobs:
     - uses: snapcore/action-publish@v1
       name: Publish Snap
       env:
-        SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
+        SNAPCRAFT_STORE_CREDENTIALS: ${{ inputs.snapcraft_token }}
       with:
         snap: ${{ needs.build.outputs.snap-file }}
         release: ${{ startsWith(github.ref, 'refs/tags/') && 'candidate' || 'edge'}}
