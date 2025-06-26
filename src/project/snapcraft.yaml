@@ -1,5 +1,5 @@
 name: sqlitequery
-base: core22
+base: core24
 summary: Lightweight cross-platform SQLite database explorer
 description: |
   SQLite Query Analyzer is a lightweight and efficient desktop utility designed
@@ -19,12 +19,19 @@ description: |
 
 version: 1.0.0
 grade: stable
-confinement: classic
+confinement: strict 
 
 apps:
   sqlitequery:
-    command: bin/SQLiteQueryAnalyzer
+    command: bin/sqlitequery
     desktop: usr/share/applications/sqlitequery.desktop
+    plugs:
+      - desktop
+      - desktop-legacy
+      - wayland
+      - x11
+      - opengl
+      - home
 
 parts:
   sqlitequery:
@@ -38,6 +45,8 @@ parts:
       - libqt6sql6
       - libqt6svg6
       - qt6-qpa-plugins
+      - qt6-wayland
+      - libqt6waylandclient6
       - libgl1
       - libxcb1
       - libx11-6
@@ -58,3 +67,9 @@ parts:
       - libxcb-xfixes0
       - libxcb-xkb1
       - libxkbcommon-x11-0
+      - libxcb-cursor0
+      - libicu74
+      - libtiff6
+      - libwebp7
+      - libwebpdemux2
+      - libwebpmux3
