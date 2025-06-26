@@ -62,6 +62,18 @@ jobs:
       env:
         SNAPCRAFT_BUILD_ENVIRONMENT: host
 
+    - uses: snapcore/action-build@v1
+      id: build-snap
+      with:
+        path: src/project
+
+    - uses: snapcore/action-publish@v1
+      env:
+        SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
+      with:
+        snap: ${{needs.build.outputs.snap-file}}
+        release: ${{ startsWith(github.ref, 'refs/tags/') && 'candidate' || 'edge'}}
+
     - name: Publish Zip archive
       uses: actions/upload-artifact@v4
       with:
