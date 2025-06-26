@@ -55,7 +55,7 @@ jobs:
       working-directory: src/project
 
     - uses: snapcore/action-build@v1
-      id: build-snap
+      id: build
       name: Build Snap
       with:
         path: src/project
@@ -65,7 +65,8 @@ jobs:
       env:
         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
       with:
-        snap: ${{needs.build.outputs.snap-file}}
+        store-login: ${{ secrets.SNAPCRAFT_TOKEN }}
+        snap: ${{ needs.build.outputs.snap-file }}
         release: ${{ startsWith(github.ref, 'refs/tags/') && 'candidate' || 'edge'}}
 
     - name: Publish Zip archive
