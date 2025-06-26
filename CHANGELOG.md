@@ -1,12 +1,16 @@
 # Changelog
 
-## [Unreleased](https://github.com/christianhelle/sqlitequery/tree/HEAD)
+## [0.2.45](https://github.com/christianhelle/sqlitequery/tree/0.2.45) (2025-05-13)
 
-[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.44...HEAD)
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.44...0.2.45)
 
 **Implemented enhancements:**
 
 - Build Snap Package [\#81](https://github.com/christianhelle/sqlitequery/pull/81) ([christianhelle](https://github.com/christianhelle))
+
+**Merged pull requests:**
+
+- Enable SSH daemon on Dev Container [\#82](https://github.com/christianhelle/sqlitequery/pull/82) ([christianhelle](https://github.com/christianhelle))
 
 ## [0.2.44](https://github.com/christianhelle/sqlitequery/tree/0.2.44) (2025-05-10)
 
