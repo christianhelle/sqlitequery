@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased](https://github.com/christianhelle/sqlitequery/tree/HEAD)
+
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.46...HEAD)
+
+**Implemented enhancements:**
+
+- Reduce Logging [\#85](https://github.com/christianhelle/sqlitequery/issues/85)
+- Remove qDebug\(\) logging statements from C++ code [\#86](https://github.com/christianhelle/sqlitequery/pull/86) ([Copilot](https://github.com/apps/copilot-swe-agent))
+
+## [0.2.46](https://github.com/christianhelle/sqlitequery/tree/0.2.46) (2025-06-26)
+
+[Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.45...0.2.46)
+
 ## [0.2.45](https://github.com/christianhelle/sqlitequery/tree/0.2.45) (2025-05-13)
 
 [Full Changelog](https://github.com/christianhelle/sqlitequery/compare/0.2.44...0.2.45)
