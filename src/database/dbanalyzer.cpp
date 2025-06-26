@@ -4,7 +4,6 @@
 
 DbAnalyzer::DbAnalyzer(Database *database)
     : database(database) {
-    qDebug("DatabaseAnalyzer::DatabaseAnalyzer()");
 }
 
 bool DbAnalyzer::analyze(DatabaseInfo &info) const {
@@ -22,10 +21,8 @@ bool DbAnalyzer::analyze(DatabaseInfo &info) const {
 
 void DbAnalyzer::loadTables(DatabaseInfo &info) const {
     const QString sql = "SELECT * FROM sqlite_master WHERE type='table'";
-    qDebug() << sql;
 
     if (!this->database->open()) {
-        qDebug("Unable to open database");
         return;
     }
 
@@ -39,7 +36,6 @@ void DbAnalyzer::loadTables(DatabaseInfo &info) const {
             continue;
         }
         info.tables.append(table);
-        qDebug() << table.name;
     }
 
     database->close();
@@ -47,13 +43,11 @@ void DbAnalyzer::loadTables(DatabaseInfo &info) const {
 
 void DbAnalyzer::loadColumns(DatabaseInfo &info) const {
     if (!this->database->open()) {
-        qDebug("Unable to open database");
         return;
     }
 
     for (auto &table: info.tables) {
         const QString sql = "PRAGMA table_info (" + table.name + ")";
-        qDebug() << sql;
 
         QSqlQuery query(this->database->getDatabase());
         query.exec(sql);
@@ -67,8 +61,6 @@ void DbAnalyzer::loadColumns(DatabaseInfo &info) const {
             col.defaultValue = query.value("dflt_value").toString();
             col.primaryKey = query.value("pk").toBool();
             table.columns.append(col);
-            qDebug() << col.ordinal << col.name << col.dataType
-                    << col.notNull << col.defaultValue << col.primaryKey;
         }
     }
 }

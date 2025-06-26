@@ -60,7 +60,6 @@ QString Prompts::getFilePath(QWidget *parent,
         }
     }
 
-    qDebug("File dialog cancelled");
     return Q_NULLPTR;
 }
 

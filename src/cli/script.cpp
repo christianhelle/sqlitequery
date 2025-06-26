@@ -11,7 +11,6 @@ void Script::executeSqlFile(const QString &sqlFilePath,
                             const QString &dbFilePath) {
     const auto sqlFile = std::make_unique<QFile>(sqlFilePath);
     if (!sqlFile->open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qDebug("Unable to open SQL file");
         return;
     }
 
