@@ -23,7 +23,6 @@ void RecentFiles::add(const QString &filepath) {
     auto files = getList();
     const auto native_path = sanitize(filepath);
     if (files.contains(native_path, Qt::CaseInsensitive)) {
-        qDebug("Duplicate entry");
         return;
     }
     files.append(native_path);
@@ -31,7 +30,6 @@ void RecentFiles::add(const QString &filepath) {
     const QString recentsFilePath = RecentFiles::getRecentsFilePath();
     const auto file = std::make_unique<QFile>(recentsFilePath);
     if (!file->open(QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate)) {
-        qDebug("Unable to open file");
         return;
     }
 
@@ -53,7 +51,6 @@ QStringList RecentFiles::getList() {
     const QString filePath = RecentFiles::getRecentsFilePath();
     const auto file = std::make_unique<QFile>(filePath);
     if (!file->open(QIODevice::ReadWrite | QIODevice::Text)) {
-        qDebug("Unable to open file");
         return files;
     }
 

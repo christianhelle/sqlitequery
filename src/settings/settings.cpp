@@ -8,12 +8,11 @@
 void Settings::init() {
     const auto path = getSettingsFolder();
     if (const QDir dir(path); !dir.exists() && !dir.mkdir(path)) {
-        qDebug("Failed to create settings directory");
+        // Failed to create settings directory
     }
 
     const auto file = std::make_unique<QFile>(path + "/.settings.json");
     if (!file->open(QIODevice::ReadWrite | QIODevice::Text)) {
-        qDebug("Unable to open settings file");
         return;
     }
 

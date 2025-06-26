@@ -19,8 +19,6 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent) {
-    qDebug("MainWindow::MainWindow(QWidget*)");
-
     ui = std::make_unique<Ui::MainWindow>();
     ui->setupUi(this);
     ui->splitterMain->setStretchFactor(1, 3);
@@ -50,7 +48,6 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 MainWindow::~MainWindow() {
-    qDebug("MainWindow::~MainWindow()");
     this->saveSession();
     this->saveWindowState(this->window()->size());
     this->tree->clear();
@@ -277,7 +274,6 @@ void MainWindow::openDatabase(const QString &filename) {
 
     this->database->setSource(filename);
     if (!this->database->open()) {
-        qDebug("Unable to open file");
         return;
     }
 
@@ -346,7 +342,6 @@ void MainWindow::analyzeDatabase() const {
 
     DatabaseInfo info;
     if (!analyzer->analyze(info)) {
-        qDebug("Analyze database failed");
         return;
     }
 
@@ -539,10 +534,7 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item,
         ->
         type() == QTreeWidgetItem::UserType + 1
     ) {
-        qDebug("table selected");
-
         if (!this->database->open()) {
-            qDebug("Unable to open database");
             return;
         }
 
