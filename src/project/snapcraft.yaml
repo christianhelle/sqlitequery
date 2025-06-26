@@ -19,11 +19,11 @@ description: |
 
 version: 1.0.0
 grade: stable
-confinement: strict 
+confinement: strict
 
 apps:
   sqlitequery:
-    command: bin/sqlitequery
+    command: bin/SQLiteQueryAnalyzer
     desktop: usr/share/applications/sqlitequery.desktop
     plugs:
       - desktop
