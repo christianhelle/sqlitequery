@@ -38,7 +38,7 @@ jobs:
     - name: CMake
       run: |
         cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux .
-        cmake --build . --config Release --parallel 32
+        cmake --build . --config Release --parallel
         cmake --install .
       working-directory: src/project
 
