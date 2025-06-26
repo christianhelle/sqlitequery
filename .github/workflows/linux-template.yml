@@ -65,7 +65,6 @@ jobs:
       env:
         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
       with:
-        store-login: ${{ secrets.SNAPCRAFT_TOKEN }}
         snap: ${{ needs.build.outputs.snap-file }}
         release: ${{ startsWith(github.ref, 'refs/tags/') && 'candidate' || 'edge'}}
 
