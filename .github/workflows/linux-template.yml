@@ -54,22 +54,16 @@ jobs:
         cpack -G RPM
       working-directory: src/project
 
-    - name: Snapcraft
-      run: |
-        sudo snap install snapcraft --classic
-        snapcraft
-      working-directory: src/project
-      env:
-        SNAPCRAFT_BUILD_ENVIRONMENT: host
-
     - uses: snapcore/action-build@v1
       id: build-snap
+      name: Build Snap
       with:
         path: src/project
 
     - uses: snapcore/action-publish@v1
+      name: Publish Snap
       env:
-        SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
+        SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
       with:
         snap: ${{needs.build.outputs.snap-file}}
         release: ${{ startsWith(github.ref, 'refs/tags/') && 'candidate' || 'edge'}}
