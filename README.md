@@ -26,6 +26,63 @@ making database operations seamless and straightforward.
 - Export database schema as CREATE TABLE statements
 - Export data as an SQL script containing INSERT statements or as CSV files
 - Desktop color theme awareness with automatic switching between dark/light themes
+- Command line interface for automation and scripting
+
+## CLI Usage
+
+SQLite Query Analyzer can be used as a command line tool for automating database operations without the GUI. The application supports several command line options for exporting data, executing SQL scripts, and more.
+
+### Help Text
+
+```sh
+$ sqlitequery --help
+Usage: /snap/sqlitequery/3/bin/SQLiteQueryAnalyzer [options] database
+A fast and lightweight cross-platform command line and GUI tool for querying and manipulating SQLite databases
+
+Options:
+  -h, --help              Displays help on commandline options.
+  --help-all              Displays help, including generic Qt options.
+  -v, --version           Displays version information.
+  -p, --progress          Show progress during copy
+  -e, --export-csv        Export data to CSV.
+  -d, --target-directory  Target directory for export.
+  -r, --run-sql           Execute SQL file.
+
+Arguments:
+  database                Database file to open.
+```
+
+### Usage Examples
+
+#### Opening a database in GUI mode
+```sh
+sqlitequery /path/to/database.db
+```
+
+#### Exporting data to CSV files
+```sh
+# Export all tables to CSV files in the current directory
+sqlitequery --export-csv /path/to/database.db
+
+# Export with progress indicator
+sqlitequery --export-csv --progress /path/to/database.db
+
+# Export to a specific directory
+sqlitequery --export-csv --target-directory /path/to/export/folder /path/to/database.db
+```
+
+#### Executing SQL scripts
+```sh
+# Execute a SQL script file against a database
+sqlitequery --run-sql /path/to/script.sql /path/to/database.db
+```
+
+### CLI Features
+
+- **Export to CSV**: Export all database tables to individual CSV files
+- **Execute SQL Scripts**: Run SQL scripts from files against a database
+- **Progress Reporting**: Show progress indicators for long-running operations
+- **Flexible Output**: Specify custom directories for exported files
 
 ## Screenshots
 
