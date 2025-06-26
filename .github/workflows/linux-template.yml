@@ -56,7 +56,6 @@ jobs:
 
     - name: Snapcraft
       run: |
-        sudo snap install core22
         sudo snap install snapcraft --classic
         snapcraft
       working-directory: src/project
