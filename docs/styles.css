@@ -75,8 +75,10 @@ body {
     text-decoration: none;
 }
 
-.nav-brand .emoji {
-    font-size: 1.5rem;
+.nav-brand .brand-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 0.5rem;
 }
 
 .nav-menu {
@@ -156,10 +158,11 @@ body {
     background-clip: text;
 }
 
-.hero-title .emoji {
-    font-size: 4rem;
+.hero-title .hero-icon {
+    width: 64px;
+    height: 64px;
     display: block;
-    margin-bottom: 0.5rem;
+    margin: 0 auto 0.5rem auto;
 }
 
 .hero-subtitle {
@@ -342,6 +345,56 @@ body {
 
 .feature-card p {
     color: var(--text-muted);
+}
+
+/* Screenshots */
+.screenshots {
+    padding: 5rem 0;
+    background: var(--bg-secondary);
+}
+
+.screenshot-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.screenshot-item {
+    background: var(--bg-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.screenshot-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.screenshot-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.screenshot-caption {
+    padding: 1.5rem;
+}
+
+.screenshot-caption h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.screenshot-caption p {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    line-height: 1.5;
 }
 
 /* Installation */
@@ -644,8 +697,9 @@ body {
         font-size: 2.5rem;
     }
     
-    .hero-title .emoji {
-        font-size: 3rem;
+    .hero-title .hero-icon {
+        width: 48px;
+        height: 48px;
     }
     
     .hero-subtitle {
@@ -667,6 +721,11 @@ body {
     }
     
     .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .screenshot-gallery {
         grid-template-columns: 1fr;
         gap: 1.5rem;
     }
@@ -701,8 +760,9 @@ body {
         font-size: 2rem;
     }
     
-    .hero-title .emoji {
-        font-size: 2.5rem;
+    .hero-title .hero-icon {
+        width: 40px;
+        height: 40px;
     }
     
     .section-title {
