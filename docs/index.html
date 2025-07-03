@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQLite Query Analyzer - Documentation</title>
+    <meta name="description" content="A lightweight and efficient desktop utility for managing SQLite databases">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗃️</text></svg>">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="emoji">🗃️</span>
+                <span class="brand-text">SQLite Query Analyzer</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#installation" class="nav-link">Installation</a></li>
+                <li><a href="#usage" class="nav-link">Usage</a></li>
+                <li><a href="#building" class="nav-link">Building</a></li>
+                <li><a href="https://github.com/christianhelle/sqlitequery" class="nav-link external">GitHub</a></li>
+            </ul>
+            <button class="theme-toggle" aria-label="Toggle theme">🌙</button>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span class="emoji">🗃️</span>
+                        SQLite Query Analyzer
+                    </h1>
+                    <p class="hero-subtitle">
+                        A lightweight and efficient desktop utility designed to simplify the process of managing SQLite databases
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="#installation" class="btn btn-primary">Get Started</a>
+                        <a href="https://github.com/christianhelle/sqlitequery" class="btn btn-secondary">View on GitHub</a>
+                    </div>
+                    <div class="badges">
+                        <img src="https://github.com/christianhelle/sqlitequery/actions/workflows/linux.yml/badge.svg" alt="Linux Build">
+                        <img src="https://github.com/christianhelle/sqlitequery/actions/workflows/macos.yml/badge.svg" alt="macOS Build">
+                        <img src="https://github.com/christianhelle/sqlitequery/actions/workflows/windows.yml/badge.svg" alt="Windows Build">
+                        <img src="https://sonarcloud.io/api/project_badges/measure?project=christianhelle_sqlitequery&metric=alert_status" alt="Quality Gate">
+                    </div>
+                </div>
+                <div class="hero-demo">
+                    <div class="terminal">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons">
+                                <span class="btn-close"></span>
+                                <span class="btn-minimize"></span>
+                                <span class="btn-maximize"></span>
+                            </div>
+                            <div class="terminal-title">SQLite Query Analyzer</div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-line">
+                                <span class="prompt">$</span> sqlitequery --help
+                            </div>
+                            <div class="terminal-line output">
+                                Usage: SQLiteQueryAnalyzer [options] database
+                            </div>
+                            <div class="terminal-line output">
+                                A fast and lightweight cross-platform command line and GUI tool
+                            </div>
+                            <div class="terminal-line output">
+                                for querying and manipulating SQLite databases
+                            </div>
+                            <div class="terminal-line output">
+                                Options:
+                            </div>
+                            <div class="terminal-line output">
+                                  -e, --export-csv        Export data to CSV
+                            </div>
+                            <div class="terminal-line output">
+                                  -r, --run-sql           Execute SQL file
+                            </div>
+                            <div class="terminal-line output">
+                                  -p, --progress          Show progress during copy
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="container">
+                <h2 class="section-title">Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🖥️</div>
+                        <h3>Cross Platform</h3>
+                        <p>Runs natively on Windows, MacOS, and Linux with full feature parity</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Fast Query Execution</h3>
+                        <p>Easy-to-use interface for executing SQL queries with syntax highlighting</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">✏️</div>
+                        <h3>Table Data Editing</h3>
+                        <p>Fast table data editing with inline editing capabilities</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💾</div>
+                        <h3>State Persistence</h3>
+                        <p>Persists application state and reloads last session on startup</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📤</div>
+                        <h3>Data Export</h3>
+                        <p>Export database schema as CREATE TABLE statements and data as SQL scripts or CSV files</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌙</div>
+                        <h3>Theme Awareness</h3>
+                        <p>Desktop color theme awareness with automatic switching between dark/light themes</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⌨️</div>
+                        <h3>Command Line Interface</h3>
+                        <p>CLI for automation and scripting with support for CSV export and SQL execution</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="installation" class="installation">
+            <div class="container">
+                <h2 class="section-title">Installation</h2>
+                <div class="install-options">
+                    <div class="install-card featured">
+                        <div class="install-header">
+                            <h3>Download Pre-built Binaries</h3>
+                            <span class="badge recommended">Recommended</span>
+                        </div>
+                        <div class="install-code download-link">
+                            <code><a href="https://github.com/christianhelle/sqlitequery/releases/latest" target="_blank">📥 Download from GitHub Releases</a></code>
+                        </div>
+                        <p>Download the appropriate binary for your platform and run directly. No installation required.</p>
+                    </div>
+                    
+                    <div class="install-card">
+                        <div class="install-header">
+                            <h3>Linux (Ubuntu/Debian)</h3>
+                        </div>
+                        <div class="install-code">
+                            <code>sudo apt-get update
+sudo apt-get install -y cmake qt6-base-dev libxkbcommon-dev</code>
+                        </div>
+                        <p>Install dependencies then download and run the Linux binary.</p>
+                    </div>
+                    
+                    <div class="install-card">
+                        <div class="install-header">
+                            <h3>macOS</h3>
+                        </div>
+                        <div class="install-code">
+                            <code>brew update
+brew install cmake qt@6</code>
+                        </div>
+                        <p>Install dependencies with Homebrew, then download the macOS binary.</p>
+                    </div>
+                    
+                    <div class="install-card">
+                        <div class="install-header">
+                            <h3>Windows</h3>
+                        </div>
+                        <div class="install-code">
+                            <code># Download from releases page
+# Or build from source with Qt 6.9.0+</code>
+                        </div>
+                        <p>Download the Windows executable or build from source with Visual Studio and Qt.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="usage" class="usage">
+            <div class="container">
+                <h2 class="section-title">Usage</h2>
+                <div class="usage-content">
+                    <div class="usage-example">
+                        <h3>GUI Mode</h3>
+                        <div class="code-block">
+                            <code># Open a database file in GUI mode
+sqlitequery /path/to/database.db
+
+# Or launch GUI and use File > Open to select database</code>
+                        </div>
+                    </div>
+                    
+                    <div class="usage-example">
+                        <h3>Command Line Mode</h3>
+                        <div class="code-block">
+                            <code># Export all tables to CSV files
+sqlitequery --export-csv /path/to/database.db
+
+# Export with progress indicator
+sqlitequery --export-csv --progress /path/to/database.db
+
+# Export to specific directory
+sqlitequery --export-csv --target-directory /export/folder /path/to/database.db
+
+# Execute SQL script
+sqlitequery --run-sql /path/to/script.sql /path/to/database.db</code>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="cta">
+                    <p>Ready to start managing your SQLite databases?</p>
+                    <a href="https://github.com/christianhelle/sqlitequery/releases/latest" class="btn btn-primary">Download Now</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="building" class="building">
+            <div class="container">
+                <h2 class="section-title">Building from Source</h2>
+                <div class="build-content">
+                    <div class="build-requirements">
+                        <h3>Prerequisites</h3>
+                        <ul>
+                            <li>Git</li>
+                            <li>CMake 3.16 or later</li>
+                            <li>Qt 6.9.0 or later</li>
+                            <li>PowerShell Core (optional)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="build-example">
+                        <h3>Quick Build</h3>
+                        <div class="code-block">
+                            <code># Clone the repository
+git clone https://github.com/christianhelle/sqlitequery.git
+cd sqlitequery
+
+# Build using PowerShell script (cross-platform)
+cd src/project
+pwsh build.ps1</code>
+                        </div>
+                    </div>
+                    
+                    <div class="build-example">
+                        <h3>Manual Build</h3>
+                        <div class="code-block">
+                            <code># Linux/macOS
+cd src/project
+cmake .
+cmake --build . --config Release
+
+# Windows (adjust Qt path as needed)
+cmake . -DCMAKE_PREFIX_PATH=C:/Qt/6.9.0/msvc2022_64 -DCMAKE_CXX_STANDARD=17 -B build
+cmake --build build --config Release</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>SQLite Query Analyzer</h4>
+                    <p>A lightweight and efficient desktop utility for managing SQLite databases.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://github.com/christianhelle/sqlitequery">GitHub Repository</a></li>
+                        <li><a href="https://github.com/christianhelle/sqlitequery/releases">Downloads</a></li>
+                        <li><a href="https://github.com/christianhelle/sqlitequery/issues">Issues</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="https://github.com/christianhelle/sqlitequery/discussions">Discussions</a></li>
+                        <li><a href="https://github.com/christianhelle/sqlitequery/blob/master/CHANGELOG.md">Changelog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>License</h4>
+                    <p>GNU General Public License v3.0</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SQLite Query Analyzer. Built with ❤️ using Qt and C++.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
