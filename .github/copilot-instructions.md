@@ -40,7 +40,7 @@ Always reference these instructions first and fallback to search or bash command
 
 ### Code formatting validation:
 - Always run `clang-format --dry-run --Werror src/**/*.cpp src/**/*.h` to check formatting issues before committing
-- The codebase currently has formatting violations - use `clang-format -i src/**/*.cpp src/**/*.h` to fix them if needed
+- The codebase currently has formatting violations - use `find src -name '*.cpp' -o -name '*.h' | xargs clang-format -i` to fix them if needed
 - Format configuration is in `src/.clang-format` using LLVM style
 
 ### NO TESTING FRAMEWORK:
