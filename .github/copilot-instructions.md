@@ -35,7 +35,7 @@ Always reference these instructions first and fallback to search or bash command
 ### Always manually validate CLI functionality:
 - Create test database: `sqlite3 /tmp/testdb.sqlite "CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, email TEXT); INSERT INTO users (name, email) VALUES ('Test User', 'test@example.com');"`
 - Test CSV export: `QT_QPA_PLATFORM=offscreen ./linux/bin/SQLiteQueryAnalyzer --export-csv /tmp/testdb.sqlite`
-- Verify export: `ls -la *.csv && cat *.csv`
+- Verify export: `ls -la *.csv && head *.csv`
 - Test SQL execution: Create SQL file with `echo "SELECT COUNT(*) FROM users;" > /tmp/test.sql` then run `QT_QPA_PLATFORM=offscreen ./linux/bin/SQLiteQueryAnalyzer --run-sql /tmp/test.sql /tmp/testdb.sqlite`
 
 ### Code formatting validation:
