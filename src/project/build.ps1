@@ -4,13 +4,52 @@ param (
 )
 
 if ($IsWindows) {
-    cmake . -DCMAKE_PREFIX_PATH=C:/Qt/6.9.0/msvc2022_64 -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" -B build
+    # Check if Visual Studio is installed (including preview versions)
+    $vsPath = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -prerelease -property installationPath 2>$null
+    if (-not $vsPath) {
+        Write-Error "Visual Studio is not installed. Please install Visual Studio 2022 with C++ development tools."
+        Write-Error "Download from: https://visualstudio.microsoft.com/downloads/"
+        exit 1
+    }
+    
+    Write-Host "Using Visual Studio at: $vsPath"
+    
+    # Use Visual Studio 17 2022 generator (compatible with VS 2022 and newer)
+    $generator = "Visual Studio 17 2022"
+    Write-Host "Using CMake generator: $generator"
+    
+    # Check if Qt is installed
+    if (-not (Test-Path "C:\Qt\6.9.0\msvc2022_64")) {
+        Write-Error "Qt 6.9.0 MSVC2022 64-bit is not installed at C:\Qt\6.9.0\msvc2022_64"
+        Write-Error "Please install Qt 6.9.0 for MSVC 2022 64-bit from: https://www.qt.io/download"
+        exit 1
+    }
+    
+    # Find vcvars64.bat to setup Visual Studio environment
+    $vcvars = "$vsPath\VC\Auxiliary\Build\vcvars64.bat"
+    if (-not (Test-Path $vcvars)) {
+        Write-Error "Visual Studio C++ tools not found. Please install C++ development workload."
+        exit 1
+    }
+    
+    # Run CMake with proper Visual Studio generator
+    cmake . -G $generator -A x64 -DCMAKE_PREFIX_PATH=C:\Qt\6.9.0\msvc2022_64 -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" -B build
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "CMake configuration failed"
+        exit $LASTEXITCODE
+    }
+    
     cmake --build build --config Release --parallel 32
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "Build failed"
+        exit $LASTEXITCODE
+    }
+    
     if ($Package) {
         C:\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
         ../../deps/innosetup/ISCC.exe setup.iss
     }
-} 
+}
 
 if ($IsLinux) {
     cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/
