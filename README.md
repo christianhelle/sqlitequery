@@ -836,8 +836,6 @@ SQLite Query Analyzer uses CMake as its primary build system, providing a consis
 
 Before building SQLite Query Analyzer, ensure you have the following tools installed:
 
-#### Required Tools (All Platforms)
-
 - **Git**: Version control system for cloning the repository
   - Install from [git-scm.com](https://git-scm.com/downloads)
   - Minimum version: 2.0 or later
