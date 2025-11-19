@@ -30,6 +30,24 @@ Always reference these instructions first and fallback to search or bash command
 - **Debian Package**: `cpack -G DEB --config ./build/CPackConfig.cmake` -- takes 1 second. NEVER CANCEL. Set timeout to 30+ seconds.
 - **RPM Package**: `cpack -G RPM --config ./build/CPackConfig.cmake` -- takes 1 second. NEVER CANCEL. Set timeout to 30+ seconds.
 
+## Git Workflow for Coding Agents
+
+### When using coding agents:
+- **Never commit directly to master branch**: Always create a feature branch from master first
+- **Check current branch**: If currently on master, immediately create a new branch with `git checkout -b <branch-name>`
+- **Commit frequently**: Make logical, atomic commits with brief, descriptive messages
+- **Commit message format**: Use present tense imperatives (e.g., "Add feature X", "Fix bug in Y", "Update Z documentation")
+- **Group changes logically**: Each commit should represent a single logical change or feature
+- **Build detailed history**: Frequent, focused commits create a clear audit trail of changes
+- **Example workflow**:
+  1. Create branch: `git checkout -b feature/my-feature`
+  2. Make changes and test
+  3. Commit: `git commit -m "Add new database schema validation"`
+  4. Make more changes and test
+  5. Commit: `git commit -m "Update CLI parser for new validation flags"`
+  6. Continue until feature is complete with multiple logical commits
+  7. Push to branch for review/merging to master
+
 ## Validation
 
 ### Always manually validate CLI functionality:
