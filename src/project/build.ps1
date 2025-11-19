@@ -12,7 +12,15 @@ if ($IsWindows) {
     }
     
     # Check if Visual Studio is installed (including preview versions) for compiler
-    $vsPath = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -prerelease -property installationPath 2>$null
+    $vswherePath = "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe"
+    if (-not (Test-Path $vswherePath)) {
+        Write-Error "vswhere.exe not found at $vswherePath"
+        Write-Error "Please install Visual Studio 2022 with C++ development tools from: https://visualstudio.microsoft.com/downloads/"
+        exit 1
+    }
+    
+    # Check if Visual Studio is installed (including preview versions) for compiler
+    $vsPath = & $vswherePath -latest -prerelease -property installationPath 2>$null
     if (-not $vsPath) {
         Write-Error "Visual Studio is not installed. Please install Visual Studio 2022 with C++ development tools."
         Write-Error "Download from: https://visualstudio.microsoft.com/downloads/"
