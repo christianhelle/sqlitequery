@@ -106,9 +106,10 @@ jobs:
           name: ChocolateyPackage
           path: sqlitequery.${{ inputs.version }}.nupkg
 
+      # Only publish to Chocolatey when explicitly triggered by the release workflow on master branch
       - name: Upload Package to Chocolatey
         working-directory: ${{ github.workspace }}\src\project\chocolatey
-        if: ${{ inputs.release == true }} && github.ref == 'refs/heads/master'
+        if: inputs.release == true && github.ref == 'refs/heads/master'
         continue-on-error: true
         run: |
           choco apiKey --key ${{ secrets.CHOCOLATEY_API_KEY }} --source https://push.chocolatey.org/
