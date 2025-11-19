@@ -51,11 +51,12 @@ if ($IsWindows) {
         Write-Error "Build failed"
         exit $LASTEXITCODE
     }
+
+    mkdir .\build\Release
+    Copy-Item .\build\SQLiteQueryAnalyzer.exe .\build\Release\SQLiteQueryAnalyzer.exe
+    C:\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
     
     if ($Package) {
-        mkdir .\build\Release
-        Copy-Item .\build\SQLiteQueryAnalyzer.exe .\build\Release\SQLiteQueryAnalyzer.exe
-        C:\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
         ../../deps/innosetup/ISCC.exe setup.iss
     }
 }
