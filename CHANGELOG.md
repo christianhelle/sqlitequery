@@ -7,7 +7,21 @@
 **Implemented enhancements:**
 
 - Reduce Logging [\#85](https://github.com/christianhelle/sqlitequery/issues/85)
+- Fix local build setup for Windows [\#94](https://github.com/christianhelle/sqlitequery/pull/94) ([christianhelle](https://github.com/christianhelle))
 - Remove qDebug\(\) logging statements from C++ code [\#86](https://github.com/christianhelle/sqlitequery/pull/86) ([Copilot](https://github.com/apps/copilot-swe-agent))
+
+**Closed issues:**
+
+- Setup CoPilot Instructions [\#91](https://github.com/christianhelle/sqlitequery/issues/91)
+- Generate and Deploy Static Documentation Website from README [\#89](https://github.com/christianhelle/sqlitequery/issues/89)
+- Improve README [\#87](https://github.com/christianhelle/sqlitequery/issues/87)
+
+**Merged pull requests:**
+
+- Add application icon for Windows build [\#96](https://github.com/christianhelle/sqlitequery/pull/96) ([christianhelle](https://github.com/christianhelle))
+- Add comprehensive GitHub Copilot instructions for SQLite Query Analyzer [\#92](https://github.com/christianhelle/sqlitequery/pull/92) ([Copilot](https://github.com/apps/copilot-swe-agent))
+- Create Static Documentation Website from README [\#90](https://github.com/christianhelle/sqlitequery/pull/90) ([Copilot](https://github.com/apps/copilot-swe-agent))
+- Add CLI usage documentation to README [\#88](https://github.com/christianhelle/sqlitequery/pull/88) ([Copilot](https://github.com/apps/copilot-swe-agent))
 
 ## [0.2.46](https://github.com/christianhelle/sqlitequery/tree/0.2.46) (2025-06-26)
 
