@@ -4,7 +4,14 @@ param (
 )
 
 if ($IsWindows) {
-    # Check if Visual Studio is installed (including preview versions)
+    # Check if Ninja is installed
+    if (-not (Get-Command ninja -ErrorAction SilentlyContinue)) {
+        Write-Error "Ninja build system is not installed. Please install Ninja."
+        Write-Error "Install via: choco install ninja (or download from https://github.com/ninja-build/ninja/releases)"
+        exit 1
+    }
+    
+    # Check if Visual Studio is installed (including preview versions) for compiler
     $vsPath = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -prerelease -property installationPath 2>$null
     if (-not $vsPath) {
         Write-Error "Visual Studio is not installed. Please install Visual Studio 2022 with C++ development tools."
@@ -14,8 +21,8 @@ if ($IsWindows) {
     
     Write-Host "Using Visual Studio at: $vsPath"
     
-    # Use Visual Studio 17 2022 generator (compatible with VS 2022 and newer)
-    $generator = "Visual Studio 17 2022"
+    # Use Ninja generator
+    $generator = "Ninja"
     Write-Host "Using CMake generator: $generator"
     
     # Check if Qt is installed
@@ -32,20 +39,22 @@ if ($IsWindows) {
         exit 1
     }
     
-    # Run CMake with proper Visual Studio generator
-    cmake . -G $generator -A x64 -DCMAKE_PREFIX_PATH=C:\Qt\6.9.0\msvc2022_64 -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" -B build
+    # Setup Visual Studio environment and run CMake with Ninja generator
+    & cmd /c "`"$vcvars`" && cmake . -G `"$generator`" -DCMAKE_PREFIX_PATH=C:\Qt\6.9.0\msvc2022_64 -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_FLAGS=`"/Zc:__cplusplus /permissive-`" -DCMAKE_BUILD_TYPE=Release -B build"
     if ($LASTEXITCODE -ne 0) {
         Write-Error "CMake configuration failed"
         exit $LASTEXITCODE
     }
     
-    cmake --build build --config Release --parallel 32
+    & cmd /c "`"$vcvars`" && cmake --build build --parallel 32"
     if ($LASTEXITCODE -ne 0) {
         Write-Error "Build failed"
         exit $LASTEXITCODE
     }
     
     if ($Package) {
+        mkdir .\build\Release
+        Copy-Item .\build\SQLiteQueryAnalyzer.exe .\build\Release\SQLiteQueryAnalyzer.exe
         C:\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
         ../../deps/innosetup/ISCC.exe setup.iss
     }
