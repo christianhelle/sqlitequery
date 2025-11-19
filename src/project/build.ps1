@@ -1,9 +1,29 @@
 param (
     [switch]
-    $Package = $false
+    $Package = $false,
+    [string]
+    $QtPath = "C:\Qt\6.9.0\msvc2022_64"
 )
 
 if ($IsWindows) {
+    # Resolve Qt path from parameter, environment variable, or default
+    if ([string]::IsNullOrEmpty($QtPath)) {
+        $QtPath = $env:QT_PATH
+    }
+    if ([string]::IsNullOrEmpty($QtPath)) {
+        $QtPath = "C:\Qt\6.9.0\msvc2022_64"
+    }
+    
+    # Validate Qt path exists
+    if (-not (Test-Path $QtPath)) {
+        Write-Error "Qt path not found at: $QtPath"
+        Write-Error "Please install Qt 6.9.0 MSVC2022 64-bit from: https://www.qt.io/download"
+        Write-Error "Or provide the Qt path via -QtPath parameter or QT_PATH environment variable"
+        exit 1
+    }
+    
+    Write-Host "Using Qt at: $QtPath"
+    
     # Check if Ninja is installed
     if (-not (Get-Command ninja -ErrorAction SilentlyContinue)) {
         Write-Error "Ninja build system is not installed. Please install Ninja."
@@ -33,13 +53,6 @@ if ($IsWindows) {
     $generator = "Ninja"
     Write-Host "Using CMake generator: $generator"
     
-    # Check if Qt is installed
-    if (-not (Test-Path "C:\Qt\6.9.0\msvc2022_64")) {
-        Write-Error "Qt 6.9.0 MSVC2022 64-bit is not installed at C:\Qt\6.9.0\msvc2022_64"
-        Write-Error "Please install Qt 6.9.0 for MSVC 2022 64-bit from: https://www.qt.io/download"
-        exit 1
-    }
-    
     # Find vcvars64.bat to setup Visual Studio environment
     $vcvars = "$vsPath\VC\Auxiliary\Build\vcvars64.bat"
     if (-not (Test-Path $vcvars)) {
@@ -48,7 +61,7 @@ if ($IsWindows) {
     }
     
     # Setup Visual Studio environment and run CMake with Ninja generator
-    & cmd /c "`"$vcvars`" && cmake . -G `"$generator`" -DCMAKE_PREFIX_PATH=C:\Qt\6.9.0\msvc2022_64 -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_FLAGS=`"/Zc:__cplusplus /permissive-`" -DCMAKE_BUILD_TYPE=Release -B build"
+    & cmd /c "`"$vcvars`" && cmake . -G `"$generator`" -DCMAKE_PREFIX_PATH=$QtPath -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_FLAGS=`"/Zc:__cplusplus /permissive-`" -DCMAKE_BUILD_TYPE=Release -B build"
     if ($LASTEXITCODE -ne 0) {
         Write-Error "CMake configuration failed"
         exit $LASTEXITCODE
@@ -62,7 +75,7 @@ if ($IsWindows) {
 
     New-Item -ItemType Directory -Path .\build\Release -Force
     Copy-Item .\build\SQLiteQueryAnalyzer.exe .\build\Release\SQLiteQueryAnalyzer.exe
-    C:\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
+    & "$QtPath\bin\windeployqt.exe" .\build\Release\SQLiteQueryAnalyzer.exe
     
     if ($Package) {
         ../../deps/innosetup/ISCC.exe setup.iss
