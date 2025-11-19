@@ -18,6 +18,8 @@
 
 **Merged pull requests:**
 
+- Restrict Chocolatey publishing to release workflow only [\#98](https://github.com/christianhelle/sqlitequery/pull/98) ([Copilot](https://github.com/apps/copilot-swe-agent))
+- Git Workflow Agent Instructions [\#97](https://github.com/christianhelle/sqlitequery/pull/97) ([christianhelle](https://github.com/christianhelle))
 - Add application icon for Windows build [\#96](https://github.com/christianhelle/sqlitequery/pull/96) ([christianhelle](https://github.com/christianhelle))
 - Add comprehensive GitHub Copilot instructions for SQLite Query Analyzer [\#92](https://github.com/christianhelle/sqlitequery/pull/92) ([Copilot](https://github.com/apps/copilot-swe-agent))
 - Create Static Documentation Website from README [\#90](https://github.com/christianhelle/sqlitequery/pull/90) ([Copilot](https://github.com/apps/copilot-swe-agent))
