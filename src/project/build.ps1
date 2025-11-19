@@ -52,7 +52,7 @@ if ($IsWindows) {
         exit $LASTEXITCODE
     }
 
-    mkdir .\build\Release
+    New-Item -ItemType Directory -Path .\build\Release -Force
     Copy-Item .\build\SQLiteQueryAnalyzer.exe .\build\Release\SQLiteQueryAnalyzer.exe
     C:\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
     
