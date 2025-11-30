@@ -22,7 +22,8 @@ int main(int argc, char *argv[]) {
     const QCommandLineOption progressOption(QStringList() << "p" << "progress", "Show progress during copy");
     const QCommandLineOption exportCsvOption(QStringList() << "e" << "export-csv", "Export data to CSV.");
     const QCommandLineOption targetDirectoryOption(QStringList() << "d" << "target-directory",
-                                                   "Target directory for export.");
+                                                   "Target directory for export.",
+                                                   "directory");
     const QCommandLineOption importSqlOption(QStringList() << "r" << "run-sql", "Execute SQL file.");
     const auto helpOption = parser.addHelpOption();
     const auto versionOption = parser.addVersionOption();

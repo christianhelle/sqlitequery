@@ -85,7 +85,7 @@ void DbDataExport::exportDataToCsvFile(const Database *database,
 
         const auto columns = getColumnDefs(table).join(delimiter);
         QTextStream out(file.get());
-        out << columns;
+        out << columns << "\n";
 
         QSqlQuery query(database->getDatabase());
         query.setForwardOnly(true);
@@ -98,7 +98,6 @@ void DbDataExport::exportDataToCsvFile(const Database *database,
         }
         query.finish();
 
-        out << "\n";
         file->close();
     }
 
