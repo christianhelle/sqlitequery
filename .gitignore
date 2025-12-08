@@ -62,3 +62,4 @@ src/project/linux/lib
 src/project/linux/plugins
 src/project/linux/translations
 *.snap
+_codeql_detected_source_root

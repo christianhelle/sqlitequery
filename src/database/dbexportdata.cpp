@@ -12,23 +12,18 @@ QStringList DbDataExport::getColumnDefs(const Table &table) {
 QStringList DbDataExport::getColumnValueDefs(const Table &table,
                                              const QSqlQuery &query) const {
     QStringList valueDefinitions;
-    QMap<QString, QString> values;
     for (const auto &column: table.columns) {
-        const auto value = query.value(column.name).toString();
-        values[value] = column.dataType;
-    }
-    const auto keys = values.keys();
-    for (auto value: keys) {
+        auto value = query.value(column.name).toString();
         bool isText = false;
         for (const auto &type: getTextTypes()) {
-            if (values[value].contains(type, Qt::CaseInsensitive)) {
+            if (column.dataType.contains(type, Qt::CaseInsensitive)) {
                 isText = true;
                 break;
             }
         }
         if (isText) {
-            const auto val = value.replace("\"", "\"\"");
-            valueDefinitions.append(QString("\"%1\"").arg(val));
+            value = value.replace("\"", "\"\"");
+            valueDefinitions.append(QString("\"%1\"").arg(value));
         } else {
             valueDefinitions.append(value);
         }
@@ -90,7 +85,7 @@ void DbDataExport::exportDataToCsvFile(const Database *database,
 
         const auto columns = getColumnDefs(table).join(delimiter);
         QTextStream out(file.get());
-        out << columns;
+        out << columns << "\n";
 
         QSqlQuery query(database->getDatabase());
         query.setForwardOnly(true);
@@ -103,7 +98,6 @@ void DbDataExport::exportDataToCsvFile(const Database *database,
         }
         query.finish();
 
-        out << "\n";
         file->close();
     }
 
