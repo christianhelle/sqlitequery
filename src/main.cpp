@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     const QCommandLineOption targetDirectoryOption(QStringList() << "d" << "target-directory",
                                                    "Target directory for export.",
                                                    "directory");
-    const QCommandLineOption importSqlOption(QStringList() << "r" << "run-sql", "Execute SQL file.");
+    const QCommandLineOption importSqlOption(QStringList() << "r" << "run-sql", "Execute SQL file.", "file");
     const auto helpOption = parser.addHelpOption();
     const auto versionOption = parser.addVersionOption();
 
@@ -64,12 +64,12 @@ int main(int argc, char *argv[]) {
     }
 
     if (importSql){
-        if (args.length() != 2) {
-            qWarning("Execute SQL option requires a database file.");
+        if (args.length() != 1) {
+            qWarning("Execute SQL option requires exactly one database file argument.");
             return 1;
         }
-        const auto &dbFile = args.at(1);
-        const auto &sqlFile = args.at(0);
+        const auto &dbFile = args.at(0);
+        const auto &sqlFile = parser.value(importSqlOption);
         Script::executeSqlFile(sqlFile, dbFile);
         return 0;
     }
