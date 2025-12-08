@@ -62,3 +62,5 @@ src/project/linux/lib
 src/project/linux/plugins
 src/project/linux/translations
 *.snap
+.vs
+src/main.cpp
