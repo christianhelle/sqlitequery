@@ -16,6 +16,8 @@
 #include <QtConcurrent/QtConcurrent>
 #include <chrono>
 #include <thread>
+#include <tuple>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent) {
@@ -45,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
     restoreWindowState();
 
     this->loaded = true;
+    this->queryExecuting = false;
 }
 
 MainWindow::~MainWindow() {
@@ -350,7 +353,7 @@ void MainWindow::analyzeDatabase() const {
     this->database->close();
 }
 
-void MainWindow::executeQuery() const {
+void MainWindow::executeQuery() {
     if (this->dataExportProgress.get() != nullptr) {
         const auto msg = "Unable to process request. Data export in progress";
         this->statusBar->showMessage(msg, 5000);
@@ -358,31 +361,67 @@ void MainWindow::executeQuery() const {
         return;
     }
 
+    if (this->queryExecuting) {
+        const auto msg = "Unable to process request. Query execution in progress";
+        this->statusBar->showMessage(msg, 5000);
+        return;
+    }
+
     QStringList list(ui->textEdit->toPlainText().split(";", Qt::SkipEmptyParts));
-    QStringList errors;
+    
+    // Show busy indicator
+    this->setQueryExecuting(true);
+    
+    // Initialize cancellation token for query execution
+    this->queryTcs = std::make_unique<CancellationTokenSource>();
+    const auto cancellationToken = queryTcs->get();
 
-    QElapsedTimer time;
-    time.start();
-
-    if (this->query->execute(list, &errors)) {
-        ui->tabWidget->setCurrentIndex(0);
-        ui->queryResultTab->setCurrentIndex(0);
-    }
-
-    const auto milliseconds = static_cast<double>(time.elapsed());
-    const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
-    this->showMessage(msg);
-
-    foreach(const QString sql, list) {
-        if (sql.contains("create", Qt::CaseInsensitive) ||
-            sql.contains("drop", Qt::CaseInsensitive) ||
-            sql.contains("insert", Qt::CaseInsensitive) ||
-            sql.contains("delete", Qt::CaseInsensitive)) {
-            ui->queryResultTab->setCurrentIndex(1);
-            analyzeDatabase();
-            break;
+    // Execute query asynchronously
+    auto future = QtConcurrent::run([this, list, cancellationToken]() {
+        QStringList errors;
+        bool success = false;
+        QElapsedTimer time;
+        time.start();
+        
+        // Check if cancelled before executing
+        if (!cancellationToken.isCancellationRequested()) {
+            success = this->query->execute(list, &errors);
         }
-    }
+        
+        const auto elapsed = time.elapsed();
+        return std::make_tuple(success, errors, elapsed);
+    });
+    
+    // Handle completion on main thread
+    future.then([this, list](std::tuple<bool, QStringList, qint64> result) {
+        MainThread::run([this, list, result]() {
+            const auto [success, errors, elapsed] = result;
+            
+            if (success) {
+                ui->tabWidget->setCurrentIndex(0);
+                ui->queryResultTab->setCurrentIndex(0);
+            }
+
+            const auto milliseconds = static_cast<double>(elapsed);
+            const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
+            this->showMessage(msg);
+
+            foreach(const QString sql, list) {
+                if (sql.contains("create", Qt::CaseInsensitive) ||
+                    sql.contains("drop", Qt::CaseInsensitive) ||
+                    sql.contains("insert", Qt::CaseInsensitive) ||
+                    sql.contains("delete", Qt::CaseInsensitive)) {
+                    ui->queryResultTab->setCurrentIndex(1);
+                    analyzeDatabase();
+                    break;
+                }
+            }
+            
+            // Hide busy indicator
+            this->setQueryExecuting(false);
+            this->queryTcs.reset();
+        });
+    });
 }
 
 void MainWindow::scriptSchema() const {
@@ -498,7 +537,12 @@ void MainWindow::exportDataToCsvFiles() {
 }
 
 void MainWindow::cancel() const {
-    this->tcs->cancel();
+    if (this->tcs) {
+        this->tcs->cancel();
+    }
+    if (this->queryTcs) {
+        this->queryTcs->cancel();
+    }
 }
 
 void MainWindow::saveSql() {
@@ -573,3 +617,17 @@ void MainWindow::showMessage(const QString &message) const {
     ui->queryResultMessagesTextEdit->setPlainText(message);
     this->statusBar->showMessage(message, 5000);
 }
+
+void MainWindow::setQueryExecuting(bool executing) {
+    this->queryExecuting = executing;
+    ui->actionExecute_Query->setEnabled(!executing);
+    ui->actionCancel->setVisible(executing);
+    ui->queryBusyIndicator->setVisible(executing);
+    if (executing) {
+        ui->queryBusyIndicator->setText("Executing query...");
+        ui->queryResultTab->setCurrentIndex(0);
+    } else {
+        ui->queryBusyIndicator->setText("");
+    }
+}
+

@@ -45,7 +45,7 @@ public slots:
 
     [[noreturn]] void appExit() const;
 
-    void executeQuery() const;
+    void executeQuery();
 
     void scriptSchema() const;
 
@@ -90,7 +90,9 @@ private:
     std::unique_ptr<Highlighter> highlighter;
     std::unique_ptr<ExportDataProgress> dataExportProgress;
     std::unique_ptr<CancellationTokenSource> tcs;
+    std::unique_ptr<CancellationTokenSource> queryTcs;
     bool loaded;
+    bool queryExecuting;
 
     void analyzeDatabase() const;
 
@@ -101,6 +103,8 @@ private:
     void restoreWindowState();
 
     void showMessage(const QString &message) const;
+
+    void setQueryExecuting(bool executing);
 };
 
 #endif // MAINWINDOW_H
