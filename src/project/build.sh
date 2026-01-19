@@ -1,5 +1,22 @@
 #!/usr/bin/env bash
-# build.sh - Build script for SQLiteQueryAnalyzer
+# build.sh - Build script for SQLite Query Analyzer
+#
+# Usage:
+#   ./build.sh [OPTIONS]
+#
+# Options:
+#   --package              Create installer/package after build
+#   --install              Install to ~/.local/bin (Linux only)
+#   --configuration <cfg>  Build configuration: Release (default) or Debug
+#   --debug                Shortcut for --configuration Debug
+#
+# Examples:
+#   ./build.sh                           # Build in Release mode (default)
+#   ./build.sh --debug                   # Build in Debug mode
+#   ./build.sh --configuration Debug     # Build in Debug mode (alternative)
+#   ./build.sh --package                 # Build Release and create packages
+#   ./build.sh --install                 # Build Release and install locally
+#   ./build.sh --debug --install         # Build Debug and install locally
 
 # Exit on error
 set -e
@@ -7,9 +24,38 @@ set -e
 # Parse arguments
 PACKAGE=false
 INSTALL=false
+CONFIGURATION="Release"
+
+show_help() {
+  cat <<'EOF'
+build.sh - Build script for SQLite Query Analyzer
+
+Usage:
+  ./build.sh [OPTIONS]
+
+Options:
+  --package              Create installer/package after build
+  --install              Install to ~/.local/bin (Linux only)
+  --configuration <cfg>  Build configuration: Release (default) or Debug
+  --debug                Shortcut for --configuration Debug
+  --help                 Show this help message
+
+Examples:
+  ./build.sh                           # Build in Release mode (default)
+  ./build.sh --debug                   # Build in Debug mode
+  ./build.sh --configuration Debug     # Build in Debug mode (alternative)
+  ./build.sh --package                 # Build Release and create packages
+  ./build.sh --install                 # Build Release and install locally
+  ./build.sh --debug --install         # Build Debug and install locally
+EOF
+  exit 0
+}
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
+  --help | -h)
+    show_help
+    ;;
   --package)
     PACKAGE=true
     shift
@@ -18,9 +64,17 @@ while [ "$#" -gt 0 ]; do
     INSTALL=true
     shift
     ;;
+  --configuration)
+    CONFIGURATION="$2"
+    shift 2
+    ;;
+  --debug)
+    CONFIGURATION="Debug"
+    shift
+    ;;
   *)
     echo "Unknown argument: $1"
-    echo "Usage: $0 [--package] [--install]"
+    echo "Usage: $0 [--package] [--install] [--configuration <Release|Debug>] [--debug] [--help]"
     exit 1
     ;;
   esac
@@ -37,8 +91,9 @@ fi
 
 if [ "$OS" = "Linux" ]; then
   echo "Building for Linux..."
-  cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/
-  cmake --build build --config Release --parallel $(nproc)
+  echo "Build Configuration: $CONFIGURATION"
+  cmake -B build -DCMAKE_BUILD_TYPE=$CONFIGURATION -DCMAKE_INSTALL_PREFIX=./linux/
+  cmake --build build --config $CONFIGURATION --parallel $(nproc)
   cmake --install build
 
   if [ "$INSTALL" = true ]; then
@@ -104,8 +159,9 @@ fi
 
 if [ "$OS" = "Darwin" ]; then
   echo "Building for macOS..."
-  cmake -B build -DCMAKE_BUILD_TYPE=Release
-  cmake --build build --config Release --parallel "$(sysctl -n hw.ncpu)"
+  echo "Build Configuration: $CONFIGURATION"
+  cmake -B build -DCMAKE_BUILD_TYPE=$CONFIGURATION
+  cmake --build build --config $CONFIGURATION --parallel "$(sysctl -n hw.ncpu)"
 
   if [ "$PACKAGE" = true ]; then
     echo "Creating macOS package..."
