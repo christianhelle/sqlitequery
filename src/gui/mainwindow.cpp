@@ -226,7 +226,11 @@ void MainWindow::loadRecentFiles() const {
 }
 
 void MainWindow::openRecentFile() {
-    const QString file = sender()->objectName();
+    auto *senderObject = sender();
+    if (senderObject == nullptr) {
+        return;
+    }
+    const QString file = senderObject->objectName();
     this->openDatabase(file);
 }
 

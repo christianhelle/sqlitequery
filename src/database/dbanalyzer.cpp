@@ -27,7 +27,10 @@ void DbAnalyzer::loadTables(DatabaseInfo &info) const {
     }
 
     QSqlQuery query(this->database->getDatabase());
-    query.exec(sql);
+    if (!query.exec(sql)) {
+        database->close();
+        return;
+    }
 
     while (query.next()) {
         Table table;
@@ -47,10 +50,12 @@ void DbAnalyzer::loadColumns(DatabaseInfo &info) const {
     }
 
     for (auto &table: info.tables) {
-        const QString sql = "PRAGMA table_info (" + table.name + ")";
+        const QString sql = "PRAGMA table_info (\"" + table.name + "\")";
 
         QSqlQuery query(this->database->getDatabase());
-        query.exec(sql);
+        if (!query.exec(sql)) {
+            continue;
+        }
 
         while (query.next()) {
             Column col;

@@ -7,16 +7,16 @@
 #include "../settings/settings.h"
 
 QString Prompts::getCsvDelimiter(QWidget *parent,
-                                 [[maybe_unused]] const QString &defaultDelimiter = ",") {
+                                 const QString &defaultDelimiter) {
     bool ok{};
     auto input = QInputDialog::getText(parent,
                                        "CSV Delimeter",
                                        "Please enter delimeter to use",
                                        QLineEdit::Normal,
-                                       ",",
+                                       defaultDelimiter,
                                        &ok);
     if (!ok || input.isEmpty()) {
-        input = ",";
+        input = defaultDelimiter;
     }
     return input;
 }
@@ -25,7 +25,7 @@ QString Prompts::getFolderPath(QWidget *parent) {
     SessionState state;
     Settings::getSessionState(&state);
     auto directory = state.lastUsedExportPath;
-    if (state.lastUsedExportPath == Q_NULLPTR || state.lastUsedExportPath.isEmpty()) {
+    if (state.lastUsedExportPath.isEmpty()) {
         directory = QDir::home().absolutePath();
     }
 
@@ -41,7 +41,7 @@ QString Prompts::getFilePath(QWidget *parent,
     SessionState state;
     Settings::getSessionState(&state);
     auto directory = state.lastUsedExportPath;
-    if (state.lastUsedExportPath == Q_NULLPTR || state.lastUsedExportPath.isEmpty()) {
+    if (state.lastUsedExportPath.isEmpty()) {
         directory = QDir::home().absolutePath();
     }
 
@@ -60,7 +60,7 @@ QString Prompts::getFilePath(QWidget *parent,
         }
     }
 
-    return Q_NULLPTR;
+    return QString();
 }
 
 bool Prompts::confirmDelete(QWidget *parent, const QString &tableName) {
