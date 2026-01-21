@@ -29,8 +29,8 @@ void DbQuery::clearResults() {
         const auto model = dynamic_cast<QSqlQueryModel *>(table->model());
         if (model != Q_NULLPTR) {
             model->clear();
-            delete model;
         }
+        delete model;
         table->setModel(Q_NULLPTR);
     }
     qDeleteAll(this->tableResults.begin(), this->tableResults.end());

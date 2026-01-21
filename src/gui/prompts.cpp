@@ -10,8 +10,8 @@ QString Prompts::getCsvDelimiter(QWidget *parent,
                                  const QString &defaultDelimiter) {
     bool ok{};
     auto input = QInputDialog::getText(parent,
-                                       "CSV Delimeter",
-                                       "Please enter delimeter to use",
+                                       "CSV Delimiter",
+                                       "Please enter delimiter to use",
                                        QLineEdit::Normal,
                                        defaultDelimiter,
                                        &ok);
