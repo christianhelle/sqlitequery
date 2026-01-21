@@ -64,3 +64,4 @@ src/project/linux/translations
 *.snap
 .vs
 src/main.cpp
+*.csv
