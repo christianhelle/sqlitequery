@@ -1,10 +1,10 @@
 #include "cancellation.h"
 
-CancellationToken::CancellationToken(bool *isCancelled): isCancelled(isCancelled) {
+CancellationToken::CancellationToken(std::atomic<bool> *isCancelled): isCancelled(isCancelled) {
 }
 
 bool CancellationToken::isCancellationRequested() const {
-    return *isCancelled;
+    return isCancelled->load();
 }
 
 CancellationToken CancellationTokenSource::get() {
@@ -12,5 +12,5 @@ CancellationToken CancellationTokenSource::get() {
 }
 
 void CancellationTokenSource::cancel() {
-    isCancelled = true;
+    isCancelled.store(true);
 }

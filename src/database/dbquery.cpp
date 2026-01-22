@@ -30,8 +30,8 @@ void DbQuery::clearResults() {
         if (model != Q_NULLPTR) {
             model->clear();
         }
-        table->setModel(Q_NULLPTR);
         delete model;
+        table->setModel(Q_NULLPTR);
     }
     qDeleteAll(this->tableResults.begin(), this->tableResults.end());
     this->tableResults.clear();
