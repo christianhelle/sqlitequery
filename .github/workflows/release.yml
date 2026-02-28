@@ -80,6 +80,15 @@ jobs:
           asset_path: artifacts/SQLiteQuerAnalyzer_Windows_v${{ env.VERSION }}/SQLiteQueryAnalyzer_Windows.zip
           asset_name: SQLiteQuerAnalyzer for Windows (Binaries) v${{ env.VERSION }}.zip
           asset_content_type: application/zip
+      - name: Upload Windows MSIX Package
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: artifacts/SQLiteQueryAnalyzer_Windows_MSIX_v${{ env.VERSION }}/SQLiteQueryAnalyzer.msix
+          asset_name: SQLiteQueryAnalyzer for Windows (MSIX) v${{ env.VERSION }}.msix
+          asset_content_type: application/msix
       - name: Upload MacOS (ARM64) disk image
         uses: actions/upload-release-asset@v1
         env:

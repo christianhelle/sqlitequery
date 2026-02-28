@@ -1,8 +1,12 @@
 param (
     [switch]
     $Package = $false,
+    [switch]
+    $Msix = $false,
     [string]
-    $QtPath = "C:\Qt\6.9.0\msvc2022_64"
+    $QtPath = "C:\Qt\6.9.0\msvc2022_64",
+    [string]
+    $Version = "0.2.0.0"
 )
 
 if ($IsWindows) {
@@ -79,6 +83,11 @@ if ($IsWindows) {
     
     if ($Package) {
         ../../deps/innosetup/ISCC.exe setup.iss
+    }
+
+    if ($Msix) {
+        Write-Host "Building MSIX package..."
+        & "$PSScriptRoot\build-msix.ps1" -BuildDir ".\build\Release" -OutputDir "..\artifacts" -Version $Version
     }
 }
 

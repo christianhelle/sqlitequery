@@ -106,6 +106,23 @@ jobs:
           name: ChocolateyPackage
           path: sqlitequery.${{ inputs.version }}.nupkg
 
+      - name: Build MSIX Package
+        working-directory: ${{ github.workspace }}\src\project
+        shell: pwsh
+        run: |
+          $version = "${{ inputs.version }}.0"
+          # Ensure version is in quad notation (Major.Minor.Build.Revision)
+          $parts = $version.Split('.')
+          while ($parts.Count -lt 4) { $parts += "0" }
+          $quadVersion = ($parts[0..3]) -join '.'
+          .\build-msix.ps1 -BuildDir ".\build\Release" -OutputDir "..\artifacts" -Version $quadVersion
+
+      - name: Publish MSIX Package
+        uses: actions/upload-artifact@master
+        with:
+          name: SQLiteQueryAnalyzer_Windows_MSIX_v${{ inputs.version }}
+          path: ${{ github.workspace }}\src\artifacts\SQLiteQueryAnalyzer.msix
+
       # Only publish to Chocolatey when explicitly triggered by the release workflow on master branch
       - name: Upload Package to Chocolatey
         working-directory: ${{ github.workspace }}\src\project\chocolatey
