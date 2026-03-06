@@ -65,3 +65,6 @@ src/project/linux/translations
 .vs
 src/main.cpp
 *.csv
+# Squad: ignore generated logs
+.squad/orchestration-log/
+.squad/log/
