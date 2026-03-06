@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "universes": [
+    "The Usual Suspects",
+    "Breaking Bad",
+    "The Wire",
+    "Firefly"
+  ],
+  "overflow_strategy": "diegetic_expansion",
+  "capacity": {
+    "The Usual Suspects": 25,
+    "Breaking Bad": 20,
+    "The Wire": 25,
+    "Firefly": 15
+  }
+}

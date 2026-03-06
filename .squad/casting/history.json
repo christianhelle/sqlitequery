@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "assignments": [
+    {
+      "assignment_id": "2026-03-06-init",
+      "timestamp": "2026-03-06T13:49:45Z",
+      "universe": "The Usual Suspects + Alien Universe",
+      "agents": [
+        {
+          "name": "Ripley",
+          "universe": "The Aliens Universe",
+          "role": "Lead"
+        },
+        {
+          "name": "Dallas",
+          "universe": "The Aliens Universe",
+          "role": "Frontend Dev"
+        },
+        {
+          "name": "Fenster",
+          "universe": "The Usual Suspects",
+          "role": "Backend Dev"
+        },
+        {
+          "name": "Hockney",
+          "universe": "The Usual Suspects",
+          "role": "Tester"
+        }
+      ]
+    }
+  ]
+}
