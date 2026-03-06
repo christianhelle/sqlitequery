@@ -145,6 +145,9 @@ const config: SquadConfig = {
       tools: ['clang-format', 'SonarCloud'],
       formatBeforeCommit: true,
       platforms: ['Linux', 'macOS', 'Windows']
+    },
+    git: {
+      addCoAuthorTrailer: false
     }
   }
 };
