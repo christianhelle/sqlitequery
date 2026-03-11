@@ -1,15 +1,16 @@
 #ifndef CANCELLATION_H
 #define CANCELLATION_H
 
+#include <atomic>
 
 class CancellationToken {
 public:
-    explicit CancellationToken(bool *isCancelled);
+    explicit CancellationToken(std::atomic<bool> *isCancelled);
 
     [[nodiscard]] bool isCancellationRequested() const;
 
 private:
-    bool *isCancelled = nullptr;
+    std::atomic<bool> *isCancelled = nullptr;
 };
 
 class CancellationTokenSource {
@@ -19,7 +20,7 @@ public:
     void cancel();
 
 private:
-    bool isCancelled = false;
+    std::atomic<bool> isCancelled{false};
 };
 
 

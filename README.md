@@ -36,7 +36,7 @@ SQLite Query Analyzer can be used as a command line tool for automating database
 
 ```sh
 $ sqlitequery --help
-Usage: /snap/sqlitequery/3/bin/SQLiteQueryAnalyzer [options] database
+Usage: sqlitequery [options] database
 A fast and lightweight cross-platform command line and GUI tool for querying and manipulating SQLite databases
 
 Options:

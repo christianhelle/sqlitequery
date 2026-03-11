@@ -18,6 +18,7 @@
 
 **Merged pull requests:**
 
+- Fix SonarCloud critical issues: thread safety, memory safety, and SQL injection [\#100](https://github.com/christianhelle/sqlitequery/pull/100) ([Copilot](https://github.com/apps/copilot-swe-agent))
 - Restrict Chocolatey publishing to release workflow only [\#98](https://github.com/christianhelle/sqlitequery/pull/98) ([Copilot](https://github.com/apps/copilot-swe-agent))
 - Git Workflow Agent Instructions [\#97](https://github.com/christianhelle/sqlitequery/pull/97) ([christianhelle](https://github.com/christianhelle))
 - Add application icon for Windows build [\#96](https://github.com/christianhelle/sqlitequery/pull/96) ([christianhelle](https://github.com/christianhelle))

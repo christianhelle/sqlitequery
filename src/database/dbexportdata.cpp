@@ -51,11 +51,13 @@ void DbDataExport::exportDataToSqlFile(const Database *database,
 
         QSqlQuery query(database->getDatabase());
         query.setForwardOnly(true);
-        query.exec(QString("SELECT * FROM %1").arg(table.name));
+        if (!query.exec(QString("SELECT * FROM \"%1\"").arg(table.name))) {
+            continue;
+        }
         const auto columns = getColumnDefs(table).join(", ");
         while (query.next() && !cancellationToken->isCancellationRequested()) {
             const auto values = getColumnValueDefs(table, query).join(", ");
-            out << "INSERT INTO " << table.name << "(" << columns << ") ";
+            out << "INSERT INTO \"" << table.name << "\"(" << columns << ") ";
             out << "VALUES (" << values << ");\n";
             progress->increment();
         }
@@ -89,7 +91,10 @@ void DbDataExport::exportDataToCsvFile(const Database *database,
 
         QSqlQuery query(database->getDatabase());
         query.setForwardOnly(true);
-        query.exec(QString("SELECT * FROM %1").arg(table.name));
+        if (!query.exec(QString("SELECT * FROM \"%1\"").arg(table.name))) {
+            file->close();
+            continue;
+        }
 
         while (query.next() && !cancellationToken->isCancellationRequested()) {
             const auto values = getColumnValueDefs(table, query).join(delimiter);
