@@ -28,6 +28,26 @@ making database operations seamless and straightforward.
 - Desktop color theme awareness with automatic switching between dark/light themes
 - Command line interface for automation and scripting
 
+## Installation
+
+### Quick Install
+
+#### Windows (PowerShell)
+```pwsh
+Invoke-RestMethod https://christianhelle.com/sqlitequery/install.ps1 | Invoke-Expression
+```
+
+#### Linux / macOS (Bash)
+```sh
+curl -fsSL https://christianhelle.com/sqlitequery/install | bash
+```
+
+### Download Pre-built Binaries
+
+Pre-built binaries for all platforms are available on the [GitHub Releases](https://github.com/christianhelle/sqlitequery/releases/latest) page.
+
+For more detailed installation instructions, visit the [Documentation Website](https://christianhelle.github.io/sqlitequery/).
+
 ## CLI Usage
 
 SQLite Query Analyzer can be used as a command line tool for automating database operations without the GUI. The application supports several command line options for exporting data, executing SQL scripts, and more.
