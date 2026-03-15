@@ -56,7 +56,7 @@ detect_platform() {
             arch="x86_64"
             ;;
         aarch64|arm64)
-            arch="aarch64"
+            arch="arm64"
             ;;
     esac
     
@@ -84,12 +84,40 @@ get_latest_release() {
     fi
 }
 
+get_asset_url() {
+    local os="$1"
+    local version="$2"
+    local api_url="https://api.github.com/repos/$GITHUB_REPO/releases/latest"
+    local identifier=""
+    
+    case "$os" in
+        linux*)
+            identifier="Linux"
+            ;;
+        macos*)
+            identifier="MacOS"
+            ;;
+    esac
+    
+    local assets_json
+    assets_json=$(curl -s "$api_url")
+    
+    echo "$assets_json" | grep -o '"browser_download_url": "[^"]*'"$identifier"'[^"]*"' | grep -o 'https://[^"]*' | head -1
+}
+
 download_and_install_linux() {
     local platform="$1"
     local version="$2"
-    local archive_name="SQLiteQueryAnalyzer.for.Linux.TGZ.v${version}.tar.gz"
-    local download_url="https://github.com/$GITHUB_REPO/releases/download/$version/$archive_name"
+    local download_url
+    download_url=$(get_asset_url "linux" "$version")
+    
+    if [ -z "$download_url" ]; then
+        log_error "Failed to find Linux release asset"
+        exit 1
+    fi
+    
     local temp_dir=$(mktemp -d)
+    local archive_name=$(basename "$download_url")
     
     log_info "Downloading SQLiteQueryAnalyzer $version for $platform..."
     
@@ -137,7 +165,7 @@ download_and_install_linux() {
         else
             log_error "Cannot write to $INSTALL_DIR and sudo is not available"
             log_info "Try setting INSTALL_DIR to a writable directory:"
-            log_info "  INSTALL_DIR=\$HOME/.local/bin curl -fsSL https://christianhelle.com/sqlitequery/install | bash"
+            log_info "  INSTALL_DIR=\$HOME/.local/bin curl -fsSL https://christianhelle.com/sqlitequery/install.sh | bash"
             rm -rf "$temp_dir"
             exit 1
         fi
@@ -157,7 +185,6 @@ download_and_install_macos() {
     local version="$2"
     
     local arch_label=""
-    local dmg_name=""
     
     if [ "$arch" = "arm64" ]; then
         arch_label="ARM64"
@@ -165,8 +192,14 @@ download_and_install_macos() {
         arch_label="Intel"
     fi
     
-    dmg_name="SQLiteQuerAnalyzer.for.MacOS.${arch_label}.v${version}.dmg"
-    local download_url="https://github.com/$GITHUB_REPO/releases/download/$version/$dmg_name"
+    local download_url
+    download_url=$(get_asset_url "macos" "$version")
+    
+    if [ -z "$download_url" ]; then
+        log_error "Failed to find macOS release asset"
+        exit 1
+    fi
+    
     local temp_dir=$(mktemp -d)
     local dmg_path="$temp_dir/sqlitequery.dmg"
     local mount_point="/Volumes/SQLiteQueryAnalyzer"
@@ -249,13 +282,13 @@ show_usage() {
     echo ""
     echo "Examples:"
     echo "  # Install to default location"
-    echo "  curl -fsSL https://christianhelle.com/sqlitequery/install | bash"
+    echo "  curl -fsSL https://christianhelle.com/sqlitequery/install.sh | bash"
     echo ""
     echo "  # Install to custom directory"
-    echo "  INSTALL_DIR=\$HOME/.local/bin curl -fsSL https://christianhelle.com/sqlitequery/install | bash"
+    echo "  INSTALL_DIR=\$HOME/.local/bin curl -fsSL https://christianhelle.com/sqlitequery/install.sh | bash"
     echo ""
     echo "  # Install to custom directory using flag"
-    echo "  curl -fsSL https://christianhelle.com/sqlitequery/install | bash -s -- --dir \$HOME/.local/bin"
+    echo "  curl -fsSL https://christianhelle.com/sqlitequery/install.sh | bash -s -- --dir \$HOME/.local/bin"
 }
 
 main() {
@@ -267,6 +300,11 @@ main() {
                 exit 0
                 ;;
             -d|--dir)
+                if [ -z "$2" ] || [[ "$2" == -* ]]; then
+                    log_error "Missing argument for -d/--dir option"
+                    show_usage
+                    exit 1
+                fi
                 INSTALL_DIR="$2"
                 shift 2
                 ;;

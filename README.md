@@ -39,7 +39,7 @@ Invoke-RestMethod https://christianhelle.com/sqlitequery/install.ps1 | Invoke-Ex
 
 #### Linux / macOS (Bash)
 ```sh
-curl -fsSL https://christianhelle.com/sqlitequery/install | bash
+curl -fsSL https://christianhelle.com/sqlitequery/install.sh | bash
 ```
 
 ### Download Pre-built Binaries

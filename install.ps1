@@ -66,11 +66,10 @@ function Get-AssetUrl {
   try {
     $apiUrl = "https://api.github.com/repos/$GitHubRepo/releases/latest"
     $response = Invoke-RestMethod -Uri $apiUrl -ErrorAction Stop
-    $archiveName = "SQLiteQuerAnalyzer.for.Windows.Installer.v$Version.exe"
     foreach ($asset in $response.assets) {
-      if ($asset.name -eq $archiveName) { return $asset.browser_download_url }
+      if ($asset.name -like "*Windows*Installer*.exe") { return $asset.browser_download_url }
     }
-    Write-Error "Asset not found: $archiveName"
+    Write-Error "Asset not found for Windows installer"
     Write-Info "Available assets:"
     foreach ($asset in $response.assets) { Write-Info "  - $($asset.name)" }
     throw "Required asset not found"
@@ -133,8 +132,8 @@ function Main {
     Write-Host "  -InstallDir <path>   Installation directory (optional)" -ForegroundColor White
     Write-Host ""
     Write-Host "Examples:" -ForegroundColor Yellow
-    Write-Host "  Invoke-RestMethod https://christianhelle.com/sqlitequery/install.ps1 | Invoke-Expression" -ForegroundColor Gray
-    Write-Host "  Invoke-RestMethod https://christianhelle.com/sqlitequery/install.ps1 | Invoke-Expression -InstallDir 'C:\MyApps'" -ForegroundColor Gray
+    Write-Host "  Invoke-RestMethod https://christianhelle.com/sqlitequery/install.ps1 -OutFile install.ps1; .\install.ps1" -ForegroundColor Gray
+    Write-Host "  Invoke-RestMethod https://christianhelle.com/sqlitequery/install.ps1 -OutFile install.ps1; .\install.ps1 -InstallDir 'C:\MyApps'" -ForegroundColor Gray
     return
   }
 
