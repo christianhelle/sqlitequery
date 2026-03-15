@@ -87,7 +87,7 @@ get_latest_release() {
 download_and_install_linux() {
     local platform="$1"
     local version="$2"
-    local archive_name="SQLiteQueryAnalyzer for Linux (TGZ) v${version}.tar.gz"
+    local archive_name="SQLiteQueryAnalyzer.for.Linux.TGZ.v${version}.tar.gz"
     local download_url="https://github.com/$GITHUB_REPO/releases/download/$version/$archive_name"
     local temp_dir=$(mktemp -d)
     
@@ -165,7 +165,7 @@ download_and_install_macos() {
         arch_label="Intel"
     fi
     
-    dmg_name="SQLiteQuerAnalyzer for MacOS ($arch_label) v${version}.dmg"
+    dmg_name="SQLiteQuerAnalyzer.for.MacOS.${arch_label}.v${version}.dmg"
     local download_url="https://github.com/$GITHUB_REPO/releases/download/$version/$dmg_name"
     local temp_dir=$(mktemp -d)
     local dmg_path="$temp_dir/sqlitequery.dmg"
