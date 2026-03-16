@@ -88,7 +88,7 @@ function Install-SQLiteQueryAnalyzer {
   try {
     New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
     Write-Info "Downloading SQLiteQueryAnalyzer $Version..."
-    Invoke-WebRequest -Uri $downloadUrl -OutFile $installerPath -ErrorAction Stop
+    Invoke-WebRequest -Uri $downloadUrl -OutFile $installerPath -UseBasicParsing -ErrorAction Stop
     Write-Info "Running installer..."
     $args = @(
       "/VERYSILENT",
@@ -148,6 +148,7 @@ function Main {
     Write-Info "Latest version: $version"
     $binaryPath = Install-SQLiteQueryAnalyzer -Version $version -TargetDir $InstallDir
     Test-Installation -BinaryPath $binaryPath
+    Add-ToUserPath -Directory $InstallDir
     Write-Host ""
     Write-Success "Installation complete!"
     Write-Info "You can launch SQLiteQueryAnalyzer from the Start Menu"

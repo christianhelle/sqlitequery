@@ -34,12 +34,14 @@ making database operations seamless and straightforward.
 
 #### Windows (PowerShell)
 ```pwsh
-Invoke-RestMethod https://christianhelle.com/sqlitequery/install.ps1 | Invoke-Expression
+Invoke-RestMethod https://christianhelle.com/sqlitequery/install.ps1 -OutFile install.ps1
+.\install.ps1
 ```
 
 #### Linux / macOS (Bash)
 ```sh
-curl -fsSL https://christianhelle.com/sqlitequery/install.sh | bash
+curl -fsSL https://christianhelle.com/sqlitequery/install.sh -o install.sh
+bash install.sh
 ```
 
 ### Download Pre-built Binaries
