@@ -35,9 +35,12 @@ log_error() {
 }
 
 detect_platform() {
-    local os=$(uname -s | tr '[:upper:]' '[:lower:]')
-    local arch=$(uname -m)
-    
+    local os
+    local arch
+
+    os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+    arch="$(uname -m)"
+
     case "$os" in
         linux*)
             os="linux"
@@ -50,7 +53,7 @@ detect_platform() {
             exit 1
             ;;
     esac
-    
+
     case "$arch" in
         x86_64|amd64)
             arch="x86_64"
@@ -59,7 +62,7 @@ detect_platform() {
             arch="arm64"
             ;;
     esac
-    
+
     echo "${os}-${arch}"
 }
 
@@ -107,17 +110,32 @@ get_asset_url() {
     local assets_json
     assets_json=$(curl -s "$api_url")
     
-    # Prefer assets whose name contains the identifier (case-insensitive)
-    url=$(echo "$assets_json" | awk -v id="$identifier" 'BEGIN{IGNORECASE=1} /"name":/ {name=$0; getline; if (name ~ id && $0 ~ /browser_download_url/) { if (match($0, /"browser_download_url": "([^\"]+)"/, m)) print m[1]; exit }}')
+    # Prefer assets whose name contains the identifier (case-insensitive). Use jq if available for robust JSON parsing.
+    if command -v jq >/dev/null 2>&1; then
+        url=$(echo "$assets_json" | jq -r --arg id "$identifier" '.assets[] | select(.name | test($id; "i")) | .browser_download_url' | head -1)
+    else
+        # Fallback POSIX-compatible approach: lowercase the JSON and identifier, then look for a matching name and extract the following browser_download_url
+        id_lc=$(echo "$identifier" | tr '[:upper:]' '[:lower:]')
+        url=$(echo "$assets_json" | tr '[:upper:]' '[:lower:]' | awk -v id="$id_lc" '/"name":/ {name=$0; getline; if (name ~ id && $0 ~ /browser_download_url/) { gsub(/.*"browser_download_url": "/, "", $0); gsub(/".*/, "", $0); print $0; exit }}')
+    fi
+
     if [ -n "$url" ]; then
         echo "$url"
         return 0
     fi
 
-    # Fallback: coarse matching by OS keyword
+    # Fallback: coarse matching by OS keyword and optionally architecture when provided
     case "$os" in
-        linux*) echo "$assets_json" | grep -o '"browser_download_url": "https://[^\"]*linux[^\"]*"' | grep -o 'https://[^\"]*' | head -1 ;;
-        macos*) echo "$assets_json" | grep -o '"browser_download_url": "https://[^\"]*macos[^\"]*"' | grep -o 'https://[^\"]*' | head -1 ;;
+        linux*) echo "$assets_json" | grep -i -o '"browser_download_url": "https://[^"]*linux[^"]*"' | grep -o 'https://[^\"]*' | head -1 ;;
+        macos*)
+            if [ -n "$arch" ]; then
+                # prefer assets containing both macos and arch
+                echo "$assets_json" | grep -i -o '"browser_download_url": "https://[^"]*macos[^"]*'"$arch"'[^"]*"' | grep -o 'https://[^\"]*' | head -1 || \
+                echo "$assets_json" | grep -i -o '"browser_download_url": "https://[^"]*macos[^"]*"' | grep -o 'https://[^\"]*' | head -1
+            else
+                echo "$assets_json" | grep -i -o '"browser_download_url": "https://[^"]*macos[^"]*"' | grep -o 'https://[^\"]*' | head -1
+            fi
+            ;;
         *) echo "" ;;
     esac
 }
@@ -267,16 +285,35 @@ download_and_install_macos() {
         exit 1
     fi
 
-    # Atomically install: remove old and move staged into /Applications
+    # Install with backup/restore to avoid leaving the system without the app if move fails
+    backup=""
     if [ -d "/Applications/SQLiteQueryAnalyzer.app" ]; then
-        log_info "Removing existing installation..."
-        rm -rf "/Applications/SQLiteQueryAnalyzer.app"
+        backup="/Applications/SQLiteQueryAnalyzer.app.bak.$(date +%s)"
+        log_info "Moving existing installation to backup: $backup"
+        if ! mv "/Applications/SQLiteQueryAnalyzer.app" "$backup"; then
+            log_error "Failed to move existing installation to backup: $backup"
+            hdiutil detach "$mount_point" 2>/dev/null || true
+            rm -rf "$temp_dir" "$staging_dir"
+            exit 1
+        fi
     fi
 
     if ! mv "$staged_app" "/Applications/"; then
         log_error "Failed to move staged application into /Applications"
+        # Attempt to restore backup if it exists
+        if [ -n "$backup" ] && [ -d "$backup" ]; then
+            log_info "Restoring backup to /Applications/SQLiteQueryAnalyzer.app"
+            if ! mv "$backup" "/Applications/SQLiteQueryAnalyzer.app"; then
+                log_error "Failed to restore backup: $backup"
+            fi
+        fi
         rm -rf "$temp_dir" "$staging_dir"
         exit 1
+    fi
+
+    # Move succeeded; remove backup if present
+    if [ -n "$backup" ] && [ -d "$backup" ]; then
+        rm -rf "$backup"
     fi
 
     rm -rf "$staging_dir"
