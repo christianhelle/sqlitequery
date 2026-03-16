@@ -6,6 +6,8 @@ on:
     paths:
       - 'docs/**'
       - 'README.md'
+      - 'install.sh'
+      - 'install.ps1'
   workflow_dispatch:
 
 permissions:
@@ -26,6 +28,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Copy installer scripts
+        run: |
+          cp install.sh docs/
+          cp install.ps1 docs/
         
       - name: Setup Pages
         uses: actions/configure-pages@v4

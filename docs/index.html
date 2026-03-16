@@ -199,49 +199,60 @@
         <section id="installation" class="installation">
             <div class="container">
                 <h2 class="section-title">Installation</h2>
+                
                 <div class="install-options">
                     <div class="install-card featured">
                         <div class="install-header">
-                            <h3>Download Pre-built Binaries</h3>
+                            <h3>Quick Install</h3>
                             <span class="badge recommended">Recommended</span>
                         </div>
+                        <p>Use our automated installation scripts for the easiest way to install SQLite Query Analyzer:</p>
+                        
+                        <div class="install-code">
+                            <h4>Windows (PowerShell)</h4>
+                            <code>Invoke-RestMethod https://christianhelle.com/sqlitequery/install.ps1 | Invoke-Expression</code>
+                        </div>
+                        
+                        <div class="install-code">
+                            <h4>Linux / macOS (Bash)</h4>
+                            <code>curl -fsSL https://christianhelle.com/sqlitequery/install.sh | bash</code>
+                        </div>
+                    </div>
+                    
+                    <div class="install-card">
+                        <div class="install-header">
+                            <h3>Download Pre-built Binaries</h3>
+                        </div>
                         <div class="install-code download-link">
-                            <code><a href="https://github.com/christianhelle/sqlitequery/releases/latest" target="_blank">📥 Download from GitHub Releases</a></code>
+                            <code><a href="https://github.com/christianhelle/sqlitequery/releases/latest" target="_blank">Download from GitHub Releases</a></code>
                         </div>
                         <p>Download the appropriate binary for your platform and run directly. No installation required.</p>
                     </div>
+                </div>
+                
+                <div class="install-platforms">
+                    <h3>Platform-Specific Notes</h3>
                     
-                    <div class="install-card">
-                        <div class="install-header">
-                            <h3>Linux (Ubuntu/Debian)</h3>
+                    <div class="platform-details">
+                        <div class="platform-item">
+                            <h4>Windows</h4>
+                            <p>The installer will add SQLite Query Analyzer to your Start Menu and create a desktop shortcut. The PowerShell install script handles everything automatically.</p>
                         </div>
-                        <div class="install-code">
-                            <code>sudo apt-get update
-sudo apt-get install -y cmake qt6-base-dev libxkbcommon-dev</code>
+                        
+                        <div class="platform-item">
+                            <h4>macOS</h4>
+                            <p>Download the DMG file, open it, and drag the app to your Applications folder. The install script handles this automatically.</p>
                         </div>
-                        <p>Install dependencies then download and run the Linux binary.</p>
-                    </div>
-                    
-                    <div class="install-card">
-                        <div class="install-header">
-                            <h3>macOS</h3>
+                        
+                        <div class="platform-item">
+                            <h4>Linux (Ubuntu/Debian)</h4>
+                            <p>For manual installation, you may need to install dependencies first:</p>
+                            <div class="install-code small">
+                                <code>sudo apt-get update
+sudo apt-get install -y libqt6gui6 libqt6core6 libxkbcommon0</code>
+                            </div>
+                            <p>Then download and run the Linux binary from the releases page.</p>
                         </div>
-                        <div class="install-code">
-                            <code>brew update
-brew install cmake qt@6</code>
-                        </div>
-                        <p>Install dependencies with Homebrew, then download the macOS binary.</p>
-                    </div>
-                    
-                    <div class="install-card">
-                        <div class="install-header">
-                            <h3>Windows</h3>
-                        </div>
-                        <div class="install-code">
-                            <code># Download from releases page
-# Or build from source with Qt 6.9.0+</code>
-                        </div>
-                        <p>Download the Windows executable or build from source with Visual Studio and Qt.</p>
                     </div>
                 </div>
             </div>
@@ -296,6 +307,8 @@ sqlitequery --run-sql /path/to/script.sql /path/to/database.db</code>
                             <li>Git</li>
                             <li>CMake 3.16 or later</li>
                             <li>Qt 6.9.0 or later</li>
+                            <li>qt6-base-dev (Qt6 development packages for building from source)</li>
+                            <li>libxkbcommon-dev (XKB development library)</li>
                             <li>PowerShell Core (optional)</li>
                         </ul>
                     </div>
