@@ -90,13 +90,13 @@ function Install-SQLiteQueryAnalyzer {
     Write-Info "Downloading SQLiteQueryAnalyzer $Version..."
     Invoke-WebRequest -Uri $downloadUrl -OutFile $installerPath -ErrorAction Stop
     Write-Info "Running installer..."
-    $args = @(
+    $installerArgs = @(
       "/VERYSILENT",
       "/SUPPRESSMSGBOXES",
       "/NORESTART",
       "/DIR=`"$TargetDir`""
     )
-    $process = Start-Process -FilePath $installerPath -ArgumentList $args -Wait -PassThru
+    $process = Start-Process -FilePath $installerPath -ArgumentList $installerArgs -Wait -PassThru
     if ($process.ExitCode -ne 0) {
       throw "Installer exited with code: $($process.ExitCode)"
     }
@@ -147,10 +147,21 @@ function Main {
     $version = Get-LatestRelease
     Write-Info "Latest version: $version"
     $binaryPath = Install-SQLiteQueryAnalyzer -Version $version -TargetDir $InstallDir
-    Test-Installation -BinaryPath $binaryPath
-    Write-Host ""
-    Write-Success "Installation complete!"
-    Write-Info "You can launch SQLiteQueryAnalyzer from the Start Menu"
+    $ok = $false
+    try {
+        $ok = Test-Installation -BinaryPath $binaryPath
+    } catch {
+        $ok = $false
+    }
+
+    if ($ok) {
+        Write-Host ""
+        Write-Success "Installation complete!"
+        Write-Info "You can launch SQLiteQueryAnalyzer from the Start Menu"
+    } else {
+        Write-InstallError "Installation verification failed"
+        exit 1
+    }
   } catch {
     Write-InstallError "Installation failed: $($_.Exception.Message)"
     exit 1
