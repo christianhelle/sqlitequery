@@ -93,7 +93,8 @@ get_asset_url() {
     
     case "$os" in
         linux*)
-            identifier="Linux"
+            # Target specifically the TGZ asset to avoid selecting DEB/RPM/Snap by mistake
+            identifier="TGZ"
             ;;
         macos*)
             if [ -n "$arch" ]; then
@@ -107,17 +108,39 @@ get_asset_url() {
     local assets_json
     assets_json=$(curl -s "$api_url")
     
-    # Prefer assets whose name contains the identifier (case-insensitive)
-    url=$(echo "$assets_json" | awk -v id="$identifier" 'BEGIN{IGNORECASE=1} /"name":/ {name=$0; getline; if (name ~ id && $0 ~ /browser_download_url/) { if (match($0, /"browser_download_url": "([^\"]+)"/, m)) print m[1]; exit }}')
-    if [ -n "$url" ]; then
-        echo "$url"
-        return 0
+    # Use jq when available for reliable JSON parsing
+    if command -v jq >/dev/null 2>&1; then
+        local url
+        url=$(echo "$assets_json" | jq -r --arg id "$identifier" \
+            '.assets[] | select(.name | test($id; "i")) | .browser_download_url' | head -1)
+        if [ -n "$url" ] && [ "$url" != "null" ]; then
+            echo "$url"
+            return 0
+        fi
     fi
 
-    # Fallback: coarse matching by OS keyword
+    # Fallback: use python3 for reliable JSON parsing if jq is unavailable
+    if command -v python3 >/dev/null 2>&1; then
+        local url
+        url=$(echo "$assets_json" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+identifier = sys.argv[1].lower()
+for asset in data.get('assets', []):
+    if identifier in asset.get('name', '').lower():
+        print(asset['browser_download_url'])
+        break
+" "$identifier" 2>/dev/null)
+        if [ -n "$url" ]; then
+            echo "$url"
+            return 0
+        fi
+    fi
+
+    # Last-resort grep fallback – target explicit file extensions to avoid wrong asset types
     case "$os" in
-        linux*) echo "$assets_json" | grep -o '"browser_download_url": "https://[^\"]*linux[^\"]*"' | grep -o 'https://[^\"]*' | head -1 ;;
-        macos*) echo "$assets_json" | grep -o '"browser_download_url": "https://[^\"]*macos[^\"]*"' | grep -o 'https://[^\"]*' | head -1 ;;
+        linux*) echo "$assets_json" | grep -o '"browser_download_url": "https://[^\"]*\.tar\.gz"' | grep -o 'https://[^\"]*' | head -1 ;;
+        macos*) echo "$assets_json" | grep -o '"browser_download_url": "https://[^\"]*\.dmg"' | grep -o 'https://[^\"]*' | head -1 ;;
         *) echo "" ;;
     esac
 }
@@ -153,41 +176,36 @@ download_and_install_linux() {
     
     log_info "Installing to $INSTALL_DIR..."
     
-    # Find the binary in extracted files
+    # Search recursively for the binary (CPack TGZ nests under opt/sqlitequery/bin/)
     local binary_path=""
-    for f in "$temp_dir"/*; do
-        if [ -f "$f" ] && [ -x "$f" ]; then
-            binary_path="$f"
-            break
-        fi
-    done
-    
+    binary_path=$(find "$temp_dir" -type f -name "$BINARY_NAME" | head -1)
+
     if [ -z "$binary_path" ]; then
-        # Try with common binary names
-        if [ -f "$temp_dir/$BINARY_NAME" ]; then
-            binary_path="$temp_dir/$BINARY_NAME"
-        else
-            log_error "Binary not found in archive"
-            rm -rf "$temp_dir"
-            exit 1
-        fi
+        # Fallback: any executable file inside the archive
+        binary_path=$(find "$temp_dir" -type f -executable ! -name "*.sh" | head -1)
     fi
     
-    # Check if we need sudo
+    if [ -z "$binary_path" ]; then
+        log_error "Binary not found in archive"
+        rm -rf "$temp_dir"
+        exit 1
+    fi
+    
+    # Check if we need sudo; always install as $BINARY_NAME regardless of source filename
     if [ ! -w "$INSTALL_DIR" ]; then
         if command -v sudo >/dev/null 2>&1; then
             log_warning "Installing with sudo (directory not writable by current user)"
-            sudo cp "$binary_path" "$INSTALL_DIR/"
+            sudo cp "$binary_path" "$INSTALL_DIR/$BINARY_NAME"
             sudo chmod +x "$INSTALL_DIR/$BINARY_NAME"
         else
             log_error "Cannot write to $INSTALL_DIR and sudo is not available"
             log_info "Try setting INSTALL_DIR to a writable directory:"
-            log_info "  curl -fsSL https://christianhelle.com/sqlitequery/install.sh | INSTALL_DIR=\$HOME/.local/bin bash -s --"
+            log_info "  INSTALL_DIR=\$HOME/.local/bin bash install.sh"
             rm -rf "$temp_dir"
             exit 1
         fi
     else
-        cp "$binary_path" "$INSTALL_DIR/"
+        cp "$binary_path" "$INSTALL_DIR/$BINARY_NAME"
         chmod +x "$INSTALL_DIR/$BINARY_NAME"
     fi
     
