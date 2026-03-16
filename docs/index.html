@@ -249,7 +249,7 @@
                             <p>For manual installation, you may need to install dependencies first:</p>
                             <div class="install-code small">
                                 <code>sudo apt-get update
-sudo apt-get install -y cmake qt6-base-dev libxkbcommon-dev</code>
+sudo apt-get install -y libqt6gui6 libqt6core6 libxkbcommon0</code>
                             </div>
                             <p>Then download and run the Linux binary from the releases page.</p>
                         </div>
@@ -307,6 +307,8 @@ sqlitequery --run-sql /path/to/script.sql /path/to/database.db</code>
                             <li>Git</li>
                             <li>CMake 3.16 or later</li>
                             <li>Qt 6.9.0 or later</li>
+                            <li>qt6-base-dev (Qt6 development packages for building from source)</li>
+                            <li>libxkbcommon-dev (XKB development library)</li>
                             <li>PowerShell Core (optional)</li>
                         </ul>
                     </div>
