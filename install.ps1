@@ -16,8 +16,8 @@ function Write-ColorOutput {
 
 function Write-Info { param([string]$Message) Write-ColorOutput -Message $Message -Color "Cyan" -Emoji "i" }
 function Write-Success { param([string]$Message) Write-ColorOutput -Message $Message -Color "Green" -Emoji "+" }
-function Write-Warning { param([string]$Message) Write-ColorOutput -Message $Message -Color "Yellow" -Emoji "!" }
-function Write-Error { param([string]$Message) Write-ColorOutput -Message $Message -Color "Red" -Emoji "x" }
+function Write-InstallWarning { param([string]$Message) Write-ColorOutput -Message $Message -Color "Yellow" -Emoji "!" }
+function Write-InstallError { param([string]$Message) Write-ColorOutput -Message $Message -Color "Red" -Emoji "x" }
 
 function Get-DefaultInstallDir {
   return "${env:ProgramFiles}\SQLiteQueryAnalyzer"
@@ -42,9 +42,9 @@ function Add-ToUserPath {
     [Environment]::SetEnvironmentVariable("PATH", $newPath, "User")
     $env:PATH += ";$Directory"
     Write-Success "Added to user PATH: $Directory"
-    Write-Warning "Restart your terminal for PATH changes to take effect"
+    Write-InstallWarning "Restart your terminal for PATH changes to take effect"
   } catch {
-    Write-Error "Failed to add directory to PATH: $($_.Exception.Message)"
+    Write-InstallError "Failed to add directory to PATH: $($_.Exception.Message)"
   }
 }
 
@@ -55,26 +55,27 @@ function Get-LatestRelease {
     $response = Invoke-RestMethod -Uri $apiUrl -ErrorAction Stop
     return $response.tag_name
   } catch {
-    Write-Error "Failed to fetch release information: $($_.Exception.Message)"
+    Write-InstallError "Failed to fetch release information: $($_.Exception.Message)"
     throw
   }
 }
 
 function Get-AssetUrl {
   param([string]$Version)
-  Write-Info "Fetching release assets..."
+  Write-Info "Fetching release assets for $Version..."
   try {
-    $apiUrl = "https://api.github.com/repos/$GitHubRepo/releases/latest"
+    # Use the release tag endpoint so the asset corresponds to the requested version
+    $apiUrl = "https://api.github.com/repos/$GitHubRepo/releases/tags/$Version"
     $response = Invoke-RestMethod -Uri $apiUrl -ErrorAction Stop
     foreach ($asset in $response.assets) {
       if ($asset.name -like "*Windows*Installer*.exe") { return $asset.browser_download_url }
     }
-    Write-Error "Asset not found for Windows installer"
+    Write-InstallError "Asset not found for Windows installer"
     Write-Info "Available assets:"
     foreach ($asset in $response.assets) { Write-Info "  - $($asset.name)" }
     throw "Required asset not found"
   } catch {
-    Write-Error "Failed to find release asset: $($_.Exception.Message)"
+    Write-InstallError "Failed to find release asset: $($_.Exception.Message)"
     throw
   }
 }
@@ -102,7 +103,7 @@ function Install-SQLiteQueryAnalyzer {
     Write-Success "SQLiteQueryAnalyzer $Version installed successfully!"
     return (Join-Path $TargetDir $BinaryName)
   } catch {
-    Write-Error "Installation failed: $($_.Exception.Message)"
+    Write-InstallError "Installation failed: $($_.Exception.Message)"
     throw
   } finally {
     if (Test-Path $tempDir) { Remove-Item -Path $tempDir -Recurse -Force }
@@ -116,7 +117,7 @@ function Test-Installation {
     Write-Info "You can now run: $BinaryName"
     return $true
   }
-  Write-Warning "Could not verify installation"
+  Write-InstallWarning "Could not verify installation"
   return $false
 }
 
@@ -151,7 +152,7 @@ function Main {
     Write-Success "Installation complete!"
     Write-Info "You can launch SQLiteQueryAnalyzer from the Start Menu"
   } catch {
-    Write-Error "Installation failed: $($_.Exception.Message)"
+    Write-InstallError "Installation failed: $($_.Exception.Message)"
     exit 1
   }
 }
