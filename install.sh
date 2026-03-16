@@ -87,7 +87,8 @@ get_latest_release() {
 get_asset_url() {
     local os="$1"
     local version="$2"
-    local api_url="https://api.github.com/repos/$GITHUB_REPO/releases/latest"
+    local arch="${3:-}"
+    local api_url="https://api.github.com/repos/$GITHUB_REPO/releases/tags/$version"
     local identifier=""
     
     case "$os" in
@@ -95,14 +96,30 @@ get_asset_url() {
             identifier="Linux"
             ;;
         macos*)
-            identifier="MacOS"
+            if [ -n "$arch" ]; then
+                identifier="MacOS ($arch)"
+            else
+                identifier="MacOS"
+            fi
             ;;
     esac
     
     local assets_json
     assets_json=$(curl -s "$api_url")
     
-    echo "$assets_json" | grep -o '"browser_download_url": "[^"]*'"$identifier"'[^"]*"' | grep -o 'https://[^"]*' | head -1
+    # Prefer assets whose name contains the identifier (case-insensitive)
+    url=$(echo "$assets_json" | awk -v id="$identifier" 'BEGIN{IGNORECASE=1} /"name":/ {name=$0; getline; if (name ~ id && $0 ~ /browser_download_url/) { if (match($0, /"browser_download_url": "([^\"]+)"/, m)) print m[1]; exit }}')
+    if [ -n "$url" ]; then
+        echo "$url"
+        return 0
+    fi
+
+    # Fallback: coarse matching by OS keyword
+    case "$os" in
+        linux*) echo "$assets_json" | grep -o '"browser_download_url": "https://[^\"]*linux[^\"]*"' | grep -o 'https://[^\"]*' | head -1 ;;
+        macos*) echo "$assets_json" | grep -o '"browser_download_url": "https://[^\"]*macos[^\"]*"' | grep -o 'https://[^\"]*' | head -1 ;;
+        *) echo "" ;;
+    esac
 }
 
 download_and_install_linux() {
@@ -165,7 +182,7 @@ download_and_install_linux() {
         else
             log_error "Cannot write to $INSTALL_DIR and sudo is not available"
             log_info "Try setting INSTALL_DIR to a writable directory:"
-            log_info "  INSTALL_DIR=\$HOME/.local/bin curl -fsSL https://christianhelle.com/sqlitequery/install.sh | bash"
+            log_info "  curl -fsSL https://christianhelle.com/sqlitequery/install.sh | INSTALL_DIR=\$HOME/.local/bin bash -s --"
             rm -rf "$temp_dir"
             exit 1
         fi
@@ -193,7 +210,7 @@ download_and_install_macos() {
     fi
     
     local download_url
-    download_url=$(get_asset_url "macos" "$version")
+    download_url=$(get_asset_url "macos" "$version" "$arch_label")
     
     if [ -z "$download_url" ]; then
         log_error "Failed to find macOS release asset"
@@ -231,14 +248,39 @@ download_and_install_macos() {
         exit 1
     fi
     
-    # Copy to Applications (overwrite if exists)
+    # Copy to Applications using atomic staging to avoid leaving a broken install if copy fails
+    local staging_dir
+    staging_dir=$(mktemp -d)
+    log_info "Staging application to temporary directory: $staging_dir"
+    if ! cp -R "$app_source" "$staging_dir/"; then
+        log_error "Failed to copy application to staging directory"
+        hdiutil detach "$mount_point" 2>/dev/null || true
+        rm -rf "$temp_dir" "$staging_dir"
+        exit 1
+    fi
+
+    local staged_app="$staging_dir/SQLiteQueryAnalyzer.app"
+    if [ ! -d "$staged_app" ]; then
+        log_error "Staged application bundle not found: $staged_app"
+        hdiutil detach "$mount_point" 2>/dev/null || true
+        rm -rf "$temp_dir" "$staging_dir"
+        exit 1
+    fi
+
+    # Atomically install: remove old and move staged into /Applications
     if [ -d "/Applications/SQLiteQueryAnalyzer.app" ]; then
         log_info "Removing existing installation..."
         rm -rf "/Applications/SQLiteQueryAnalyzer.app"
     fi
-    
-    cp -R "$app_source" "/Applications/"
-    
+
+    if ! mv "$staged_app" "/Applications/"; then
+        log_error "Failed to move staged application into /Applications"
+        rm -rf "$temp_dir" "$staging_dir"
+        exit 1
+    fi
+
+    rm -rf "$staging_dir"
+
     log_info "Unmounting DMG..."
     hdiutil detach "$mount_point" 2>/dev/null || true
     
@@ -284,8 +326,8 @@ show_usage() {
     echo "  # Install to default location"
     echo "  curl -fsSL https://christianhelle.com/sqlitequery/install.sh | bash"
     echo ""
-    echo "  # Install to custom directory"
-    echo "  INSTALL_DIR=\$HOME/.local/bin curl -fsSL https://christianhelle.com/sqlitequery/install.sh | bash"
+    echo "  # Install to custom directory (set INSTALL_DIR in the receiving shell)"
+    echo "  curl -fsSL https://christianhelle.com/sqlitequery/install.sh | INSTALL_DIR=\$HOME/.local/bin bash -s --"
     echo ""
     echo "  # Install to custom directory using flag"
     echo "  curl -fsSL https://christianhelle.com/sqlitequery/install.sh | bash -s -- --dir \$HOME/.local/bin"
@@ -300,7 +342,12 @@ main() {
                 exit 0
                 ;;
             -d|--dir)
-                if [ -z "$2" ] || [[ "$2" == -* ]]; then
+                if [ "$#" -lt 2 ]; then
+                    log_error "Missing argument for -d/--dir option"
+                    show_usage
+                    exit 1
+                fi
+                if [[ "$2" == -* ]]; then
                     log_error "Missing argument for -d/--dir option"
                     show_usage
                     exit 1
