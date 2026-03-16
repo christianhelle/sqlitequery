@@ -114,9 +114,18 @@ get_asset_url() {
     if command -v jq >/dev/null 2>&1; then
         url=$(echo "$assets_json" | jq -r --arg id "$identifier" '.assets[] | select(.name | test($id; "i")) | .browser_download_url' | head -1)
     else
-        # Fallback POSIX-compatible approach: lowercase the JSON and identifier, then look for a matching name and extract the following browser_download_url
-        id_lc=$(echo "$identifier" | tr '[:upper:]' '[:lower:]')
-        url=$(echo "$assets_json" | tr '[:upper:]' '[:lower:]' | awk -v id="$id_lc" '/"name":/ {name=$0; getline; if (name ~ id && $0 ~ /browser_download_url/) { gsub(/.*"browser_download_url": "/, "", $0); gsub(/".*/, "", $0); print $0; exit }}')
+        # Fallback POSIX-compatible approach: track a matched name and then read browser_download_url within the same asset object
+        id_lc=$(printf '%s' "$identifier" | tr '[:upper:]' '[:lower:]')
+        url=$(printf '%s\n' "$assets_json" | tr '[:upper:]' '[:lower:]' | awk -v id="$id_lc" '
+            /"name":/ { match_name = ($0 ~ id) }
+            match_name && /"browser_download_url":/ {
+                gsub(/.*"browser_download_url":[[:space:]]*"/, "", $0)
+                gsub(/".*/, "", $0)
+                print
+                exit
+            }
+            /}/ { match_name = 0 }
+        ')
     fi
 
     if [ -n "$url" ]; then
