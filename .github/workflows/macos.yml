@@ -4,26 +4,26 @@ on:
   workflow_dispatch:
   push:
     paths-ignore:
-      - '**/*'
-      - '!.github/workflows/macos*.yml'
-      - '!src/project/*'
-      - '!src/**/*.cpp'
-      - '!src/**/*.h'
-      - '!src/**/*.ui'
+      - "**/*"
+      - "!.github/workflows/macos*.yml"
+      - "!src/project/*"
+      - "!src/**/*.cpp"
+      - "!src/**/*.h"
+      - "!src/**/*.ui"
     branches:
-      - '*'
+      - "*"
 
 jobs:
   macos-arm64:
     uses: ./.github/workflows/macos-template.yml
     with:
-      version: '0.3.${{ github.run_number }}'
-      os: 'macos-latest'
-      architecture: 'arm64'
-     
+      version: "0.3.${{ github.run_number }}"
+      os: "macos-latest"
+      architecture: "arm64"
+
   macos-intel:
     uses: ./.github/workflows/macos-template.yml
     with:
-      version: '0.3.${{ github.run_number }}'
-      os: 'macos-13'
-      architecture: 'intel'
+      version: "0.3.${{ github.run_number }}"
+      os: "macos-15"
+      architecture: "intel"
