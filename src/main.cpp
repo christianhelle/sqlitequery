@@ -6,11 +6,11 @@
 #include "cli/script.h"
 #include "gui/mainwindow.h"
 
-#define VERSION "1.0.0"
+constexpr auto Version = "1.0.0";
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    QApplication::setApplicationVersion(VERSION);
+    QApplication::setApplicationVersion(Version);
     QApplication::setOrganizationDomain("christianhelle.com");
     QApplication::setOrganizationName("Christian Helle");
     QApplication::setApplicationName("SQLite Query Analyzer");

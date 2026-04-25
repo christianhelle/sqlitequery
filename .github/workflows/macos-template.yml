@@ -24,14 +24,18 @@ jobs:
  
       - name: Update Version Number (Qt Project)
         shell: pwsh
+        env:
+          VERSION: ${{ inputs.version }}
         run: |
-          $version = (Get-Content -Path src/project/SQLiteAnalyzer.pro -Raw) -replace 'VERSION = 1.0.0', 'VERSION = ${{ inputs.version }}'
+          $version = (Get-Content -Path src/project/SQLiteAnalyzer.pro -Raw) -replace 'VERSION = 1.0.0', "VERSION = $env:VERSION"
           $version | Set-Content -Path src/project/SQLiteAnalyzer.pro
 
       - name: Update Version in code
         shell: pwsh
+        env:
+          VERSION: ${{ inputs.version }}
         run: |
-          $version = (Get-Content -Path src/main.cpp -Raw) -replace '#define VERSION "1.0.0"', '#define VERSION "${{ inputs.version }}"'
+          $version = (Get-Content -Path src/main.cpp -Raw) -replace 'constexpr auto Version = "1.0.0";', "constexpr auto Version = `"$env:VERSION`";"
           $version | Set-Content -Path src/main.cpp
 
       - name: Install Qt
