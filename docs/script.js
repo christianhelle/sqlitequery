@@ -5,11 +5,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Check for saved theme preference or default to light mode
     const currentTheme = localStorage.getItem('theme') || 'light';
-    body.setAttribute('data-theme', currentTheme);
+    body.dataset.theme = currentTheme;
     
     // Update toggle button icon based on current theme
     function updateThemeToggleIcon() {
-        if (body.getAttribute('data-theme') === 'dark') {
+        if (body.dataset.theme === 'dark') {
             themeToggle.textContent = '☀️';
         } else {
             themeToggle.textContent = '🌙';
@@ -17,9 +17,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Auto-detect system theme preference if no saved preference
+    const colorSchemeQuery = globalThis.matchMedia?.('(prefers-color-scheme: dark)');
     if (!localStorage.getItem('theme')) {
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            body.setAttribute('data-theme', 'dark');
+        if (colorSchemeQuery?.matches) {
+            body.dataset.theme = 'dark';
         }
     }
     
@@ -27,23 +28,21 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Theme toggle event listener
     themeToggle.addEventListener('click', function() {
-        const currentTheme = body.getAttribute('data-theme');
+        const currentTheme = body.dataset.theme;
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
         
-        body.setAttribute('data-theme', newTheme);
+        body.dataset.theme = newTheme;
         localStorage.setItem('theme', newTheme);
         updateThemeToggleIcon();
     });
     
     // Listen for system theme changes
-    if (window.matchMedia) {
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-            if (!localStorage.getItem('theme')) {
-                body.setAttribute('data-theme', e.matches ? 'dark' : 'light');
-                updateThemeToggleIcon();
-            }
-        });
-    }
+    colorSchemeQuery?.addEventListener('change', function(e) {
+        if (!localStorage.getItem('theme')) {
+            body.dataset.theme = e.matches ? 'dark' : 'light';
+            updateThemeToggleIcon();
+        }
+    });
     
     // Mobile navigation functionality
     const hamburger = document.querySelector('.hamburger');
