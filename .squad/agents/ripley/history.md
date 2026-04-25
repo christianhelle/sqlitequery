@@ -50,4 +50,37 @@ src/
 
 ## Learnings & Decisions
 
-(To be filled as sessions progress)
+### 2025-01-XX: Sonar Workflow Security and Macro Modernization
+
+**Context:** SonarCloud flagged BLOCKER script injection vulnerabilities (githubactions:S7630) in GitHub Actions workflows and cpp:S5028 macro use in main.cpp.
+
+**Decisions:**
+1. **Workflow Input Sanitization:** Moved all `${{ inputs.version }}` direct interpolations into PowerShell `run:` blocks to step-level `env:` variables. PowerShell scripts now reference `$env:VERSION` instead of direct GitHub expression substitution. This prevents script injection attacks if a version string contains malicious content.
+2. **Version Constant Migration:** Replaced C preprocessor macro `#define VERSION "1.0.0"` with modern C++ `constexpr auto Version = "1.0.0";` for type safety and debugger visibility.
+3. **Workflow Pattern Consistency:** Updated version replacement patterns in both Windows and macOS templates to match the new `constexpr` declaration, ensuring release workflows continue to inject version numbers correctly.
+
+**Impact:**
+- Security: Eliminates script injection surface in CI/CD pipelines
+- Maintainability: Typed constants provide better IDE support and compile-time safety
+- Cross-platform: Pattern works identically across Windows (MSVC) and macOS (Clang) builds
+
+**Gotchas:**
+- PowerShell string escaping: Use backtick-escaped quotes for inner strings: `` `"$env:VERSION`" ``
+- CMake version update step (line 31 in windows-template.yml) already used `${{ env.VERSION }}` correctly
+- The `.pro` file version replacement still uses `VERSION = ...` format (QMake variable assignment)
+- GitHub Actions `with:` parameters cannot reference step-level `env:` variables; use job-level `env:` or direct `${{ inputs.* }}` in action parameters
+- Artifact paths in upload-artifact actions can use `${{ inputs.version }}` safely (not script injection risk)
+
+### 2026-01 - Cross-Team Sonar Sprint Coordination
+
+**Context:** Led cross-team effort to resolve 50+ SonarCloud findings across workflows, C++ backend, GUI/docs, and DevOps scripts.
+
+**Team Composition:**
+- Ripley (you): Workflow security + version constant (5 findings)
+- Fenster: C++ ownership & const-correctness (16 findings)
+- Dallas: GUI move semantics + docs JavaScript (8 findings)
+- Hockney: Shell script modernization (21+ findings)
+
+**Validation:** Baseline build passed; no conflicts between scopes; ready for Sonar re-scan to confirm all 50+ findings resolved.
+
+**Deliverables:** Orchestration logs (`.squad/orchestration-log/2026-04-25T09-21-43Z-*.md`), consolidated decisions (`.squad/decisions.md`), session log (`.squad/log/2026-04-25T09-21-43Z-sonar-cleanup.md`).
