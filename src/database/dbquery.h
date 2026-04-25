@@ -20,7 +20,7 @@ private:
 
     std::unique_ptr<QScrollArea> scrollArea;
     std::unique_ptr<QWidget> container;
-    QList<QTableView *> tableResults;
+    QList<QTableView *> tableResults{};
 };
 
 #endif // DBQUERY_H

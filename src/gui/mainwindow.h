@@ -90,7 +90,7 @@ private:
     std::unique_ptr<Highlighter> highlighter;
     std::unique_ptr<ExportDataProgress> dataExportProgress;
     std::unique_ptr<CancellationTokenSource> tcs;
-    bool loaded;
+    bool loaded = false;
 
     void analyzeDatabase() const;
 

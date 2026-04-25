@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->loadRecentFiles();
     restoreWindowState();
 
-    this->loaded = true;
+    loaded = true;
 }
 
 MainWindow::~MainWindow() {
@@ -226,7 +226,7 @@ void MainWindow::loadRecentFiles() const {
 }
 
 void MainWindow::openRecentFile() {
-    auto *senderObject = sender();
+    const auto *senderObject = sender();
     if (senderObject == nullptr) {
         return;
     }
