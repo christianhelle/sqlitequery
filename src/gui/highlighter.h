@@ -9,6 +9,13 @@
 struct HighlightingRule {
     QRegularExpression pattern;
     QTextCharFormat format;
+
+    HighlightingRule() = default;
+    HighlightingRule(const HighlightingRule&) = default;
+    HighlightingRule& operator=(const HighlightingRule&) = default;
+    HighlightingRule(HighlightingRule&&) noexcept = default;
+    HighlightingRule& operator=(HighlightingRule&&) noexcept = default;
+    ~HighlightingRule() = default;
 };
 
 class Highlighter final : public QSyntaxHighlighter {
