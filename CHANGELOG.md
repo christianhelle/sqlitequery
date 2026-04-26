@@ -7,6 +7,9 @@
 **Implemented enhancements:**
 
 - Reduce Logging [\#85](https://github.com/christianhelle/sqlitequery/issues/85)
+- Resolve SonarCloud findings: Workflow hardening, Qt ownership, and shell modernization [\#104](https://github.com/christianhelle/sqlitequery/pull/104) ([christianhelle](https://github.com/christianhelle))
+- Enhance installer with PowerShell verification and portable asset parsing [\#103](https://github.com/christianhelle/sqlitequery/pull/103) ([christianhelle](https://github.com/christianhelle))
+- Add installation instructions to README and static website [\#101](https://github.com/christianhelle/sqlitequery/pull/101) ([christianhelle](https://github.com/christianhelle))
 - Fix local build setup for Windows [\#94](https://github.com/christianhelle/sqlitequery/pull/94) ([christianhelle](https://github.com/christianhelle))
 - Remove qDebug\(\) logging statements from C++ code [\#86](https://github.com/christianhelle/sqlitequery/pull/86) ([Copilot](https://github.com/apps/copilot-swe-agent))
 
