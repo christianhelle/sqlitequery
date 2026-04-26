@@ -15,7 +15,6 @@ public:
 
 private:
     QTreeWidget *tree;
-    QList<QTreeWidgetItem *> treeNodes;
 };
 
 #endif // DBTREE_H

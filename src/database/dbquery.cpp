@@ -9,8 +9,7 @@
 
 DbQuery::DbQuery(QWidget *widget, Database *database)
     : widget(widget),
-      database(database),
-      tableResults(QList<QTableView *>()) {
+      database(database) {
     this->container = std::make_unique<QWidget>(this->widget);
     this->container->hide();
     this->scrollArea = std::make_unique<QScrollArea>(this->widget);
@@ -25,14 +24,6 @@ void DbQuery::clearResults() {
     this->scrollArea->setGeometry(this->widget->geometry());
     this->scrollArea->show();
 
-    for (const auto table: this->tableResults) {
-        const auto model = dynamic_cast<QSqlQueryModel *>(table->model());
-        if (model != Q_NULLPTR) {
-            model->clear();
-        }
-        delete model;
-        table->setModel(Q_NULLPTR);
-    }
     qDeleteAll(this->tableResults.begin(), this->tableResults.end());
     this->tableResults.clear();
 }
@@ -67,23 +58,23 @@ bool DbQuery::execute(const QStringList &queryList, QStringList *errors) {
             continue;
         }
 
-        // ReSharper disable CppDFAMemoryLeak
         if (query.isSelect()) {
             if (i > 0)
                 yOffset += height;
             auto rect = QRect(0, yOffset, width, height);
             const auto ptr = this->container.get();
-            auto *table = new QTableView(ptr);
+            auto table = std::make_unique<QTableView>(ptr);
             table->setGeometry(rect);
             table->show();
+            const auto tablePtr = table.get();
 
-            this->tableResults.append(table);
+            this->tableResults.append(table.release());
             count++;
 
-            auto *model = new QSqlQueryModel();
+            auto model = std::make_unique<QSqlQueryModel>(tablePtr);
             model->setQuery(std::move(query));
-            table->setModel(model);
-            table->repaint();
+            tablePtr->setModel(model.release());
+            tablePtr->repaint();
         }
     }
 

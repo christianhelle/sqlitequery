@@ -19,19 +19,27 @@ BINARY_NAME="SQLiteQueryAnalyzer"
 
 # Functions
 log_info() {
-    echo -e "${BLUE}ℹ️  $1${NC}" >&2
+    local message="$1"
+    echo -e "${BLUE}ℹ️  $message${NC}" >&2
+    return 0
 }
 
 log_success() {
-    echo -e "${GREEN}✅ $1${NC}" >&2
+    local message="$1"
+    echo -e "${GREEN}✅ $message${NC}" >&2
+    return 0
 }
 
 log_warning() {
-    echo -e "${YELLOW}⚠️  $1${NC}" >&2
+    local message="$1"
+    echo -e "${YELLOW}⚠️  $message${NC}" >&2
+    return 0
 }
 
 log_error() {
-    echo -e "${RED}❌ $1${NC}" >&2
+    local message="$1"
+    echo -e "${RED}❌ $message${NC}" >&2
+    return 0
 }
 
 detect_platform() {
@@ -61,9 +69,14 @@ detect_platform() {
         aarch64|arm64)
             arch="arm64"
             ;;
+        *)
+            log_error "Unsupported architecture: $arch"
+            exit 1
+            ;;
     esac
 
     echo "${os}-${arch}"
+    return 0
 }
 
 check_dependencies() {
@@ -75,6 +88,7 @@ check_dependencies() {
             exit 1
         fi
     done
+    return 0
 }
 
 get_latest_release() {
@@ -91,6 +105,7 @@ get_asset_url() {
     local os="$1"
     local version="$2"
     local arch="${3:-}"
+    local url_pattern="https://[^\"]*"
     local api_url="https://api.github.com/repos/$GITHUB_REPO/releases/tags/$version"
     local identifier=""
     
@@ -128,24 +143,27 @@ get_asset_url() {
         ')
     fi
 
-    if [ -n "$url" ]; then
+    if [[ -n "$url" ]]; then
         echo "$url"
         return 0
     fi
 
     # Fallback: coarse matching by OS keyword and optionally architecture when provided
     case "$os" in
-        linux*) echo "$assets_json" | grep -i -o '"browser_download_url": "https://[^"]*linux[^"]*"' | grep -o 'https://[^\"]*' | head -1 ;;
+        linux*) echo "$assets_json" | grep -i -o '"browser_download_url": "'"$url_pattern"'linux[^"]*"' | grep -o "$url_pattern" | head -1 ;;
         macos*)
-            if [ -n "$arch" ]; then
+            if [[ -n "$arch" ]]; then
                 # prefer assets containing both macos and arch
-                echo "$assets_json" | grep -i -o '"browser_download_url": "https://[^"]*macos[^"]*'"$arch"'[^"]*"' | grep -o 'https://[^\"]*' | head -1 || \
-                echo "$assets_json" | grep -i -o '"browser_download_url": "https://[^"]*macos[^"]*"' | grep -o 'https://[^\"]*' | head -1
+                echo "$assets_json" | grep -i -o '"browser_download_url": "'"$url_pattern"'macos[^"]*'"$arch"'[^"]*"' | grep -o "$url_pattern" | head -1 || \
+                echo "$assets_json" | grep -i -o '"browser_download_url": "'"$url_pattern"'macos[^"]*"' | grep -o "$url_pattern" | head -1
             else
-                echo "$assets_json" | grep -i -o '"browser_download_url": "https://[^"]*macos[^"]*"' | grep -o 'https://[^\"]*' | head -1
+                echo "$assets_json" | grep -i -o '"browser_download_url": "'"$url_pattern"'macos[^"]*"' | grep -o "$url_pattern" | head -1
             fi
             ;;
-        *) echo "" ;;
+        *)
+            log_error "Unsupported OS type: $os"
+            return 1
+            ;;
     esac
 }
 
@@ -155,7 +173,7 @@ download_and_install_linux() {
     local download_url
     download_url=$(get_asset_url "linux" "$version")
     
-    if [ -z "$download_url" ]; then
+    if [[ -z "$download_url" ]]; then
         log_error "Failed to find Linux release asset"
         exit 1
     fi
@@ -189,9 +207,9 @@ download_and_install_linux() {
         fi
     done
     
-    if [ -z "$binary_path" ]; then
+    if [[ -z "$binary_path" ]]; then
         # Try with common binary names
-        if [ -f "$temp_dir/$BINARY_NAME" ]; then
+        if [[ -f "$temp_dir/$BINARY_NAME" ]]; then
             binary_path="$temp_dir/$BINARY_NAME"
         else
             log_error "Binary not found in archive"
@@ -201,7 +219,7 @@ download_and_install_linux() {
     fi
     
     # Check if we need sudo
-    if [ ! -w "$INSTALL_DIR" ]; then
+    if [[ ! -w "$INSTALL_DIR" ]]; then
         if command -v sudo >/dev/null 2>&1; then
             log_warning "Installing with sudo (directory not writable by current user)"
             sudo cp "$binary_path" "$INSTALL_DIR/"
@@ -222,6 +240,7 @@ download_and_install_linux() {
     rm -rf "$temp_dir"
     
     log_success "SQLiteQueryAnalyzer $version installed successfully!"
+    return 0
 }
 
 download_and_install_macos() {
@@ -230,7 +249,7 @@ download_and_install_macos() {
     
     local arch_label=""
     
-    if [ "$arch" = "arm64" ]; then
+    if [[ "$arch" = "arm64" ]]; then
         arch_label="ARM64"
     else
         arch_label="Intel"
@@ -239,7 +258,7 @@ download_and_install_macos() {
     local download_url
     download_url=$(get_asset_url "macos" "$version" "$arch_label")
     
-    if [ -z "$download_url" ]; then
+    if [[ -z "$download_url" ]]; then
         log_error "Failed to find macOS release asset"
         exit 1
     fi
@@ -268,7 +287,7 @@ download_and_install_macos() {
     # Find the .app bundle in the mounted volume
     local app_source="$mount_point/SQLiteQueryAnalyzer.app"
     
-    if [ ! -d "$app_source" ]; then
+    if [[ ! -d "$app_source" ]]; then
         log_error "Application bundle not found in DMG"
         hdiutil detach "$mount_point" 2>/dev/null || true
         rm -rf "$temp_dir"
@@ -287,7 +306,7 @@ download_and_install_macos() {
     fi
 
     local staged_app="$staging_dir/SQLiteQueryAnalyzer.app"
-    if [ ! -d "$staged_app" ]; then
+    if [[ ! -d "$staged_app" ]]; then
         log_error "Staged application bundle not found: $staged_app"
         hdiutil detach "$mount_point" 2>/dev/null || true
         rm -rf "$temp_dir" "$staging_dir"
@@ -296,7 +315,7 @@ download_and_install_macos() {
 
     # Install with backup/restore to avoid leaving the system without the app if move fails
     backup=""
-    if [ -d "/Applications/SQLiteQueryAnalyzer.app" ]; then
+    if [[ -d "/Applications/SQLiteQueryAnalyzer.app" ]]; then
         backup="/Applications/SQLiteQueryAnalyzer.app.bak.$(date +%s)"
         log_info "Moving existing installation to backup: $backup"
         if ! mv "/Applications/SQLiteQueryAnalyzer.app" "$backup"; then
@@ -310,7 +329,7 @@ download_and_install_macos() {
     if ! mv "$staged_app" "/Applications/"; then
         log_error "Failed to move staged application into /Applications"
         # Attempt to restore backup if it exists
-        if [ -n "$backup" ] && [ -d "$backup" ]; then
+        if [[ -n "$backup" ]] && [[ -d "$backup" ]]; then
             log_info "Restoring backup to /Applications/SQLiteQueryAnalyzer.app"
             if ! mv "$backup" "/Applications/SQLiteQueryAnalyzer.app"; then
                 log_error "Failed to restore backup: $backup"
@@ -321,7 +340,7 @@ download_and_install_macos() {
     fi
 
     # Move succeeded; remove backup if present
-    if [ -n "$backup" ] && [ -d "$backup" ]; then
+    if [[ -n "$backup" ]] && [[ -d "$backup" ]]; then
         rm -rf "$backup"
     fi
 
@@ -334,6 +353,7 @@ download_and_install_macos() {
     rm -rf "$temp_dir"
     
     log_success "SQLiteQueryAnalyzer $version installed successfully!"
+    return 0
 }
 
 verify_installation() {
@@ -345,15 +365,17 @@ verify_installation() {
         log_info "Make sure $INSTALL_DIR is in your PATH"
         log_info "Add this to your shell profile: export PATH=\"$INSTALL_DIR:\$PATH\""
     fi
+    return 0
 }
 
 verify_macos_installation() {
-    if [ -d "/Applications/SQLiteQueryAnalyzer.app" ]; then
+    if [[ -d "/Applications/SQLiteQueryAnalyzer.app" ]]; then
         log_success "Installation verified"
         log_info "You can find SQLiteQueryAnalyzer in /Applications or Launchpad"
     else
         log_warning "Application not found in /Applications"
     fi
+    return 0
 }
 
 show_usage() {
@@ -377,32 +399,35 @@ show_usage() {
     echo ""
     echo "  # Install to custom directory using flag"
     echo "  curl -fsSL https://christianhelle.com/sqlitequery/install.sh | bash -s -- --dir \$HOME/.local/bin"
+    return 0
 }
 
 main() {
     # Parse arguments
     while [[ $# -gt 0 ]]; do
-        case $1 in
+        local arg="$1"
+        case $arg in
             -h|--help)
                 show_usage
                 exit 0
                 ;;
             -d|--dir)
-                if [ "$#" -lt 2 ]; then
+                if [[ "$#" -lt 2 ]]; then
                     log_error "Missing argument for -d/--dir option"
                     show_usage
                     exit 1
                 fi
-                if [[ "$2" == -* ]]; then
+                local next_arg="$2"
+                if [[ "$next_arg" == -* ]]; then
                     log_error "Missing argument for -d/--dir option"
                     show_usage
                     exit 1
                 fi
-                INSTALL_DIR="$2"
+                INSTALL_DIR="$next_arg"
                 shift 2
                 ;;
             *)
-                log_error "Unknown option: $1"
+                log_error "Unknown option: $arg"
                 show_usage
                 exit 1
                 ;;
@@ -425,7 +450,7 @@ main() {
     # Create install directory if it doesn't exist (for Linux)
     if [[ "$platform" == linux-* ]]; then
         log_info "Target directory: $INSTALL_DIR"
-        if [ ! -d "$INSTALL_DIR" ]; then
+        if [[ ! -d "$INSTALL_DIR" ]]; then
             log_info "Creating installation directory: $INSTALL_DIR"
             if ! mkdir -p "$INSTALL_DIR" 2>/dev/null; then
                 if command -v sudo >/dev/null 2>&1; then

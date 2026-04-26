@@ -8,7 +8,7 @@ set -e
 PACKAGE=false
 INSTALL=false
 
-while [ "$#" -gt 0 ]; do
+while [[ "$#" -gt 0 ]]; do
   case "$1" in
   --package)
     PACKAGE=true
@@ -35,13 +35,13 @@ if [[ "$OS" == MINGW* ]] || [[ "$OS" == CYGWIN* ]]; then
   exit 1
 fi
 
-if [ "$OS" = "Linux" ]; then
+if [[ "$OS" = "Linux" ]]; then
   echo "Building for Linux..."
   cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/
   cmake --build build --config Release --parallel $(nproc)
   cmake --install build
 
-  if [ "$INSTALL" = true ]; then
+  if [[ "$INSTALL" = true ]]; then
     mkdir -p ~/.local/bin
     rm -rf /tmp/sqlitequery
     mkdir -p /tmp/sqlitequery
@@ -51,14 +51,14 @@ if [ "$OS" = "Linux" ]; then
     echo "Installed to ~/.local/bin/sqlitequery"
   fi
 
-  if [ "$PACKAGE" = true ]; then
+  if [[ "$PACKAGE" = true ]]; then
     echo "Creating packages..."
     for GEN in 7Z ZIP TBZ2 TGZ TXZ TZ DEB RPM; do
       cpack -G "$GEN" --config ./build/CPackConfig.cmake
     done
 
     # Check if snap package creation is disabled via the DISABLE_SNAP environment variable
-    if [ "${DISABLE_SNAP}" = "true" ]; then
+    if [[ "${DISABLE_SNAP:-}" = "true" ]]; then
       echo "Snap package creation is disabled (DISABLE_SNAP=true)."
       echo "To create snap packages on a host system, use one of these approaches:"
       echo ""
@@ -102,12 +102,12 @@ if [ "$OS" = "Linux" ]; then
   fi
 fi
 
-if [ "$OS" = "Darwin" ]; then
+if [[ "$OS" = "Darwin" ]]; then
   echo "Building for macOS..."
   cmake -B build -DCMAKE_BUILD_TYPE=Release
   cmake --build build --config Release --parallel "$(sysctl -n hw.ncpu)"
 
-  if [ "$PACKAGE" = true ]; then
+  if [[ "$PACKAGE" = true ]]; then
     echo "Creating macOS package..."
     macdeployqt build/SQLiteQueryAnalyzer.app -dmg -appstore-compliant
     echo "Package creation complete"

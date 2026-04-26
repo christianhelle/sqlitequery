@@ -1,13 +1,10 @@
 #include "dbtree.h"
 
 DbTree::DbTree(QTreeWidget *tree) :
-    tree(tree),
-    treeNodes(QList<QTreeWidgetItem *>()) {
+    tree(tree) {
 }
 
 void DbTree::clear() {
-    qDeleteAll(this->treeNodes.begin(), this->treeNodes.end());
-    this->treeNodes.clear();
     this->tree->clear();
 }
 
@@ -27,65 +24,67 @@ QString getFileSize(const qint64 size) {
     return QString().setNum(num, 'f', 2) + " " + unit;
 }
 
-// ReSharper disable all CppDFAMemoryLeak - By design
-// tree nodes are relased in the clean() method
 void DbTree::populateTree(const DatabaseInfo &info) {
     this->clear();
 
-    const auto dbInfoNode = new QTreeWidgetItem(this->tree);
+    auto dbInfoNode = std::make_unique<QTreeWidgetItem>();
     dbInfoNode->setText(0, "Database Info");
-    this->treeNodes.prepend(dbInfoNode);
+    const auto dbInfoNodePtr = dbInfoNode.get();
+    this->tree->addTopLevelItem(dbInfoNode.release());
 
-    const auto filenameNode = new QTreeWidgetItem(dbInfoNode);
+    auto filenameNode = std::make_unique<QTreeWidgetItem>();
     filenameNode->setText(0, QString("File name: ").append(info.filename));
-    this->treeNodes.prepend(filenameNode);
+    dbInfoNodePtr->addChild(filenameNode.release());
 
-    const auto creationDateNode = new QTreeWidgetItem(dbInfoNode);
+    auto creationDateNode = std::make_unique<QTreeWidgetItem>();
     creationDateNode->setText(0, QString("Created on: ").append(info.creationDate.toLocalTime().toString()));
-    this->treeNodes.prepend(creationDateNode);
+    dbInfoNodePtr->addChild(creationDateNode.release());
 
-    const auto sizeNode = new QTreeWidgetItem(dbInfoNode);
+    auto sizeNode = std::make_unique<QTreeWidgetItem>();
     sizeNode->setText(0, QString("File size: ").append(getFileSize(info.size)));
-    this->treeNodes.prepend(sizeNode);
+    dbInfoNodePtr->addChild(sizeNode.release());
 
-    const auto tablesRootNode = new QTreeWidgetItem(this->tree);
+    auto tablesRootNode = std::make_unique<QTreeWidgetItem>();
     tablesRootNode->setText(0, "Tables");
-    this->treeNodes.prepend(tablesRootNode);
+    const auto tablesRootNodePtr = tablesRootNode.get();
+    this->tree->addTopLevelItem(tablesRootNode.release());
 
     foreach(Table table, info.tables) {
-        const auto tableNode = new QTreeWidgetItem(tablesRootNode, QTreeWidgetItem::UserType + 1);
+        auto tableNode = std::make_unique<QTreeWidgetItem>(QTreeWidgetItem::UserType + 1);
         tableNode->setText(0, table.name);
-        this->treeNodes.prepend(tableNode);
+        const auto tableNodePtr = tableNode.get();
+        tablesRootNodePtr->addChild(tableNode.release());
 
         foreach(Column col, table.columns) {
-            const auto colName = new QTreeWidgetItem(tableNode);
+            auto colName = std::make_unique<QTreeWidgetItem>();
             colName->setText(0, col.name);
-            this->treeNodes.prepend(colName);
+            const auto colNamePtr = colName.get();
+            tableNodePtr->addChild(colName.release());
 
-            const auto colOrdinal = new QTreeWidgetItem(colName);
+            auto colOrdinal = std::make_unique<QTreeWidgetItem>();
             colOrdinal->setText(0, QString("Ordinal Position: ").append(QString::number(col.ordinal)));
-            this->treeNodes.prepend(colOrdinal);
+            colNamePtr->addChild(colOrdinal.release());
 
-            const auto colDataType = new QTreeWidgetItem(colName);
+            auto colDataType = std::make_unique<QTreeWidgetItem>();
             colDataType->setText(0, QString("Data Type: ").append(col.dataType));
-            this->treeNodes.prepend(colDataType);
+            colNamePtr->addChild(colDataType.release());
 
-            const auto colNotNull = new QTreeWidgetItem(colName);
+            auto colNotNull = std::make_unique<QTreeWidgetItem>();
             colNotNull->setText(0, QString("Allow Null: ").append(!col.notNull ? "True" : "False"));
-            this->treeNodes.prepend(colNotNull);
+            colNamePtr->addChild(colNotNull.release());
 
-            const auto colPrimaryKey = new QTreeWidgetItem(colName);
+            auto colPrimaryKey = std::make_unique<QTreeWidgetItem>();
             colPrimaryKey->setText(0, QString("Is Primary Key: ").append(col.primaryKey ? "True" : "False"));
-            this->treeNodes.prepend(colPrimaryKey);
+            colNamePtr->addChild(colPrimaryKey.release());
 
             if (!col.defaultValue.isEmpty()) {
-                const auto defaultValue = new QTreeWidgetItem(colName);
+                auto defaultValue = std::make_unique<QTreeWidgetItem>();
                 defaultValue->setText(0, QString("Default Value: ").append(col.defaultValue));
-                this->treeNodes.prepend(defaultValue);
+                colNamePtr->addChild(defaultValue.release());
             }
         }
     }
 
-    this->tree->expandItem(dbInfoNode);
-    this->tree->expandItem(tablesRootNode);
+    this->tree->expandItem(dbInfoNodePtr);
+    this->tree->expandItem(tablesRootNodePtr);
 }
