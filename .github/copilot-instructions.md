@@ -8,7 +8,7 @@ Always reference these instructions first and fallback to search or bash command
 
 ### Bootstrap and build the repository:
 - Install dependencies: `sudo apt-get update && sudo apt-get install -y qt6-base-dev libxkbcommon-dev build-essential cmake`
-- Navigate to build directory: `cd src/project`
+- Navigate to build directory: `cd .` (CMakeLists.txt is at root)
 - Configure build: `cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/`
 - Build: `cmake --build build --config Release --parallel $(nproc)` -- takes 12 seconds. NEVER CANCEL. Set timeout to 60+ seconds.
 - Install: `cmake --install build` -- takes less than 1 second.
