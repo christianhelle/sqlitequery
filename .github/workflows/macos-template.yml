@@ -27,8 +27,8 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
         run: |
-          $version = (Get-Content -Path src/project/SQLiteAnalyzer.pro -Raw) -replace 'VERSION = 1.0.0', "VERSION = $env:VERSION"
-          $version | Set-Content -Path src/project/SQLiteAnalyzer.pro
+          $version = (Get-Content -Path SQLiteAnalyzer.pro -Raw) -replace 'VERSION = 1.0.0', "VERSION = $env:VERSION"
+          $version | Set-Content -Path SQLiteAnalyzer.pro
 
       - name: Update Version in code
         shell: pwsh
@@ -45,14 +45,14 @@ jobs:
 
       - name: QMake
         run: qmake
-        working-directory: src/project
+        working-directory: ${{ github.workspace }}
 
       - name: Make
         run: make -j 32
-        working-directory: src/project
+        working-directory: ${{ github.workspace }}
 
       - name: macdeployqt
-        working-directory: src/project
+        working-directory: ${{ github.workspace }}
         run: macdeployqt SQLiteQueryAnalyzer.app -dmg -appstore-compliant
 
       - name: Publish artifacts
@@ -60,4 +60,4 @@ jobs:
         with:
           name: SQLiteQuerAnalyzer_MacOS_v${{ inputs.version }}_${{ inputs.architecture }}
           path: |
-            src/project/SQLiteQueryAnalyzer.dmg
+            SQLiteQueryAnalyzer.dmg

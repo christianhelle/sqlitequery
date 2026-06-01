@@ -24,10 +24,10 @@ jobs:
       env:
         VERSION: ${{ inputs.version }}
       run: |
-        $version = (Get-Content -Path src/project/CMakeLists.txt -Raw) -replace 'VERSION 1.0', "VERSION `"$env:VERSION`""
-        $version | Set-Content -Path src/project/CMakeLists.txt
-        $version = (Get-Content -Path src/project/snapcraft.yaml -Raw) -replace 'version: 1.0.0', "version: `"$env:VERSION`""
-        $version | Set-Content -Path src/project/snapcraft.yaml
+        $version = (Get-Content -Path CMakeLists.txt -Raw) -replace 'VERSION 1.0', "VERSION `"$env:VERSION`""
+        $version | Set-Content -Path CMakeLists.txt
+        $version = (Get-Content -Path snapcraft.yaml -Raw) -replace 'version: 1.0.0', "version: `"$env:VERSION`""
+        $version | Set-Content -Path snapcraft.yaml
         $version = (Get-Content -Path src/main.cpp -Raw) -replace 'constexpr auto Version = "1.0.0";', "constexpr auto Version = `"$env:VERSION`";"
         $version | Set-Content -Path src/main.cpp
         cat src/main.cpp
@@ -42,7 +42,6 @@ jobs:
         cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux .
         cmake --build . --config Release --parallel 32
         cmake --install .
-      working-directory: src/project
 
     - name: CPack
       run: |
@@ -54,13 +53,11 @@ jobs:
         cpack -G TZ
         cpack -G DEB
         cpack -G RPM
-      working-directory: src/project
 
     - name: Snapcraft
       run: |
         sudo snap install snapcraft --classic
         snapcraft
-      working-directory: src/project
       env:
         SNAPCRAFT_BUILD_ENVIRONMENT: host
 
@@ -69,25 +66,25 @@ jobs:
       with:
         name: Linux_Binary_v${{ inputs.version }}
         path: |
-          src/project/SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.zip
+          SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.zip
 
     - name: Publish Debian package
       uses: actions/upload-artifact@v4
       with:
         name: Debian_Package_v${{ inputs.version }}
         path: |
-          src/project/SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.deb
+          SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.deb
 
     - name: Publish RPM package
       uses: actions/upload-artifact@v4
       with:
         name: RPM_Package_v${{ inputs.version }}
         path: |
-          src/project/SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.rpm
+          SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.rpm
 
     - name: Publish Snap package
       uses: actions/upload-artifact@v4
       with:
         name: Snap_v${{ inputs.version }}
         path: |
-          src/project/*.snap
+          *.snap

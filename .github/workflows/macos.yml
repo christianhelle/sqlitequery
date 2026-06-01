@@ -6,10 +6,11 @@ on:
     paths-ignore:
       - "**/*"
       - "!.github/workflows/macos*.yml"
-      - "!src/project/*"
-      - "!src/**/*.cpp"
-      - "!src/**/*.h"
-      - "!src/**/*.ui"
+      - "!**/*.cpp"
+      - "!**/*.h"
+      - "!**/*.ui"
+      - "!CMakeLists.txt"
+      - "!src/**/*"
     branches:
       - "*"
 

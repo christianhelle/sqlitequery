@@ -6,7 +6,10 @@ on:
     paths-ignore:
       - '**/*'
       - '!.github/workflows/windows*.yml'
-      - '!src/project/*'
+      - '!**/*.cpp'
+      - '!**/*.h'
+      - '!**/*.ui'
+      - '!CMakeLists.txt'
       - '!src/**/*'
     branches:
       - '*'
