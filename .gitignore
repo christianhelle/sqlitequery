@@ -68,3 +68,4 @@ _codeql_detected_source_root
 .squad/decisions/inbox/
 .squad/sessions/
 .squad-workstream
+src/project/.vs
