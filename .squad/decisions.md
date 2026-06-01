@@ -102,7 +102,7 @@ if [[ "$var" = "value" ]]; then
 ${DISABLE_SNAP:-}
 ```
 
-**Files:** `install.sh`, `src/project/build.sh`
+**Files:** `install.sh`, `build.sh`
 
 **Impact:** 21+ findings resolved; improved maintainability and robustness; no behavior change.
 

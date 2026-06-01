@@ -62,7 +62,7 @@ QT_QPA_PLATFORM=offscreen ./linux/bin/SQLiteQueryAnalyzer --export-csv test.db
    - Verify system theme integration
 
 **Key Testing Files & Commands:**
-- Build: `cd src/project && cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release`
+- Build: `cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release`
 - Install: `cmake --install build`
 - CLI test: `QT_QPA_PLATFORM=offscreen ./linux/bin/SQLiteQueryAnalyzer --help`
 - Create test DB: `sqlite3 /tmp/test.db "CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT);"`

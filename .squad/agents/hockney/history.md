@@ -77,7 +77,7 @@ The `QT_QPA_PLATFORM=offscreen` flag is REQUIRED for headless CLI testing on Lin
 Successfully resolved 21+ Sonar findings in installer and build scripts:
 
 - **install.sh**: Added default branches to architecture/OS case statements, replaced `[ ... ]` with `[[ ... ]]` for modern Bash conditional tests, added explicit `return 0` statements to all functions, assigned positional parameters to local variables before use, and extracted repeated GitHub URL regex patterns.
-- **src/project/build.sh**: Modernized conditional tests with `[[ ... ]]` and hardened `DISABLE_SNAP` variable access with `${DISABLE_SNAP:-}` to survive `set -u` mode.
+- **build.sh**: Modernized conditional tests with `[[ ... ]]` and hardened `DISABLE_SNAP` variable access with `${DISABLE_SNAP:-}` to survive `set -u` mode.
 
 All changes preserve existing behavior:
 - Functions that output to stdout continue to do so

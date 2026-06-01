@@ -37,7 +37,7 @@ Preferred: auto (context-dependent)
 **This is a Qt6 C++ cross-platform desktop app** (Windows, macOS, Linux). Key files and patterns:
 
 - **Qt Basics**: Signals/slots are core communication. Never block the event loop.
-- **CMake Build**: Root at `src/project/CMakeLists.txt`. Always test builds locally before approval.
+- **CMake Build**: Root at `CMakeLists.txt`. Always test builds locally before approval.
 - **Database**: Uses Qt's SQL module (SQLite backend). Safe for threading with QSqlDatabase per-thread connection.
 - **GUI**: Built with Qt Designer (`.ui` files) + manual C++ glue. Respect existing UI patterns.
 - **CLI**: Argument parsing in `main.cpp`. Routes to GUI or CLI mode (see `--help` for current options).
