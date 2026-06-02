@@ -4,13 +4,13 @@ project(SQLiteQueryAnalyzer VERSION 1.0 LANGUAGES C CXX)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(app_icon_resource_windows "resources/icon.rc")
+set(app_icon_resource_windows "src/resources/icon.rc")
 set(MACOSX_BUNDLE_ICON_FILE icon.icns)
-set(app_icon_macos "resources/icon.icns")
+set(app_icon_macos "src/resources/icon.icns")
 set_source_files_properties(${app_icon_macos}
     PROPERTIES
     MACOSX_PACKAGE_LOCATION
-    "resources")
+    "src/resources")
 
 # Set the executable name based on platform or custom parameter
 if(DEFINED EXECUTABLE_NAME)
@@ -107,7 +107,7 @@ set(CPACK_PACKAGE_VENDOR "Christian Resma Helle")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY ${CPACK_PACKAGE_NAME})
 set(CPACK_VERBATIM_VARIABLES ON)
 set(CPACK_PACKAGING_INSTALL_PREFIX "/opt/sqlitequery")
-set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Christian Resma Helle <crhelle@proton.me>")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Christian Resma Helle <christian.helle@outlook.com>")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS libxcb-xinerama0)
 set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/postinst;${CMAKE_CURRENT_SOURCE_DIR}/prerm")
 include(CPack)
