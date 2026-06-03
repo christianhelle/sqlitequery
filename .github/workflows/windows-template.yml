@@ -4,11 +4,11 @@ on:
   workflow_call:
     inputs:
       version:
-        description: 'Version number for the build'
+        description: "Version number for the build"
         required: true
         type: string
       release:
-        description: 'Is release build'
+        description: "Is release build"
         required: false
         default: false
         type: boolean
@@ -18,14 +18,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Update Version Number (Qt Project)
-        shell: pwsh
-        env:
-          VERSION: ${{ inputs.version }}
-        run: |
-          $version = (Get-Content -Path SQLiteAnalyzer.pro -Raw) -replace 'VERSION = 1.0.0', "VERSION = $env:VERSION"
-          $version | Set-Content -Path SQLiteAnalyzer.pro
 
       - name: Update Version Number (CMake)
         shell: pwsh
@@ -54,7 +46,7 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: '6.9.0'
+          version: "6.9.0"
           host: windows
           target: desktop
           arch: win64_msvc2022_64
@@ -72,7 +64,7 @@ jobs:
       - name: Build
         working-directory: ${{ github.workspace }}
         shell: pwsh
-        run: |          
+        run: |
           cmake . `
             -DCMAKE_PREFIX_PATH=${{ runner.temp }}\Qt\6.9.0\msvc2022_64 `
             -DCMAKE_CXX_STANDARD=17 `
@@ -86,7 +78,7 @@ jobs:
         working-directory: ${{ runner.temp }}
         run: |
           7z a SQLiteQueryAnalyzer_Windows.zip ${{ github.workspace }}\build\Release\SQLiteQueryAnalyzer.exe -r
-              
+
       - name: Publish Build
         uses: actions/upload-artifact@master
         with:
@@ -103,13 +95,13 @@ jobs:
         with:
           name: SQLiteQuerAnalyzer_Windows_Installer_v${{ inputs.version }}
           path: ${{ github.workspace }}\artifacts\SQLiteQueryAnalyzer-Setup.exe
-    
+
       - name: Build Chocolatey Package
         working-directory: ${{ github.workspace }}\chocolatey
         env:
           VERSION: ${{ inputs.version }}
         run: choco pack sqlitequery.nuspec --version $env:VERSION
-    
+
       - name: Publish Chocolatey Package
         uses: actions/upload-artifact@master
         with:
