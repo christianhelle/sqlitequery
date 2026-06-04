@@ -50,6 +50,43 @@ if [[ "$OS" != "Linux" ]] && [[ "$OS" != "Darwin" ]]; then
   exit 1
 fi
 
+# Auto-detect Qt installation if not supplied
+detect_qt_path() {
+  local subdir
+  if [[ "$OS" == "Linux" ]]; then
+    subdir="gcc_64"
+  else
+    subdir="macos"
+  fi
+
+  local base
+  for base in "$HOME/Qt" "/opt/Qt"; do
+    if [[ -d "$base" ]]; then
+      local version
+      version=$(ls -1 "$base" 2>/dev/null | grep -E '^[0-9]+\.[0-9]+' | sort -V | tail -1)
+      if [[ -n "$version" ]] && [[ -d "$base/$version/$subdir" ]]; then
+        echo "$base/$version/$subdir"
+        return 0
+      fi
+    fi
+  done
+
+  if [[ "$OS" == "Darwin" ]]; then
+    for base in /opt/homebrew/opt/qt /opt/homebrew/opt/qt@6 /usr/local/opt/qt /usr/local/opt/qt@6; do
+      if [[ -d "$base" ]]; then
+        echo "$base"
+        return 0
+      fi
+    done
+  fi
+
+  return 1
+}
+
+if [[ -z "$QT_PATH" ]]; then
+  QT_PATH=$(detect_qt_path || true)
+fi
+
 if [[ "$OS" == "Linux" ]]; then
   echo "Building for Linux..."
   CMAKE_ARGS=(-B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/)
