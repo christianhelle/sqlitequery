@@ -7,6 +7,7 @@
 **Implemented enhancements:**
 
 - Reduce Logging [\#85](https://github.com/christianhelle/sqlitequery/issues/85)
+- Restructure source files [\#105](https://github.com/christianhelle/sqlitequery/pull/105) ([christianhelle](https://github.com/christianhelle))
 - Resolve SonarCloud findings: Workflow hardening, Qt ownership, and shell modernization [\#104](https://github.com/christianhelle/sqlitequery/pull/104) ([christianhelle](https://github.com/christianhelle))
 - Enhance installer with PowerShell verification and portable asset parsing [\#103](https://github.com/christianhelle/sqlitequery/pull/103) ([christianhelle](https://github.com/christianhelle))
 - Add installation instructions to README and static website [\#101](https://github.com/christianhelle/sqlitequery/pull/101) ([christianhelle](https://github.com/christianhelle))
