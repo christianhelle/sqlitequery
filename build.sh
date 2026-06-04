@@ -52,7 +52,6 @@ if [[ "$OS" == "Linux" ]]; then
     rm -rf /tmp/sqlitequery
     mkdir -p /tmp/sqlitequery
     cp -rf ./linux/* /tmp/sqlitequery
-    rm -f ~/.local/bin/sqlitequery
     ln -sf /tmp/sqlitequery/bin/SQLiteQueryAnalyzer ~/.local/bin/sqlitequery
     echo "Installed to ~/.local/bin/sqlitequery"
   fi
@@ -86,7 +85,6 @@ if [[ "$OS" == "Darwin" ]]; then
 
   if [[ "$INSTALL" == true ]]; then
     mkdir -p ~/.local/bin
-    rm -f ~/.local/bin/sqlitequery
     ln -sf "$(pwd)/build/SQLiteQueryAnalyzer.app/Contents/MacOS/SQLiteQueryAnalyzer" ~/.local/bin/sqlitequery
     echo "Installed to ~/.local/bin/sqlitequery"
   fi
