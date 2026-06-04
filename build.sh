@@ -44,7 +44,7 @@ fi
 if [[ "$OS" = "Linux" ]]; then
   echo "Building for Linux..."
   cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/
-  cmake --build build --config Release --parallel $(nproc)
+  cmake --build build --config Release --parallel "$(nproc)"
   cmake --install build
 
   if [[ "$INSTALL" = true ]]; then
