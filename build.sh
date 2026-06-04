@@ -57,45 +57,16 @@ if [[ "$OS" = "Linux" ]]; then
       cpack -G "$GEN" --config ./build/CPackConfig.cmake
     done
 
-    # Check if snap package creation is disabled via the DISABLE_SNAP environment variable
     if [[ "${DISABLE_SNAP:-}" = "true" ]]; then
-      echo "Snap package creation is disabled (DISABLE_SNAP=true)."
-      echo "To create snap packages on a host system, use one of these approaches:"
-      echo ""
-      echo "Option 1: Use the snapcraft Docker image (recommended):"
-      echo "  docker run --rm -v \$(pwd):/build -w /build snapcore/snapcraft:stable snapcraft"
-      echo ""
-      echo "Option 2: On an Ubuntu host with snapd properly running:"
-      echo "  sudo snap install snapcraft --classic"
-      echo "  snapcraft"
-      echo ""
+      echo "Snap package creation skipped (DISABLE_SNAP=true)."
+    elif command -v snapcraft &>/dev/null; then
+      echo "Creating snap package..."
+      snapcraft
     else
-      # For standard non-container environments
-      echo "Checking for snapcraft dependencies..."
-
-      # Check for snapd first
-      if ! command -v snap &>/dev/null; then
-        echo "Installing snap..."
-        sudo apt update
-        sudo apt install -y snapd
-        # Ensure snapd socket is available
-        if ! systemctl is-active snapd.socket &>/dev/null; then
-          echo "Starting snapd.socket..."
-          sudo systemctl start snapd.socket
-          sleep 2
-        fi
-      fi
-
-      echo "Snap package creation is disabled in this version of the build script."
-      echo "To create snap packages on a host system, use one of these approaches:"
-      echo ""
-      echo "Option 1: Use the snapcraft Docker image (recommended):"
+      echo "snapcraft not found. Snap package will not be created."
+      echo "To install snapcraft, run: sudo snap install snapcraft --classic"
+      echo "Alternatively, build via Docker:"
       echo "  docker run --rm -v \$(pwd):/build -w /build snapcore/snapcraft:stable snapcraft"
-      echo ""
-      echo "Option 2: On an Ubuntu host with snapd properly running:"
-      echo "  sudo snap install snapcraft --classic"
-      echo "  snapcraft"
-      echo ""
     fi
 
     echo "Package creation complete"
