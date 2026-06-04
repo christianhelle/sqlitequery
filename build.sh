@@ -7,6 +7,7 @@ set -e
 # Parse arguments
 PACKAGE=false
 INSTALL=false
+QT_PATH="${QT_PATH:-}"
 
 while [[ "$#" -gt 0 ]]; do
   case "$1" in
@@ -18,9 +19,17 @@ while [[ "$#" -gt 0 ]]; do
     INSTALL=true
     shift
     ;;
+  --qt-path)
+    QT_PATH="$2"
+    shift 2
+    ;;
+  --qt-path=*)
+    QT_PATH="${1#*=}"
+    shift
+    ;;
   *)
     echo "Unknown argument: $1"
-    echo "Usage: $0 [--package] [--install]"
+    echo "Usage: $0 [--package] [--install] [--qt-path PATH]"
     exit 1
     ;;
   esac
@@ -43,7 +52,12 @@ fi
 
 if [[ "$OS" == "Linux" ]]; then
   echo "Building for Linux..."
-  cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/
+  CMAKE_ARGS=(-B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/)
+  if [[ -n "$QT_PATH" ]]; then
+    echo "Using Qt at: $QT_PATH"
+    CMAKE_ARGS+=(-DCMAKE_PREFIX_PATH="$QT_PATH")
+  fi
+  cmake "${CMAKE_ARGS[@]}"
   cmake --build build --config Release --parallel "$(nproc)"
   cmake --install build
 
@@ -80,7 +94,12 @@ fi
 
 if [[ "$OS" == "Darwin" ]]; then
   echo "Building for macOS..."
-  cmake -B build -DCMAKE_BUILD_TYPE=Release
+  CMAKE_ARGS=(-B build -DCMAKE_BUILD_TYPE=Release)
+  if [[ -n "$QT_PATH" ]]; then
+    echo "Using Qt at: $QT_PATH"
+    CMAKE_ARGS+=(-DCMAKE_PREFIX_PATH="$QT_PATH")
+  fi
+  cmake "${CMAKE_ARGS[@]}"
   cmake --build build --config Release --parallel "$(sysctl -n hw.ncpu)"
 
   if [[ "$INSTALL" == true ]]; then
