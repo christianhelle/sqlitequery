@@ -87,6 +87,17 @@ if [[ -z "$QT_PATH" ]]; then
   QT_PATH=$(detect_qt_path || true)
 fi
 
+if [[ -z "$QT_PATH" ]]; then
+  echo "Qt installation not found in \$HOME/Qt or /opt/Qt."
+  echo "Relying on system Qt; if cmake fails, install Qt and retry. Examples:"
+  if [[ "$OS" == "Linux" ]]; then
+    echo "  sudo apt-get install -y qt6-base-dev libxkbcommon-dev"
+  else
+    echo "  brew install qt"
+  fi
+  echo "Or pass an explicit location: $0 --qt-path /path/to/qt (or QT_PATH=...)."
+fi
+
 if [[ "$OS" == "Linux" ]]; then
   echo "Building for Linux..."
   CMAKE_ARGS=(-B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/)
