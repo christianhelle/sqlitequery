@@ -97,7 +97,7 @@ jobs:
           path: ${{ github.workspace }}\artifacts\SQLiteQueryAnalyzer-Setup.exe
 
       - name: Build Chocolatey Package
-        working-directory: ${{ github.workspace }}\chocolatey
+        working-directory: ${{ github.workspace }}\dist\chocolatey
         env:
           VERSION: ${{ inputs.version }}
         run: choco pack sqlitequery.nuspec --version $env:VERSION
@@ -106,11 +106,11 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: ChocolateyPackage
-          path: ${{ github.workspace }}\chocolatey\sqlitequery.${{ inputs.version }}.nupkg
+          path: ${{ github.workspace }}\dist\chocolatey\sqlitequery.${{ inputs.version }}.nupkg
 
       # Only publish to Chocolatey when explicitly triggered by the release workflow on master branch
       - name: Upload Package to Chocolatey
-        working-directory: ${{ github.workspace }}\chocolatey
+        working-directory: ${{ github.workspace }}\dist\chocolatey
         if: inputs.release == true && github.ref == 'refs/heads/master'
         continue-on-error: true
         env:
