@@ -1,0 +1,1 @@
+CMakeLists.txt not found in C:\projects\christianhelle\sqlitequery Select CMakeLists.txt
