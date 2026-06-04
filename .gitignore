@@ -70,3 +70,4 @@ debug
 release
 Makefile.Debug
 Makefile.Release
+dist/artifacts

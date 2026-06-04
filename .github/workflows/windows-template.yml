@@ -32,8 +32,8 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
         run: |
-          $version = (Get-Content -Path setup.iss -Raw) -replace '#define MyAppVersion "1.0.0"', "#define MyAppVersion `"$env:VERSION`""
-          $version | Set-Content -Path setup.iss
+          $version = (Get-Content -Path dist/setup.iss -Raw) -replace '#define MyAppVersion "1.0.0"', "#define MyAppVersion `"$env:VERSION`""
+          $version | Set-Content -Path dist/setup.iss
 
       - name: Update Version in code
         shell: pwsh
@@ -88,7 +88,7 @@ jobs:
       - name: Inno Setup
         working-directory: ${{ github.workspace }}
         run: |
-          deps\innosetup\ISCC.exe setup.iss
+          deps\innosetup\ISCC.exe dist\setup.iss
 
       - name: Publish Installer
         uses: actions/upload-artifact@master

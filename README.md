@@ -213,7 +213,7 @@ C:\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.
 Build the installer project using Inno Setup (Optional)
 
 ```pwsh
-../deps/innosetup/ISCC.exe setup.iss
+../deps/innosetup/ISCC.exe dist/setup.iss
 ```
 
 ## Contributing

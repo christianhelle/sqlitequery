@@ -6,7 +6,7 @@
 #define MyAppPublisher "Christian Resma Helle"
 #define MyAppURL "https://github.com/christianhelle/sqlitequery"
 #define MyAppExeName "SQLiteQueryAnalyzer.exe"
-#define MyAppIcon "src\resources\icon.ico"
+#define MyAppIcon "..\src\resources\icon.ico"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -36,8 +36,8 @@ ChangesAssociations=yes
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "build\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "src\resources\icon.ico"; DestDir: "{app}"; DestName: "icon.ico"
+Source: "..\build\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\src\resources\icon.ico"; DestDir: "{app}"; DestName: "icon.ico"
 
 [Icons]
 Name: "{commondesktop}\SQLite Query Analyzer"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; IconFilename: "{app}\{#MyAppIcon}"; Tasks: DesktopIcon
