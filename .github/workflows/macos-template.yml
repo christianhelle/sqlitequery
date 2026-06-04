@@ -37,19 +37,19 @@ jobs:
 
       - name: QMake
         run: qmake
-        working-directory: ${{ github.workspace }}
+        working-directory: src
 
       - name: Make
         run: make -j 32
-        working-directory: ${{ github.workspace }}
+        working-directory: src
 
       - name: macdeployqt
-        working-directory: ${{ github.workspace }}
+        working-directory: src
         run: macdeployqt SQLiteQueryAnalyzer.app -dmg -appstore-compliant
 
       - name: Publish artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: SQLiteQuerAnalyzer_MacOS_v${{ inputs.version }}_${{ inputs.architecture }}
+          name: src/SQLiteQuerAnalyzer_MacOS_v${{ inputs.version }}_${{ inputs.architecture }}
           path: |
             SQLiteQueryAnalyzer.dmg
