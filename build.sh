@@ -35,6 +35,12 @@ if [[ "$OS" == MINGW* ]] || [[ "$OS" == CYGWIN* ]]; then
   exit 1
 fi
 
+if [[ "$OS" != "Linux" ]] && [[ "$OS" != "Darwin" ]]; then
+  echo "Unsupported operating system: $OS"
+  echo "This script supports Linux and macOS only."
+  exit 1
+fi
+
 if [[ "$OS" = "Linux" ]]; then
   echo "Building for Linux..."
   cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/
