@@ -84,6 +84,13 @@ if [[ "$OS" = "Darwin" ]]; then
   cmake -B build -DCMAKE_BUILD_TYPE=Release
   cmake --build build --config Release --parallel "$(sysctl -n hw.ncpu)"
 
+  if [[ "$INSTALL" = true ]]; then
+    mkdir -p ~/.local/bin
+    rm -f ~/.local/bin/sqlitequery
+    ln -sf "$(pwd)/build/SQLiteQueryAnalyzer.app/Contents/MacOS/SQLiteQueryAnalyzer" ~/.local/bin/sqlitequery
+    echo "Installed to ~/.local/bin/sqlitequery"
+  fi
+
   if [[ "$PACKAGE" = true ]]; then
     echo "Creating macOS package..."
     macdeployqt build/SQLiteQueryAnalyzer.app -dmg -appstore-compliant
