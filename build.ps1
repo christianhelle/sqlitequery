@@ -78,7 +78,7 @@ if ($IsWindows) {
     & "$QtPath\bin\windeployqt.exe" .\build\Release\SQLiteQueryAnalyzer.exe
     
     if ($Package) {
-        ../../deps/innosetup/ISCC.exe setup.iss
+        deps/innosetup/ISCC.exe dist/setup.iss
     }
 }
 

@@ -131,13 +131,13 @@ const config: SquadConfig = {
       standard: 'LLVM',
       indentation: 2
     },
-    buildCommand: 'cd src/project && cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release --parallel 4',
+    buildCommand: 'cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release --parallel 4',
     testCommand: 'QT_QPA_PLATFORM=offscreen ./linux/bin/SQLiteQueryAnalyzer --help',
     keyDirectories: {
       gui: 'src/gui/',
       database: 'src/database/',
       cli: 'src/cli/',
-      build: 'src/project/',
+      build: 'build/',
       settings: 'src/settings/',
       threading: 'src/threading/'
     },

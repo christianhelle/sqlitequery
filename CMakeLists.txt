@@ -4,19 +4,19 @@ project(SQLiteQueryAnalyzer VERSION 1.0 LANGUAGES C CXX)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(app_icon_resource_windows "../resources/icon.rc")
+set(app_icon_resource_windows "src/resources/icon.rc")
 set(MACOSX_BUNDLE_ICON_FILE icon.icns)
-set(app_icon_macos "../resources/icon.icns")
+set(app_icon_macos "src/resources/icon.icns")
 set_source_files_properties(${app_icon_macos}
     PROPERTIES
     MACOSX_PACKAGE_LOCATION
-    "../resources")
+    "src/resources")
 
 # Set the executable name based on platform or custom parameter
 if(DEFINED EXECUTABLE_NAME)
-    set(APP_NAME ${EXECUTABLE_NAME})
+  set(APP_NAME ${EXECUTABLE_NAME})
 else()
-    set(APP_NAME SQLiteQueryAnalyzer)
+  set(APP_NAME SQLiteQueryAnalyzer)
 endif()
 
 find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core)
@@ -25,35 +25,46 @@ find_package(Qt${QT_VERSION_MAJOR} OPTIONAL_COMPONENTS Widgets)
 
 # Snapcraft workaround - skip qt_standard_project_setup as it's not available in older Qt versions
 if(COMMAND qt_standard_project_setup)
-    qt_standard_project_setup()
+  qt_standard_project_setup()
 endif()
 
 # Define common source list once
 set(COMMON_SRCS
-  ../main.cpp
-  ../database/database.cpp ../database/database.h
-  ../database/databaseinfo.h
-  ../database/dbanalyzer.cpp ../database/dbanalyzer.h
-  ../database/dbquery.cpp ../database/dbquery.h
-  ../database/dbtree.cpp ../database/dbtree.h
-  ../gui/highlighter.cpp ../gui/highlighter.h
-  ../gui/mainwindow.cpp ../gui/mainwindow.h ../gui/mainwindow.ui
-  ../settings/recentfiles.cpp ../settings/recentfiles.h
-  ../settings/settings.cpp ../settings/settings.h
-  ../database/dbexport.cpp ../database/dbexport.h
-  ../threading/cancellation.cpp ../threading/cancellation.h
-  ../threading/mainthread.h
-  ../database/dbexportschema.cpp
-  ../database/dbexportschema.h
-  ../database/dbexportdata.cpp
-  ../database/dbexportdata.h
-  ../database/progress.h
-  ../gui/prompts.cpp
-  ../gui/prompts.h
-  ../cli/export.cpp
-  ../cli/export.h
-  ../cli/script.cpp
-  ../cli/script.h)
+  src/main.cpp
+  src/database/database.cpp
+  src/database/database.h
+  src/database/databaseinfo.h
+  src/database/dbanalyzer.cpp
+  src/database/dbanalyzer.h
+  src/database/dbquery.cpp
+  src/database/dbquery.h
+  src/database/dbtree.cpp
+  src/database/dbtree.h
+  src/gui/highlighter.cpp
+  src/gui/highlighter.h
+  src/gui/mainwindow.cpp
+  src/gui/mainwindow.h
+  src/gui/mainwindow.ui
+  src/settings/recentfiles.cpp
+  src/settings/recentfiles.h
+  src/settings/settings.cpp
+  src/settings/settings.h
+  src/database/dbexport.cpp
+  src/database/dbexport.h
+  src/threading/cancellation.cpp
+  src/threading/cancellation.h
+  src/threading/mainthread.h
+  src/database/dbexportschema.cpp
+  src/database/dbexportschema.h
+  src/database/dbexportdata.cpp
+  src/database/dbexportdata.h
+  src/database/progress.h
+  src/gui/prompts.cpp
+  src/gui/prompts.h
+  src/cli/export.cpp
+  src/cli/export.h
+  src/cli/script.cpp
+  src/cli/script.h)
 
 if(COMMAND qt_add_executable)
   qt_add_executable(${APP_NAME} WIN32 MACOSX_BUNDLE ${COMMON_SRCS} $<$<PLATFORM_ID:Windows>:${app_icon_resource_windows}>)
@@ -96,8 +107,7 @@ set(CPACK_PACKAGE_VENDOR "Christian Resma Helle")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY ${CPACK_PACKAGE_NAME})
 set(CPACK_VERBATIM_VARIABLES ON)
 set(CPACK_PACKAGING_INSTALL_PREFIX "/opt/sqlitequery")
-set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Christian Resma Helle <crhelle@proton.me>")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Christian Resma Helle <christian.helle@outlook.com>")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS libxcb-xinerama0)
-set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/postinst;${CMAKE_CURRENT_SOURCE_DIR}/prerm")
+set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/dist/postinst;${CMAKE_CURRENT_SOURCE_DIR}/dist/prerm")
 include(CPack)
-

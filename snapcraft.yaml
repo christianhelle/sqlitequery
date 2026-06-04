@@ -4,10 +4,10 @@ summary: Lightweight cross-platform SQLite database explorer
 description: |
   SQLite Query Analyzer is a lightweight and efficient desktop utility designed
   to simplify the process of managing SQLite databases.
-  
+
   It provides an intuitive interface for executing queries and direct table editing,
   making database operations seamless and straightforward.
-  
+
   Features:
   - Cross platform - Runs natively on Windows, MacOS, and Linux
   - Easy-to-use interface for executing SQL queries
@@ -36,7 +36,7 @@ apps:
 parts:
   sqlitequery:
     plugin: dump
-    source: linux
+    source: src/linux
     source-type: local
     stage-packages:
       - libqt6core6

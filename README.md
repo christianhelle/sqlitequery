@@ -154,11 +154,10 @@ cd sqlitequery
 ### Build the project using cross platform powershell script
 
 ```sh
-cd src/project
 pwsh build.ps1
 ```
 
-The build output folder is under `src/project/build` for MacOS and Linux, and `src/project/build/Release` for Windows
+The build output folder is under `build` for MacOS and Linux, and `build` for Windows
 
 ### Building on Linux
 
@@ -172,7 +171,6 @@ sudo apt-get install -y cmake qt6-base-dev libxkbcommon-dev
 Build project
 
 ```sh
-cd src/project
 cmake .
 cmake --build . --config Release
 ```
@@ -189,7 +187,6 @@ brew install qt@6
 Build project
 
 ```sh
-cd src/project
 cmake .
 cmake --build . --config Release
 ```
@@ -216,7 +213,7 @@ C:\Qt\6.9.0\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.
 Build the installer project using Inno Setup (Optional)
 
 ```pwsh
-../deps/innosetup/ISCC.exe setup.iss
+../deps/innosetup/ISCC.exe dist/setup.iss
 ```
 
 ## Contributing

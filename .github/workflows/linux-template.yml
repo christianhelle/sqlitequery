@@ -4,90 +4,87 @@ on:
   workflow_call:
     inputs:
       version:
-        description: 'Version number for the build'
+        description: "Version number for the build"
         required: true
         type: string
       qt_version:
-        description: 'Qt version to use'
+        description: "Qt version to use"
         required: false
-        default: '6.9.0'
+        default: "6.9.0"
         type: string
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Update Version in code
-      shell: pwsh
-      env:
-        VERSION: ${{ inputs.version }}
-      run: |
-        $version = (Get-Content -Path src/project/CMakeLists.txt -Raw) -replace 'VERSION 1.0', "VERSION `"$env:VERSION`""
-        $version | Set-Content -Path src/project/CMakeLists.txt
-        $version = (Get-Content -Path src/project/snapcraft.yaml -Raw) -replace 'version: 1.0.0', "version: `"$env:VERSION`""
-        $version | Set-Content -Path src/project/snapcraft.yaml
-        $version = (Get-Content -Path src/main.cpp -Raw) -replace 'constexpr auto Version = "1.0.0";', "constexpr auto Version = `"$env:VERSION`";"
-        $version | Set-Content -Path src/main.cpp
-        cat src/main.cpp
-        
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v4
-      with:
-        version: ${{ inputs.qt_version }}
-        
-    - name: CMake
-      run: |
-        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux .
-        cmake --build . --config Release --parallel 32
-        cmake --install .
-      working-directory: src/project
+      - uses: actions/checkout@v4
 
-    - name: CPack
-      run: |
-        cpack -G 7Z
-        cpack -G ZIP
-        cpack -G TBZ2
-        cpack -G TGZ
-        cpack -G TXZ
-        cpack -G TZ
-        cpack -G DEB
-        cpack -G RPM
-      working-directory: src/project
+      - name: Update Version in code
+        shell: pwsh
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          $version = (Get-Content -Path CMakeLists.txt -Raw) -replace 'VERSION 1.0', "VERSION `"$env:VERSION`""
+          $version | Set-Content -Path CMakeLists.txt
+          $version = (Get-Content -Path snapcraft.yaml -Raw) -replace 'version: 1.0.0', "version: `"$env:VERSION`""
+          $version | Set-Content -Path snapcraft.yaml
+          $version = (Get-Content -Path src/main.cpp -Raw) -replace 'constexpr auto Version = "1.0.0";', "constexpr auto Version = `"$env:VERSION`";"
+          $version | Set-Content -Path src/main.cpp
+          cat src/main.cpp
 
-    - name: Snapcraft
-      run: |
-        sudo snap install snapcraft --classic
-        snapcraft
-      working-directory: src/project
-      env:
-        SNAPCRAFT_BUILD_ENVIRONMENT: host
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ inputs.qt_version }}
 
-    - name: Publish Zip archive
-      uses: actions/upload-artifact@v4
-      with:
-        name: Linux_Binary_v${{ inputs.version }}
-        path: |
-          src/project/SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.zip
+      - name: CMake
+        run: |
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux .
+          cmake --build . --config Release --parallel 32
+          cmake --install .
 
-    - name: Publish Debian package
-      uses: actions/upload-artifact@v4
-      with:
-        name: Debian_Package_v${{ inputs.version }}
-        path: |
-          src/project/SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.deb
+      - name: CPack
+        run: |
+          cpack -G 7Z
+          cpack -G ZIP
+          cpack -G TBZ2
+          cpack -G TGZ
+          cpack -G TXZ
+          cpack -G TZ
+          cpack -G DEB
+          cpack -G RPM
 
-    - name: Publish RPM package
-      uses: actions/upload-artifact@v4
-      with:
-        name: RPM_Package_v${{ inputs.version }}
-        path: |
-          src/project/SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.rpm
+      #- name: Snapcraft
+      #  run: |
+      #    sudo snap install snapcraft --classic
+      #    snapcraft
+      #  env:
+      #    SNAPCRAFT_BUILD_ENVIRONMENT: host
 
-    - name: Publish Snap package
-      uses: actions/upload-artifact@v4
-      with:
-        name: Snap_v${{ inputs.version }}
-        path: |
-          src/project/*.snap
+      - name: Publish Zip archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: Linux_Binary_v${{ inputs.version }}
+          path: |
+            SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.zip
+
+      - name: Publish Debian package
+        uses: actions/upload-artifact@v4
+        with:
+          name: Debian_Package_v${{ inputs.version }}
+          path: |
+            SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.deb
+
+      - name: Publish RPM package
+        uses: actions/upload-artifact@v4
+        with:
+          name: RPM_Package_v${{ inputs.version }}
+          path: |
+            SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.rpm
+
+    #- name: Publish Snap package
+    #  uses: actions/upload-artifact@v4
+    #  with:
+    #    name: Snap_v${{ inputs.version }}
+    #    path: |
+    #      *.snap

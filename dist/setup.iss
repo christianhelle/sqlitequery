@@ -6,7 +6,7 @@
 #define MyAppPublisher "Christian Resma Helle"
 #define MyAppURL "https://github.com/christianhelle/sqlitequery"
 #define MyAppExeName "SQLiteQueryAnalyzer.exe"
-#define MyAppIcon "icon.ico"
+#define MyAppIcon "..\src\resources\icon.ico"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -25,9 +25,9 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf64}\SQLite Query Analyzer
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
-OutputDir=..\artifacts
+OutputDir=artifacts
 OutputBaseFilename=SQLiteQueryAnalyzer-Setup
-SetupIconFile=..\resources\{#MyAppIcon}
+SetupIconFile={#MyAppIcon}
 Compression=lzma
 SolidCompression=yes
 ChangesAssociations=yes
@@ -36,9 +36,8 @@ ChangesAssociations=yes
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: ".\build\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
-Source: "..\resources\icon.ico"; DestDir: "{app}"; DestName: "icon.ico"
+Source: "..\build\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\src\resources\icon.ico"; DestDir: "{app}"; DestName: "icon.ico"
 
 [Icons]
 Name: "{commondesktop}\SQLite Query Analyzer"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; IconFilename: "{app}\{#MyAppIcon}"; Tasks: DesktopIcon
