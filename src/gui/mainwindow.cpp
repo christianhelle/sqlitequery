@@ -6,6 +6,8 @@
 #include "../database/sqlitedatabase.h"
 #include "../database/schemaexport.h"
 #include "../database/dataexport.h"
+#include "../database/queryexecutor.h"
+#include "../database/queryresultpresenter.h"
 #include "../threading/mainthread.h"
 #include "promptsadapter.h"
 
@@ -30,8 +32,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->database = std::make_unique<QSqlDatabaseAdapter>();
     this->analyzer = std::make_unique<DbAnalyzer>(database.get());
+    
+    this->queryExecutor = std::make_unique<QueryExecutor>();
+    this->queryPresenter = std::make_unique<QueryResultPresenter>(ui->queryResultsGrid);
     this->query = std::make_unique<DbQuery>(ui->queryResultsGrid,
-                                            this->database.get());
+                                            this->queryExecutor.get(),
+                                            this->queryPresenter.get());
 
     this->tree = std::make_unique<DbTree>(ui->treeWidget);
     this->highlighter = std::make_unique<Highlighter>(ui->textEdit->document());

@@ -11,6 +11,8 @@
 #include "../database/idatabase.h"
 #include "../database/ischemaexport.h"
 #include "../database/idataexport.h"
+#include "../database/iqueryexecutor.h"
+#include "../database/iqueryresultpresenter.h"
 #include "../settings/irecentfiles.h"
 #include "../settings/isettings.h"
 #include "highlighter.h"
@@ -97,6 +99,8 @@ private:
     std::unique_ptr<IRecentFiles> recentFiles;
     std::unique_ptr<ISettings> settings;
     std::unique_ptr<IPrompts> prompts;
+    std::unique_ptr<IQueryExecutor> queryExecutor;
+    std::unique_ptr<IQueryResultPresenter> queryPresenter;
     bool loaded = false;
 
     void analyzeDatabase() const;

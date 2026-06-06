@@ -78,6 +78,12 @@ set(COMMON_SRCS
   src/database/progress.h
   src/gui/prompts.cpp
   src/gui/prompts.h
+  src/database/queryresult.h
+  src/database/iqueryexecutor.h
+  src/database/queryexecutor.cpp
+  src/database/queryexecutor.h
+  src/database/iqueryresultpresenter.h
+  src/database/queryresultpresenter.cpp
   src/cli/export.cpp
   src/cli/export.h
   src/cli/script.cpp

@@ -1,26 +1,23 @@
 #ifndef DBQUERY_H
 #define DBQUERY_H
 
-#include <QScrollArea>
-#include <QTableView>
-
-#include "idatabase.h"
+#include "iqueryexecutor.h"
+#include "iqueryresultpresenter.h"
 
 class DbQuery {
 public:
-    DbQuery(QWidget *, IDatabase *);
+    DbQuery(QWidget *parent,
+            IQueryExecutor *executor,
+            IQueryResultPresenter *presenter);
 
-    bool execute(const QStringList &, QStringList *);
+    bool execute(const QStringList &queries, QStringList *errors);
 
     void clearResults();
 
 private:
     QWidget *widget;
-    IDatabase *database;
-
-    std::unique_ptr<QScrollArea> scrollArea;
-    std::unique_ptr<QWidget> container;
-    QList<QTableView *> tableResults{};
+    IQueryExecutor *executor;
+    IQueryResultPresenter *presenter;
 };
 
 #endif // DBQUERY_H

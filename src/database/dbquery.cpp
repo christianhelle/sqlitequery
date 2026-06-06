@@ -1,97 +1,27 @@
 #include "dbquery.h"
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QSqlQueryModel>
-#include <QMessageBox>
 
-DbQuery::DbQuery(QWidget *widget, IDatabase *database)
-    : widget(widget),
-      database(database) {
-    this->container = std::make_unique<QWidget>(this->widget);
-    this->container->hide();
-    this->scrollArea = std::make_unique<QScrollArea>(this->widget);
-    this->scrollArea->setWidget(container.get());
-    this->scrollArea->hide();
+DbQuery::DbQuery(QWidget *parent,
+                 IQueryExecutor *executor,
+                 IQueryResultPresenter *presenter)
+    : widget(parent),
+      executor(executor),
+      presenter(presenter) {
 }
 
 void DbQuery::clearResults() {
-    this->container->setGeometry(this->widget->geometry());
-    this->container->show();
-
-    this->scrollArea->setGeometry(this->widget->geometry());
-    this->scrollArea->show();
-
-    qDeleteAll(this->tableResults.begin(), this->tableResults.end());
-    this->tableResults.clear();
+    presenter->clear();
 }
 
-bool DbQuery::execute(const QStringList &queryList, QStringList *errors) {
+bool DbQuery::execute(const QStringList &queries, QStringList *errors) {
     this->clearResults();
 
-    if (!this->database->open()) {
-        const QString msg = "Unable to open database";
-        errors->append(msg);
-        return false;
+    const QueryResult result = executor->execute(nullptr, queries);
+
+    presenter->display(result, widget);
+
+    if (errors) {
+        *errors = result.errors;
     }
 
-    QRect widgetRect = this->widget->geometry();
-    int yOffset = 0;
-    const int width = widgetRect.width();
-    const int height = widgetRect.height();
-
-    const QSqlDatabase db = this->database->getRawDatabase();
-    int count = 0;
-
-    for (int i = 0; i < queryList.length(); ++i) {
-        const QString sql = queryList.at(i).trimmed().replace('\n', "", Qt::CaseInsensitive);
-        if (sql.isEmpty())
-            continue;
-
-        QSqlQuery query(db);
-        if (!query.exec(sql)) {
-            QSqlError error;
-            QString msg = (error = db.lastError()).isValid() ? error.text() : "Query execution failed";
-            errors->append(msg);
-            continue;
-        }
-
-        if (query.isSelect()) {
-            if (i > 0)
-                yOffset += height;
-            auto rect = QRect(0, yOffset, width, height);
-            const auto ptr = this->container.get();
-            auto table = std::make_unique<QTableView>(ptr);
-            table->setGeometry(rect);
-            table->show();
-            const auto tablePtr = table.get();
-
-            this->tableResults.append(table.release());
-            count++;
-
-            auto model = std::make_unique<QSqlQueryModel>(tablePtr);
-            model->setQuery(std::move(query));
-            tablePtr->setModel(model.release());
-            tablePtr->repaint();
-        }
-    }
-
-    QRect newParentRect = this->widget->geometry();
-    newParentRect.setHeight(newParentRect.height() * count);
-    this->container->setGeometry(newParentRect);
-
-    if (!errors->empty()) {
-        QString msg;
-        for (const auto &error: *errors) {
-            msg += error;
-            msg += "\r\n";
-        }
-
-        QMessageBox::information(nullptr, "Error", msg, QMessageBox::Ok);
-        return false;
-    }
-
-    return true;
+    return result.success;
 }
