@@ -1,6 +1,9 @@
 #ifndef PROGRESS_H
 #define PROGRESS_H
 
+#include <QTextStream>
+#include <cstdio>
+
 class ExportDataProgress {
     uint64_t affectedRows = 0;
     bool isComplete = false;

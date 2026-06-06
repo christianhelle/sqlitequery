@@ -1,8 +1,9 @@
 #ifndef IDATABASEMANAGER_H
 #define IDATABASEMANAGER_H
 
-#include "idatabase.h"
-#include "databaseinfo.h"
+#include <QString>
+#include "../database/idatabase.h"
+#include "../database/databaseinfo.h"
 
 class IDatabaseManager {
 public:

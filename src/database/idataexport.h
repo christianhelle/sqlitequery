@@ -2,7 +2,7 @@
 #define IDATAEXPORT_H
 
 #include "idatabase.h"
-#include "cancellation.h"
+#include "../threading/cancellation.h"
 #include "progress.h"
 
 class IDataExport {

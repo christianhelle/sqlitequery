@@ -55,29 +55,20 @@ set(COMMON_SRCS
   src/settings/isettings.h
   src/settings/settingsadapter.cpp
   src/settings/settingsadapter.h
-  src/database/dbexport.cpp
-  src/database/dbexport.h
   src/threading/cancellation.cpp
   src/threading/cancellation.h
   src/threading/mainthread.h
-  src/database/dbexportschema.cpp
-  src/database/dbexportschema.h
-  src/database/dbexportdata.cpp
-  src/database/dbexportdata.h
-  src/database/dbexportschema.cpp
-  src/database/dbexportschema.h
-  src/database/ischemaexport.h
-  src/database/schemaexport.cpp
-  src/database/schemaexport.h
-  src/database/idataexport.h
   src/database/dataexport.cpp
   src/database/dataexport.h
+  src/database/schemaexport.cpp
+  src/database/schemaexport.h
+  src/database/ischemaexport.h
   src/database/sqlitedatabase.cpp
   src/database/sqlitedatabase.h
   src/database/idatabase.h
   src/database/progress.h
-  src/gui/prompts.cpp
-  src/gui/prompts.h
+  src/gui/promptsadapter.cpp
+  src/gui/promptsadapter.h
   src/database/queryresult.h
   src/database/iqueryexecutor.h
   src/database/queryexecutor.cpp

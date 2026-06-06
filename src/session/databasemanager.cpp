@@ -1,4 +1,5 @@
 #include "databasemanager.h"
+#include "../database/dbanalyzer.h"
 
 void DatabaseManager::openDatabase(IDatabase *database, const QString &filename) {
     database->setSource(filename);
@@ -9,7 +10,7 @@ void DatabaseManager::analyzeDatabase(IDatabase *database, DatabaseInfo &info) {
     if (!database->isOpen()) {
         database->open();
     }
-    analyzer = DbAnalyzer(database);
+    DbAnalyzer analyzer(database);
     analyzer.analyze(info);
     database->close();
 }

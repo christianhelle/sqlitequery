@@ -3,10 +3,11 @@
 
 #include <QString>
 #include <memory>
-#include "progress.h"
-#include "cancellation.h"
-#include "idatabase.h"
-#include "idataexport.h"
+#include "../database/progress.h"
+#include "../threading/cancellation.h"
+#include "../database/idatabase.h"
+#include "../database/idataexport.h"
+#include "../database/databaseinfo.h"
 
 class IExportOrchestrator {
 public:

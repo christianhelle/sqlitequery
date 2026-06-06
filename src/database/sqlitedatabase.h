@@ -15,14 +15,16 @@ public:
     [[nodiscard]] QString getFilename() const override;
 
     QSqlDatabase getRawDatabase() const { return database; }
-    bool execute(const QString &sql) const;
+    bool execute(const QString &sql);
     QList<QString> getTableNames() const;
     bool hasOpenConnection() const;
 
 private:
     QSqlDatabase database;
     QString source;
-    bool ensureOpen() const;
+    mutable bool connectionOpen = false;
+    mutable bool connectionWasOpen = false;
+    void ensureConnection() const;
 };
 
 #endif // SQLITEDATABASE_H

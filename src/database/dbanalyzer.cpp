@@ -26,7 +26,7 @@ void DbAnalyzer::loadTables(DatabaseInfo &info) const {
         return;
     }
 
-    QSqlQuery query(this->database->getDatabase());
+    QSqlQuery query(this->database->getRawDatabase());
     if (!query.exec(sql)) {
         database->close();
         return;
@@ -52,7 +52,7 @@ void DbAnalyzer::loadColumns(DatabaseInfo &info) const {
     for (auto &table: info.tables) {
         const QString sql = "PRAGMA table_info (\"" + table.name + "\")";
 
-        QSqlQuery query(this->database->getDatabase());
+        QSqlQuery query(this->database->getRawDatabase());
         if (!query.exec(sql)) {
             continue;
         }

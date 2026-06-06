@@ -16,7 +16,7 @@ public:
     virtual bool isOpen() const = 0;
     [[nodiscard]] virtual QString getFilename() const = 0;
     virtual bool execute(const QString &sql) = 0;
-    [[nodiscard]] virtual QSqlDatabase getRawDatabase() const;
+    [[nodiscard]] virtual QSqlDatabase getRawDatabase() const = 0;
 };
 
 #endif // IDATABASE_H

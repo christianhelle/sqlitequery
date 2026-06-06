@@ -2,7 +2,7 @@
 #define EXPORTORCHESTRATOR_H
 
 #include "iexportorchestrator.h"
-#include "dataexport.h"
+#include "../database/dataexport.h"
 #include <QtConcurrent/QtConcurrent>
 #include "../threading/mainthread.h"
 

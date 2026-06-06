@@ -15,19 +15,21 @@ void QSqlDatabaseAdapter::setSource(const QString &filename) {
 
 bool QSqlDatabaseAdapter::open() {
     this->close();
-    return database.open();
+    bool result = database.open();
+    if (result) connectionOpen = true;
+    return result;
 }
 
 void QSqlDatabaseAdapter::close() {
     if (database.isOpen())
         database.close();
+    connectionOpen = false;
 }
 
 void QSqlDatabaseAdapter::shrink() {
-    if (ensureOpen()) {
-        QSqlQuery query(database);
-        query.exec("VACUUM");
-    }
+    ensureConnection();
+    QSqlQuery query(database);
+    query.exec("VACUUM");
 }
 
 bool QSqlDatabaseAdapter::isOpen() const {
@@ -38,19 +40,15 @@ QString QSqlDatabaseAdapter::getFilename() const {
     return source;
 }
 
-bool QSqlDatabaseAdapter::execute(const QString &sql) const {
-    if (!ensureOpen())
-        return false;
-
+bool QSqlDatabaseAdapter::execute(const QString &sql) {
+    ensureConnection();
     QSqlQuery query(database);
     return query.exec(sql);
 }
 
 QList<QString> QSqlDatabaseAdapter::getTableNames() const {
     QList<QString> tables;
-    if (!ensureOpen())
-        return tables;
-
+    ensureConnection();
     QSqlQuery query(database);
     if (query.exec("SELECT name FROM sqlite_master WHERE type='table'")) {
         while (query.next()) {
@@ -64,9 +62,12 @@ bool QSqlDatabaseAdapter::hasOpenConnection() const {
     return database.isOpen();
 }
 
-bool QSqlDatabaseAdapter::ensureOpen() const {
+void QSqlDatabaseAdapter::ensureConnection() const {
     if (!database.isOpen()) {
-        return database.open();
+        connectionWasOpen = false;
+        const_cast<QSqlDatabaseAdapter*>(this)->database.open();
+        connectionOpen = true;
+    } else {
+        connectionWasOpen = true;
     }
-    return true;
 }

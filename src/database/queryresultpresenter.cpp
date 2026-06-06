@@ -1,6 +1,9 @@
 #include "queryresultpresenter.h"
+#include <QScrollArea>
+#include <QTableView>
+#include <QSqlQueryModel>
+#include <QMessageBox>
 #include <QWidget>
-#include <QVBoxLayout>
 #include <QRect>
 
 QueryResultPresenter::QueryResultPresenter(QWidget *parent)
@@ -55,29 +58,6 @@ void QueryResultPresenter::display(const QueryResult &result, QWidget *parent) {
     this->tableResults.append(table.release());
 
     auto model = std::make_unique<QSqlQueryModel>(tablePtr);
-    // Store the result rows in the model
-    QStandardItemModel *standardModel = new QStandardItemModel(0, 0, tablePtr);
-    if (!result.rows.isEmpty()) {
-        standardModel->setHorizontalHeaderLabels(
-            result.rows.first().values
-                .indexed()
-                .keys()
-                .transform([](const auto &k) { return k.toString(); })
-                .toList()
-        );
-        for (const auto &row : result.rows) {
-            QList<QStandardItem *> items;
-            for (const auto &value : row.values) {
-                items.append(new QStandardItem(value.toString()));
-            }
-            standardModel->appendRow(items);
-        }
-    }
-    tablePtr->setModel(standardModel);
+    tablePtr->setModel(model.release());
     tablePtr->repaint();
-}
-
-void QueryResultPresenter::layoutResults(const QueryResult &result, QWidget *parent) {
-    Q_UNUSED(result)
-    Q_UNUSED(parent)
 }

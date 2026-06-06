@@ -1,6 +1,7 @@
 #include "queryexecutor.h"
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QSqlRecord>
 #include <QSqlQueryModel>
 
 QueryResult QueryExecutor::execute(IDatabase *database,

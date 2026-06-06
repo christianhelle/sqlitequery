@@ -4,10 +4,11 @@ void ExportOrchestrator::exportToSql(IDatabase *database,
                                       const DatabaseInfo &info,
                                       const QString &filepath,
                                       std::unique_ptr<ExportDataProgress> progress) {
-    auto future = QtConcurrent::run([database, info, filepath, progress]() {
+    CancellationTokenSource tcs;
+    auto cancellationToken = tcs.get();
+    auto future = QtConcurrent::run([database, info, filepath, cancellationToken, progress = std::move(progress)]() {
         DataExport exporter(info);
-        CancellationToken dummy;
-        exporter.exportToSqlFile(database, filepath, &dummy, progress.get());
+        exporter.exportToSqlFile(database, filepath, &cancellationToken, progress.get());
     });
     Q_UNUSED(future)
 }
@@ -17,10 +18,11 @@ void ExportOrchestrator::exportToCsv(IDatabase *database,
                                       const QString &outputFolder,
                                       const QString &delimiter,
                                       std::unique_ptr<ExportDataProgress> progress) {
-    auto future = QtConcurrent::run([database, info, outputFolder, delimiter, progress]() {
+    CancellationTokenSource tcs;
+    auto cancellationToken = tcs.get();
+    auto future = QtConcurrent::run([database, info, outputFolder, delimiter, cancellationToken, progress = std::move(progress)]() {
         DataExport exporter(info);
-        CancellationToken dummy;
-        exporter.exportToCsvFile(database, outputFolder, delimiter, &dummy, progress.get());
+        exporter.exportToCsvFile(database, outputFolder, delimiter, &cancellationToken, progress.get());
     });
     Q_UNUSED(future)
 }
