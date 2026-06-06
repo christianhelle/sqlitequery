@@ -10,6 +10,7 @@
 #include "../database/dbexportdata.h"
 #include "../database/dbquery.h"
 #include "../database/dbtree.h"
+#include "../database/idatabase.h"
 #include "highlighter.h"
 
 namespace Ui {
@@ -83,7 +84,7 @@ private:
     std::unique_ptr<Ui::MainWindow> ui;
     std::unique_ptr<QMenu> recentFilesMenu;
     std::unique_ptr<QStatusBar> statusBar;
-    std::unique_ptr<Database> database;
+    std::unique_ptr<IDatabase> database;
     std::unique_ptr<DbAnalyzer> analyzer;
     std::unique_ptr<DbQuery> query;
     std::unique_ptr<DbTree> tree;

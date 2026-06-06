@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QList>
+#include <QSqlDatabase>
 
 class IDatabase {
 public:
@@ -15,6 +16,7 @@ public:
     virtual bool isOpen() const = 0;
     [[nodiscard]] virtual QString getFilename() const = 0;
     virtual bool execute(const QString &sql) = 0;
+    [[nodiscard]] virtual QSqlDatabase getRawDatabase() const;
 };
 
 #endif // IDATABASE_H

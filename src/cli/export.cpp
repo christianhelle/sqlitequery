@@ -1,9 +1,10 @@
 #include "export.h"
 #include "../database/dbanalyzer.h"
+#include "../database/sqlitedatabase.h"
 
 void Export::exportDataToCsvFile(const QString &file,
-                                 const QString &outputFolder,
-                                 const bool showProgress) {
+                                  const QString &outputFolder,
+                                  const bool showProgress) {
     const auto dataExportProgress = std::make_unique<ExportDataProgress>();
     if (showProgress) {
         dataExportProgress->setShowProgress(true);
@@ -15,7 +16,7 @@ void Export::exportDataToCsvFile(const QString &file,
     const auto tcs = std::make_unique<CancellationTokenSource>();
     const auto cancellationToken = tcs->get();
 
-    const auto database = std::make_unique<Database>();
+    const auto database = std::make_unique<QSqlDatabaseAdapter>();
     database->setSource(file);
     if (!database->open()) {
         qWarning("Unable to open file");

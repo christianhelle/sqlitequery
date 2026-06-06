@@ -2,21 +2,25 @@
 #define DATABASE_H
 
 #include <QSqlQuery>
+#include "idatabase.h"
 
-class Database {
+class Database : public IDatabase {
 public:
     Database();
 
-    void setSource(const QString &filename);
+    void setSource(const QString &filename) override;
 
-    bool open();
+    bool open() override;
 
-    void close();
+    void close() override;
 
-    void shrink();
+    void shrink() override;
 
-    [[nodiscard]] QSqlDatabase getDatabase() const { return database; }
-    [[nodiscard]] QString getFilename() const { return source; }
+    bool isOpen() const override;
+
+    [[nodiscard]] QString getFilename() const override;
+
+    QSqlDatabase getDatabase() const { return database; }
 
 private:
     QSqlDatabase database;

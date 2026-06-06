@@ -29,3 +29,11 @@ void Database::shrink() {
     QSqlQuery query(database);
     query.exec("VACUUM");
 }
+
+bool Database::isOpen() const {
+    return database.isOpen();
+}
+
+QString Database::getFilename() const {
+    return source;
+}

@@ -7,7 +7,7 @@
 #include <QSqlQueryModel>
 #include <QMessageBox>
 
-DbQuery::DbQuery(QWidget *widget, Database *database)
+DbQuery::DbQuery(QWidget *widget, IDatabase *database)
     : widget(widget),
       database(database) {
     this->container = std::make_unique<QWidget>(this->widget);
@@ -42,7 +42,7 @@ bool DbQuery::execute(const QStringList &queryList, QStringList *errors) {
     const int width = widgetRect.width();
     const int height = widgetRect.height();
 
-    const QSqlDatabase db = this->database->getDatabase();
+    const QSqlDatabase db = this->database->getRawDatabase();
     int count = 0;
 
     for (int i = 0; i < queryList.length(); ++i) {

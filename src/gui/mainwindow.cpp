@@ -2,6 +2,7 @@
 #include "../settings/recentfiles.h"
 #include "ui_mainwindow.h"
 #include "../settings/settings.h"
+#include "../database/sqlitedatabase.h"
 #include "../database/dbexport.h"
 #include "../database/dbexportschema.h"
 #include "../threading/mainthread.h"
@@ -26,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowTitle("SQLite Query Analyzer");
     this->connectSignalSlots();
 
-    this->database = std::make_unique<Database>();
+    this->database = std::make_unique<QSqlDatabaseAdapter>();
     this->analyzer = std::make_unique<DbAnalyzer>(database.get());
     this->query = std::make_unique<DbQuery>(ui->queryResultsGrid,
                                             this->database.get());
@@ -549,7 +550,7 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item,
 
         // ReSharper disable once CppDFAMemoryLeak
         const auto model = new QSqlTableModel(nullptr,
-                                              this->database->getDatabase());
+                                              this->database->getRawDatabase());
         model->setTable(item->text(column));
         model->setEditStrategy(QSqlTableModel::OnFieldChange);
 
