@@ -32,7 +32,23 @@
 
 **Progress** — A progress tracker for long-running operations, reporting the number of rows processed.
 
-## Architecture Vocabulary
+**SessionManager** — The module that manages application session persistence: saving and restoring window state, open database file, unsaved query text, and splitter positions.
+
+**DatabaseManager** — The module that manages database lifecycle operations: opening, analyzing, and closing databases.
+
+**ExportOrchestrator** — The module that coordinates async export operations (SQL script, CSV) with cancellation support.
+
+**QueryResult** — A plain struct representing query execution output: success flag, rows with column values, and errors.
+
+**ISchemaScript** — Interface for schema export operations. The seam between schema generation and callers.
+
+**IDataExport** — Interface for data export operations. The seam between data export and callers.
+
+**IQueryExecutor** — Interface for SQL query execution. The seam between query execution and result presentation.
+
+**IQueryResultPresenter** — Interface for displaying query results. The seam between query results and UI.
+
+**Architecture Vocabulary**
 
 See [LANGUAGE.md](LANGUAGE.md) for full definitions.
 
