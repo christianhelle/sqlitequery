@@ -4,8 +4,8 @@
 #include "ui_mainwindow.h"
 #include "../settings/isettings.h"
 #include "../database/sqlitedatabase.h"
-#include "../database/dbexport.h"
-#include "../database/dbexportschema.h"
+#include "../database/schemaexport.h"
+#include "../database/dataexport.h"
 #include "../threading/mainthread.h"
 #include "promptsadapter.h"
 
@@ -398,7 +398,7 @@ void MainWindow::executeQuery() const {
 void MainWindow::scriptSchema() const {
     DatabaseInfo info;
     analyzer->analyze(info);
-    const auto exporter = std::make_unique<DbSchemaExport>(info);
+    const auto exporter = std::make_unique<SchemaExport>(info);
     const auto schema = exporter->exportSchema();
     ui->textEdit->setPlainText(schema);
 }
@@ -437,9 +437,9 @@ void MainWindow::exportDataAsync(const QString &filepath,
                                  const CancellationToken cancellationToken) {
     auto future = QtConcurrent::run(
             [this, info, filepath, cancellationToken, progress]() {
-                const auto exporter = std::make_unique<DbDataExport>(info);
-                exporter->exportDataToSqlFile(database.get(), filepath, &cancellationToken,
-                                              progress);
+                const auto exporter = std::make_unique<DataExport>(info);
+                exporter->exportToSqlFile(database.get(), filepath, &cancellationToken,
+                                               progress);
             });
     future.then([this, progress] {
         MainThread::run([this, progress]() {
@@ -491,11 +491,11 @@ void MainWindow::exportDataToCsvFiles() {
 
     auto future = QtConcurrent::run(
             [this, info, outputFolder, cancellationToken, progress, delimeter]() {
-                const auto exporter = std::make_unique<DbDataExport>(info);
-                exporter->exportDataToCsvFile(database.get(),
-                                              outputFolder,
-                                              delimeter,
-                                              &cancellationToken, progress);
+                const auto exporter = std::make_unique<DataExport>(info);
+                exporter->exportToCsvFile(database.get(),
+                                               outputFolder,
+                                               delimeter,
+                                               &cancellationToken, progress);
             });
     future.then([this, progress] {
         MainThread::run([this, progress]() {

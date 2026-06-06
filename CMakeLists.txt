@@ -64,6 +64,14 @@ set(COMMON_SRCS
   src/database/dbexportschema.h
   src/database/dbexportdata.cpp
   src/database/dbexportdata.h
+  src/database/dbexportschema.cpp
+  src/database/dbexportschema.h
+  src/database/ischemaexport.h
+  src/database/schemaexport.cpp
+  src/database/schemaexport.h
+  src/database/idataexport.h
+  src/database/dataexport.cpp
+  src/database/dataexport.h
   src/database/sqlitedatabase.cpp
   src/database/sqlitedatabase.h
   src/database/idatabase.h

@@ -1,6 +1,7 @@
 #include "export.h"
 #include "../database/dbanalyzer.h"
 #include "../database/sqlitedatabase.h"
+#include "../database/dataexport.h"
 
 void Export::exportDataToCsvFile(const QString &file,
                                   const QString &outputFolder,
@@ -27,8 +28,8 @@ void Export::exportDataToCsvFile(const QString &file,
     DatabaseInfo info;
     analyzer->analyze(info);
 
-    DbDataExport dataExport(info);
-    dataExport.exportDataToCsvFile(database.get(),
+    DataExport dataExport(info);
+    dataExport.exportToCsvFile(database.get(),
                                    outputFolder,
                                    ",",
                                    &cancellationToken,

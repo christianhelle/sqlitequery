@@ -6,11 +6,11 @@
 
 #include "../threading/cancellation.h"
 #include "../database/dbanalyzer.h"
-#include "../database/dbexport.h"
-#include "../database/dbexportdata.h"
 #include "../database/dbquery.h"
 #include "../database/dbtree.h"
 #include "../database/idatabase.h"
+#include "../database/ischemaexport.h"
+#include "../database/idataexport.h"
 #include "../settings/irecentfiles.h"
 #include "../settings/isettings.h"
 #include "highlighter.h"
