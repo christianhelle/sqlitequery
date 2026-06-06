@@ -8,6 +8,9 @@
 #include "../database/dataexport.h"
 #include "../database/queryexecutor.h"
 #include "../database/queryresultpresenter.h"
+#include "../session/sessionmanager.h"
+#include "../session/databasemanager.h"
+#include "../session/exportorchestrator.h"
 #include "../threading/mainthread.h"
 #include "promptsadapter.h"
 
@@ -46,6 +49,10 @@ MainWindow::MainWindow(QWidget *parent) :
     this->settings->init();
     this->recentFiles = std::make_unique<RecentFilesAdapter>();
     this->prompts = std::make_unique<PromptsAdapter>(settings.get());
+    
+    this->sessionManager = std::make_unique<SessionManager>(settings.get());
+    this->databaseManager = std::make_unique<DatabaseManager>();
+    this->exportOrchestrator = std::make_unique<ExportOrchestrator>();
 
     this->recentFilesMenu = std::make_unique<QMenu>("Recent Files");
     ui->menuFile->insertMenu(ui->actionSave, recentFilesMenu.get());
@@ -176,27 +183,26 @@ void MainWindow::connectSignalSlots() const {
 }
 
 void MainWindow::restoreWindowState() {
-    WindowState windowState;
-    settings->getMainWindowState(&windowState);
-    this->resize(windowState.size);
+    WindowData windowData = sessionManager->loadWindowData();
+    this->resize(windowData.size);
 
-    if (windowState.position.x() > 0 &&
-        windowState.position.y() > 0)
-        this->move(windowState.position);
+    if (windowData.position.x() > 0 &&
+        windowData.position.y() > 0)
+        this->move(windowData.position);
 
-    if (windowState.treeWidth > 0 &&
-        windowState.tabWidth > 0) {
+    if (windowData.treeWidth > 0 &&
+        windowData.tabWidth > 0) {
         ui->splitterMain->setSizes({
-                windowState.treeWidth,
-                windowState.tabWidth
+                windowData.treeWidth,
+                windowData.tabWidth
         });
     }
 
-    if (windowState.queryTextHeight > 0 &&
-        windowState.queryResultHeight > 0)
+    if (windowData.queryTextHeight > 0 &&
+        windowData.queryResultHeight > 0)
         ui->splitterQueryTab->setSizes({
-                windowState.queryTextHeight,
-                windowState.queryResultHeight
+                windowData.queryTextHeight,
+                windowData.queryResultHeight
         });
 }
 
@@ -204,18 +210,14 @@ void MainWindow::saveWindowState(const QSize &size) const {
     if (!this->loaded)
         return;
 
-    const auto windowSize = size;
-    const auto position = this->window()->pos();
-    const int treeWidth = ui->splitterMain->sizes().first();
-    const int tabWidth = ui->splitterMain->sizes().last();
-    const int queryTextHeight = ui->splitterQueryTab->sizes().first();
-    const int queryResultHeight = ui->splitterQueryTab->sizes().last();
-    settings->setMainWindowState(windowSize,
-                                 position,
-                                 treeWidth,
-                                 tabWidth,
-                                 queryTextHeight,
-                                 queryResultHeight);
+    WindowData window;
+    window.size = size;
+    window.position = this->window()->pos();
+    window.treeWidth = ui->splitterMain->sizes().first();
+    window.tabWidth = ui->splitterMain->sizes().last();
+    window.queryTextHeight = ui->splitterQueryTab->sizes().first();
+    window.queryResultHeight = ui->splitterQueryTab->sizes().last();
+    sessionManager->saveWindowData(window);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *e) {
@@ -247,19 +249,25 @@ void MainWindow::openRecentFile() {
 }
 
 void MainWindow::restoreLastSession() {
-    SessionState state;
-    settings->getSessionState(&state);
-    if (!state.sqliteFile.isEmpty()) {
-        this->openDatabase(state.sqliteFile);
-        ui->textEdit->setPlainText(state.query);
+    SessionData session = sessionManager->loadSession();
+    if (!session.sqliteFile.isEmpty()) {
+        this->openDatabase(session.sqliteFile);
+        ui->textEdit->setPlainText(session.queryText);
     }
 }
 
 void MainWindow::saveSession() const {
-    SessionState state;
-    state.sqliteFile = this->database->getFilename();
-    state.query = ui->textEdit->toPlainText();
-    settings->setSessionState(state.sqliteFile, state.query);
+    SessionData session;
+    session.sqliteFile = this->database->getFilename();
+    session.queryText = ui->textEdit->toPlainText();
+    WindowData window;
+    window.size = this->window()->size();
+    window.position = this->window()->pos();
+    window.treeWidth = ui->splitterMain->sizes().first();
+    window.tabWidth = ui->splitterMain->sizes().last();
+    window.queryTextHeight = ui->splitterQueryTab->sizes().first();
+    window.queryResultHeight = ui->splitterQueryTab->sizes().last();
+    sessionManager->saveSession(session, window);
 }
 
 void MainWindow::createNewFile() {
@@ -293,8 +301,8 @@ void MainWindow::openDatabase(const QString &filename) {
         return;
     }
 
-    this->analyzeDatabase();
-    RecentFiles::add(filename);
+    analyzeDatabase();
+    recentFiles->add(filename);
 
     ui->queryResultMessagesTextEdit->clear();
     ui->tabWidget->setCurrentIndex(0);
@@ -357,13 +365,9 @@ void MainWindow::analyzeDatabase() const {
     }
 
     DatabaseInfo info;
-    if (!analyzer->analyze(info)) {
-        return;
-    }
+    databaseManager->analyzeDatabase(database.get(), info);
 
     this->tree->populateTree(info);
-
-    this->database->close();
 }
 
 void MainWindow::executeQuery() const {
@@ -438,11 +442,13 @@ void MainWindow::showExportDataProgress(const ExportDataProgress *progress,
 }
 
 void MainWindow::exportDataAsync(const QString &filepath,
-                                 const DatabaseInfo &info,
-                                 const std::unique_ptr<ExportDataProgress>::pointer progress,
-                                 const CancellationToken cancellationToken) {
+                                  const DatabaseInfo &info,
+                                  ExportDataProgress *progress,
+                                  CancellationToken cancellationToken) {
     auto future = QtConcurrent::run(
             [this, info, filepath, cancellationToken, progress]() {
+                if (cancellationToken.isCancellationRequested())
+                    return;
                 const auto exporter = std::make_unique<DataExport>(info);
                 exporter->exportToSqlFile(database.get(), filepath, &cancellationToken,
                                                progress);
@@ -497,6 +503,8 @@ void MainWindow::exportDataToCsvFiles() {
 
     auto future = QtConcurrent::run(
             [this, info, outputFolder, cancellationToken, progress, delimeter]() {
+                if (cancellationToken.isCancellationRequested())
+                    return;
                 const auto exporter = std::make_unique<DataExport>(info);
                 exporter->exportToCsvFile(database.get(),
                                                outputFolder,

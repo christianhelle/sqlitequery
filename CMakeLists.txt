@@ -87,7 +87,15 @@ set(COMMON_SRCS
   src/cli/export.cpp
   src/cli/export.h
   src/cli/script.cpp
-  src/cli/script.h)
+  src/session/isessionmanager.h
+  src/session/sessionmanager.cpp
+  src/session/sessionmanager.h
+  src/session/idatabasemanager.h
+  src/session/databasemanager.cpp
+  src/session/databasemanager.h
+  src/session/iexportorchestrator.h
+  src/session/exportorchestrator.cpp
+  src/session/exportorchestrator.h)
 
 if(COMMAND qt_add_executable)
   qt_add_executable(${APP_NAME} WIN32 MACOSX_BUNDLE ${COMMON_SRCS} $<$<PLATFORM_ID:Windows>:${app_icon_resource_windows}>)

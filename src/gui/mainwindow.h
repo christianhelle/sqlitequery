@@ -15,6 +15,9 @@
 #include "../database/iqueryresultpresenter.h"
 #include "../settings/irecentfiles.h"
 #include "../settings/isettings.h"
+#include "../session/isessionmanager.h"
+#include "../session/idatabasemanager.h"
+#include "../session/iexportorchestrator.h"
 #include "highlighter.h"
 #include "iprompts.h"
 
@@ -62,7 +65,7 @@ public slots:
 
     void exportDataAsync(const QString &filepath,
                          const DatabaseInfo &info,
-                         std::unique_ptr<ExportDataProgress>::pointer progress,
+                         ExportDataProgress *progress,
                          CancellationToken cancellationToken);
 
     void exportDataToSqlScript();
@@ -101,6 +104,9 @@ private:
     std::unique_ptr<IPrompts> prompts;
     std::unique_ptr<IQueryExecutor> queryExecutor;
     std::unique_ptr<IQueryResultPresenter> queryPresenter;
+    std::unique_ptr<ISessionManager> sessionManager;
+    std::unique_ptr<IDatabaseManager> databaseManager;
+    std::unique_ptr<IExportOrchestrator> exportOrchestrator;
     bool loaded = false;
 
     void analyzeDatabase() const;
