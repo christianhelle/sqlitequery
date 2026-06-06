@@ -11,7 +11,10 @@
 #include "../database/dbquery.h"
 #include "../database/dbtree.h"
 #include "../database/idatabase.h"
+#include "../settings/irecentfiles.h"
+#include "../settings/isettings.h"
 #include "highlighter.h"
+#include "iprompts.h"
 
 namespace Ui {
     class MainWindow;
@@ -91,6 +94,9 @@ private:
     std::unique_ptr<Highlighter> highlighter;
     std::unique_ptr<ExportDataProgress> dataExportProgress;
     std::unique_ptr<CancellationTokenSource> tcs;
+    std::unique_ptr<IRecentFiles> recentFiles;
+    std::unique_ptr<ISettings> settings;
+    std::unique_ptr<IPrompts> prompts;
     bool loaded = false;
 
     void analyzeDatabase() const;

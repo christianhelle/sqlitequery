@@ -49,6 +49,12 @@ set(COMMON_SRCS
   src/settings/recentfiles.h
   src/settings/settings.cpp
   src/settings/settings.h
+  src/settings/irecentfiles.h
+  src/settings/recentfilesadapter.cpp
+  src/settings/recentfilesadapter.h
+  src/settings/isettings.h
+  src/settings/settingsadapter.cpp
+  src/settings/settingsadapter.h
   src/database/dbexport.cpp
   src/database/dbexport.h
   src/threading/cancellation.cpp

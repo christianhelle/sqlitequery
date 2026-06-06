@@ -1,12 +1,13 @@
 #include "mainwindow.h"
-#include "../settings/recentfiles.h"
+#include "../settings/recentfilesadapter.h"
+#include "../settings/settingsadapter.h"
 #include "ui_mainwindow.h"
-#include "../settings/settings.h"
+#include "../settings/isettings.h"
 #include "../database/sqlitedatabase.h"
 #include "../database/dbexport.h"
 #include "../database/dbexportschema.h"
 #include "../threading/mainthread.h"
-#include "prompts.h"
+#include "promptsadapter.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
@@ -35,13 +36,17 @@ MainWindow::MainWindow(QWidget *parent) :
     this->tree = std::make_unique<DbTree>(ui->treeWidget);
     this->highlighter = std::make_unique<Highlighter>(ui->textEdit->document());
 
+    this->settings = std::make_unique<SettingsAdapter>();
+    this->settings->init();
+    this->recentFiles = std::make_unique<RecentFilesAdapter>();
+    this->prompts = std::make_unique<PromptsAdapter>(settings.get());
+
     this->recentFilesMenu = std::make_unique<QMenu>("Recent Files");
     ui->menuFile->insertMenu(ui->actionSave, recentFilesMenu.get());
 
     this->statusBar = std::make_unique<QStatusBar>(this);
     this->setStatusBar(statusBar.get());
 
-    Settings::init();
     this->loadRecentFiles();
     restoreWindowState();
 
@@ -82,7 +87,7 @@ void MainWindow::deleteSelectedTable() {
         return;
 
     const auto tableName = item->text(0);
-    if (!Prompts::confirmDelete(this, tableName)) {
+    if (!prompts->confirmDelete(this, tableName)) {
         return;
     }
 
@@ -99,7 +104,7 @@ void MainWindow::deleteSelectedTable() {
     if (!deleted) {
         const auto errorMessage = errors.join("\r\n");
         ui->queryResultMessagesTextEdit->setPlainText(errorMessage);
-        Prompts::showError(this, errorMessage);
+        prompts->showError(this, errorMessage);
     } else {
         this->analyzeDatabase();
     }
@@ -166,7 +171,7 @@ void MainWindow::connectSignalSlots() const {
 
 void MainWindow::restoreWindowState() {
     WindowState windowState;
-    Settings::getMainWindowState(&windowState);
+    settings->getMainWindowState(&windowState);
     this->resize(windowState.size);
 
     if (windowState.position.x() > 0 &&
@@ -199,7 +204,7 @@ void MainWindow::saveWindowState(const QSize &size) const {
     const int tabWidth = ui->splitterMain->sizes().last();
     const int queryTextHeight = ui->splitterQueryTab->sizes().first();
     const int queryResultHeight = ui->splitterQueryTab->sizes().last();
-    Settings::setMainWindowState(windowSize,
+    settings->setMainWindowState(windowSize,
                                  position,
                                  treeWidth,
                                  tabWidth,
@@ -212,7 +217,7 @@ void MainWindow::resizeEvent(QResizeEvent *e) {
 }
 
 void MainWindow::loadRecentFiles() const {
-    QStringList files = RecentFiles::getList();
+    QStringList files = recentFiles->list();
     if (files.empty())
         return;
 
@@ -237,7 +242,7 @@ void MainWindow::openRecentFile() {
 
 void MainWindow::restoreLastSession() {
     SessionState state;
-    Settings::getSessionState(&state);
+    settings->getSessionState(&state);
     if (!state.sqliteFile.isEmpty()) {
         this->openDatabase(state.sqliteFile);
         ui->textEdit->setPlainText(state.query);
@@ -248,7 +253,7 @@ void MainWindow::saveSession() const {
     SessionState state;
     state.sqliteFile = this->database->getFilename();
     state.query = ui->textEdit->toPlainText();
-    Settings::setSessionState(state.sqliteFile, state.query);
+    settings->setSessionState(state.sqliteFile, state.query);
 }
 
 void MainWindow::createNewFile() {
@@ -259,9 +264,9 @@ void MainWindow::createNewFile() {
         return;
     }
 
-    const QString filepath = Prompts::getFilePath(this, QFileDialog::AcceptSave);
+    const QString filepath = prompts->getFilePath(this, QFileDialog::AcceptSave);
     this->openDatabase(filepath);
-    RecentFiles::add(filepath);
+    recentFiles->add(filepath);
     this->loadRecentFiles();
 }
 
@@ -306,9 +311,9 @@ void MainWindow::openExistingFile() {
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
-    const auto filepath = Prompts::getFilePath(this, QFileDialog::AcceptOpen);
+    const auto filepath = prompts->getFilePath(this, QFileDialog::AcceptOpen);
     this->openDatabase(filepath);
-    RecentFiles::add(filepath);
+    recentFiles->add(filepath);
     this->loadRecentFiles();
 }
 
@@ -445,7 +450,7 @@ void MainWindow::exportDataAsync(const QString &filepath,
 }
 
 void MainWindow::exportDataToSqlScript() {
-    const QString filepath = Prompts::getFilePath(this, QFileDialog::AcceptSave);
+    const QString filepath = prompts->getFilePath(this, QFileDialog::AcceptSave);
     if (filepath.isEmpty())
         return;
 
@@ -465,13 +470,13 @@ void MainWindow::exportDataToSqlScript() {
 }
 
 void MainWindow::exportDataToCsvFiles() {
-    const auto outputFolder = Prompts::getFolderPath(this);
+    const auto outputFolder = prompts->getFolderPath(this);
     if (outputFolder.isEmpty()) {
         return;
     }
 
-    Settings::setLastUsedExportPath(outputFolder);
-    const auto delimeter = Prompts::getCsvDelimiter(this, ",");
+    settings->setLastUsedExportPath(outputFolder);
+    const auto delimeter = prompts->getCsvDelimiter(this, ",");
 
     DatabaseInfo info;
     analyzer->analyze(info);
@@ -510,7 +515,7 @@ void MainWindow::saveSql() {
     const auto sql = ui->textEdit->toPlainText();
     if (sql.isEmpty())
         return;
-    const QString filepath = Prompts::getFilePath(this, QFileDialog::AcceptSave);
+    const QString filepath = prompts->getFilePath(this, QFileDialog::AcceptSave);
     const auto file = std::make_unique<QFile>(filepath);
     if (file->
         open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
