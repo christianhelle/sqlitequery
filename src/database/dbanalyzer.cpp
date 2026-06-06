@@ -2,7 +2,7 @@
 
 #include <QFileInfo>
 
-DbAnalyzer::DbAnalyzer(Database *database)
+DbAnalyzer::DbAnalyzer(IDatabase *database)
     : database(database) {
 }
 

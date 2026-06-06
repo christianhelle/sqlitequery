@@ -58,6 +58,9 @@ set(COMMON_SRCS
   src/database/dbexportschema.h
   src/database/dbexportdata.cpp
   src/database/dbexportdata.h
+  src/database/sqlitedatabase.cpp
+  src/database/sqlitedatabase.h
+  src/database/idatabase.h
   src/database/progress.h
   src/gui/prompts.cpp
   src/gui/prompts.h

@@ -9,6 +9,8 @@ public:
         : info(std::move(info)) {
     }
 
+    virtual ~DbExport() = default;
+
 protected:
     [[nodiscard]] DatabaseInfo getDatabaseInfo() const { return info; }
     [[nodiscard]] QStringList getTextTypes() const { return textTypes; }
