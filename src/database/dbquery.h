@@ -1,14 +1,18 @@
 #ifndef DBQUERY_H
 #define DBQUERY_H
 
-#include <QScrollArea>
-#include <QTableView>
+#include <QString>
+#include <QStringList>
+#include <memory>
 
-#include "sqlitedatabase.h"
+#include "../database/queryexecutor.h"
+
+class QueryResultPresenter;
 
 class DbQuery {
 public:
-    DbQuery(QWidget *, SqliteDatabase *);
+    DbQuery(QWidget *, IDatabase *);
+    ~DbQuery();
 
     bool execute(const QStringList &, QStringList *);
 
@@ -16,11 +20,9 @@ public:
 
 private:
     QWidget *widget;
-    SqliteDatabase *database;
-
-    std::unique_ptr<QScrollArea> scrollArea;
-    std::unique_ptr<QWidget> container;
-    QList<QTableView *> tableResults{};
+    IDatabase *database;
+    std::unique_ptr<QueryExecutor> executor;
+    std::unique_ptr<QueryResultPresenter> presenter;
 };
 
 #endif // DBQUERY_H
