@@ -22,6 +22,7 @@ SOURCES += \
     gui/highlighter.cpp \
     database/dbquery.cpp \
     database/sqlitedatabase.cpp \
+    database/inmemorydatabase.cpp \
     database/dbtree.cpp \
     settings/recentfiles.cpp \
     settings/settings.cpp \
@@ -44,6 +45,7 @@ HEADERS += \
     gui/highlighter.h \
     database/dbquery.h \
     database/sqlitedatabase.h \
+    database/inmemorydatabase.h \
     database/dbtree.h \
     settings/recentfiles.h \
     settings/settings.h \

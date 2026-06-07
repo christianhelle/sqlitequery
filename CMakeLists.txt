@@ -34,6 +34,8 @@ set(COMMON_SRCS
   src/database/idatabase.h
   src/database/sqlitedatabase.cpp
   src/database/sqlitedatabase.h
+  src/database/inmemorydatabase.cpp
+  src/database/inmemorydatabase.h
   src/database/databaseinfo.h
   src/database/dbanalyzer.cpp
   src/database/dbanalyzer.h
