@@ -15,7 +15,7 @@ void Export::exportDataToCsvFile(const QString &file,
     const auto tcs = std::make_unique<CancellationTokenSource>();
     const auto cancellationToken = tcs->get();
 
-    const auto database = std::make_unique<Database>();
+    const auto database = std::make_unique<SqliteDatabase>();
     database->setSource(file);
     if (!database->open()) {
         qWarning("Unable to open file");

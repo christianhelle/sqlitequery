@@ -2,7 +2,7 @@
 #define DBDATAEXPORT_H
 
 #include "dbexport.h"
-#include "database.h"
+#include "sqlitedatabase.h"
 #include "../threading/cancellation.h"
 
 #include <utility>
@@ -15,12 +15,12 @@ public:
         DbExport(std::move(info)) {
     }
 
-    void exportDataToSqlFile(const Database *database,
+    void exportDataToSqlFile(const SqliteDatabase *database,
                              const QString &filename,
                              const CancellationToken *cancellationToken,
                              ExportDataProgress *progress) const;
 
-    void exportDataToCsvFile(const Database *database,
+    void exportDataToCsvFile(const SqliteDatabase *database,
                              const QString &outputFolder,
                              const QString &delimiter,
                              const CancellationToken *cancellationToken,

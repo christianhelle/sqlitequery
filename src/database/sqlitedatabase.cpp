@@ -1,28 +1,29 @@
-#include "database.h"
+#include "sqlitedatabase.h"
 #include <QSqlDatabase>
+#include <QSqlQuery>
 
-Database::Database() {
+SqliteDatabase::SqliteDatabase() {
     database = QSqlDatabase::addDatabase("QSQLITE");
     database.setHostName("localhost");
 }
 
-void Database::setSource(const QString &filename) {
+void SqliteDatabase::setSource(const QString &filename) {
     this->close();
     this->source = filename;
     database.setDatabaseName(filename);
 }
 
-bool Database::open() {
+bool SqliteDatabase::open() {
     this->close();
     return database.open();
 }
 
-void Database::close() {
+void SqliteDatabase::close() {
     if (database.isOpen())
         database.close();
 }
 
-void Database::shrink() {
+void SqliteDatabase::shrink() {
     if (!database.isOpen())
         database.open();
 

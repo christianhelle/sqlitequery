@@ -21,7 +21,7 @@ SOURCES += \
     database/dbanalyzer.cpp \
     gui/highlighter.cpp \
     database/dbquery.cpp \
-    database/database.cpp \
+    database/sqlitedatabase.cpp \
     database/dbtree.cpp \
     settings/recentfiles.cpp \
     settings/settings.cpp \
@@ -40,9 +40,10 @@ HEADERS += \
     gui/mainwindow.h \
     database/dbanalyzer.h \
     database/databaseinfo.h \
+    database/idatabase.h \
     gui/highlighter.h \
     database/dbquery.h \
-    database/database.h \
+    database/sqlitedatabase.h \
     database/dbtree.h \
     settings/recentfiles.h \
     settings/settings.h \

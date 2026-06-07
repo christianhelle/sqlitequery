@@ -31,8 +31,9 @@ endif()
 # Define common source list once
 set(COMMON_SRCS
   src/main.cpp
-  src/database/database.cpp
-  src/database/database.h
+  src/database/idatabase.h
+  src/database/sqlitedatabase.cpp
+  src/database/sqlitedatabase.h
   src/database/databaseinfo.h
   src/database/dbanalyzer.cpp
   src/database/dbanalyzer.h

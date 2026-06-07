@@ -5,7 +5,7 @@ SqlExportStrategy::SqlExportStrategy(DatabaseInfo info, QString filepath)
     : info_(std::move(info)), filepath_(std::move(filepath)) {
 }
 
-void SqlExportStrategy::execute(Database *db, const CancellationToken *token, ExportDataProgress *progress) {
+void SqlExportStrategy::execute(SqliteDatabase *db, const CancellationToken *token, ExportDataProgress *progress) {
     DbDataExport exporter(info_);
     exporter.exportDataToSqlFile(db, filepath_, token, progress);
 }
@@ -14,7 +14,7 @@ CsvExportStrategy::CsvExportStrategy(DatabaseInfo info, QString outputFolder, QS
     : info_(std::move(info)), outputFolder_(std::move(outputFolder)), delimiter_(std::move(delimiter)) {
 }
 
-void CsvExportStrategy::execute(Database *db, const CancellationToken *token, ExportDataProgress *progress) {
+void CsvExportStrategy::execute(SqliteDatabase *db, const CancellationToken *token, ExportDataProgress *progress) {
     DbDataExport exporter(info_);
     exporter.exportDataToCsvFile(db, outputFolder_, delimiter_, token, progress);
 }

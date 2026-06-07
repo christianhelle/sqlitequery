@@ -4,7 +4,7 @@
 #include <QSqlError>
 #include <QElapsedTimer>
 
-#include "../database/database.h"
+#include "../database/sqlitedatabase.h"
 #include "../database/dbanalyzer.h"
 
 void Script::executeSqlFile(const QString &sqlFilePath,
@@ -22,14 +22,14 @@ void Script::executeSqlFile(const QString &sqlFilePath,
     const QStringList queryList(sqlScript.split(";", Qt::SkipEmptyParts));
     QStringList errors;
 
-    const auto database = std::make_unique<Database>();
+    const auto database = std::make_unique<SqliteDatabase>();
     database->setSource(dbFilePath);
     if (!database->open()) {
         qWarning("Unable to open database file");
         return;
     }
 
-    const QSqlDatabase db = database->getDatabase();
+    const QSqlDatabase db = database->getConnection();
     for (QString sql: queryList) {
         sql = sql.trimmed().replace('\n', "", Qt::CaseInsensitive);
         if (sql.isEmpty())

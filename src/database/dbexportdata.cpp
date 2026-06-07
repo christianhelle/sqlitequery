@@ -31,7 +31,7 @@ QStringList DbDataExport::getColumnValueDefs(const Table &table,
     return valueDefinitions;
 }
 
-void DbDataExport::exportDataToSqlFile(const Database *database,
+void DbDataExport::exportDataToSqlFile(const SqliteDatabase *database,
                                        const QString &filename,
                                        const CancellationToken *cancellationToken,
                                        ExportDataProgress *progress) const {
@@ -49,9 +49,10 @@ void DbDataExport::exportDataToSqlFile(const Database *database,
         }
         out << "-- " << table.name << "\n";
 
-        QSqlQuery query(database->getDatabase());
+        QSqlQuery query(database->getConnection());
         query.setForwardOnly(true);
         if (!query.exec(QString("SELECT * FROM \"%1\"").arg(table.name))) {
+            file->close();
             continue;
         }
         const auto columns = getColumnDefs(table).join(", ");
@@ -68,7 +69,7 @@ void DbDataExport::exportDataToSqlFile(const Database *database,
     progress->setCompleted();
 }
 
-void DbDataExport::exportDataToCsvFile(const Database *database,
+void DbDataExport::exportDataToCsvFile(const SqliteDatabase *database,
                                        const QString &outputFolder,
                                        const QString &delimiter,
                                        const CancellationToken *cancellationToken,
@@ -89,7 +90,7 @@ void DbDataExport::exportDataToCsvFile(const Database *database,
         QTextStream out(file.get());
         out << columns << "\n";
 
-        QSqlQuery query(database->getDatabase());
+        QSqlQuery query(database->getConnection());
         query.setForwardOnly(true);
         if (!query.exec(QString("SELECT * FROM \"%1\"").arg(table.name))) {
             file->close();

@@ -2,7 +2,12 @@
 
 #include <QFileInfo>
 
-DbAnalyzer::DbAnalyzer(Database *database)
+#include "dbanalyzer.h"
+
+#include <QFileInfo>
+#include <QSqlQuery>
+
+DbAnalyzer::DbAnalyzer(SqliteDatabase *database)
     : database(database) {
 }
 
@@ -26,7 +31,7 @@ void DbAnalyzer::loadTables(DatabaseInfo &info) const {
         return;
     }
 
-    QSqlQuery query(this->database->getDatabase());
+    QSqlQuery query(this->database->getConnection());
     if (!query.exec(sql)) {
         database->close();
         return;
@@ -52,7 +57,7 @@ void DbAnalyzer::loadColumns(DatabaseInfo &info) const {
     for (auto &table: info.tables) {
         const QString sql = "PRAGMA table_info (\"" + table.name + "\")";
 
-        QSqlQuery query(this->database->getDatabase());
+        QSqlQuery query(this->database->getConnection());
         if (!query.exec(sql)) {
             continue;
         }

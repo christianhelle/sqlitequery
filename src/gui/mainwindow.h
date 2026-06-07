@@ -79,7 +79,7 @@ private:
     std::unique_ptr<Ui::MainWindow> ui;
     std::unique_ptr<QMenu> recentFilesMenu;
     std::unique_ptr<QStatusBar> statusBar;
-    std::unique_ptr<Database> database;
+    std::unique_ptr<SqliteDatabase> database;
     std::unique_ptr<DbAnalyzer> analyzer;
     std::unique_ptr<DbQuery> query;
     std::unique_ptr<DbTree> tree;

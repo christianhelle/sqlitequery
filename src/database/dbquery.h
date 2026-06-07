@@ -4,11 +4,11 @@
 #include <QScrollArea>
 #include <QTableView>
 
-#include "database.h"
+#include "sqlitedatabase.h"
 
 class DbQuery {
 public:
-    DbQuery(QWidget *, Database *);
+    DbQuery(QWidget *, SqliteDatabase *);
 
     bool execute(const QStringList &, QStringList *);
 
@@ -16,7 +16,7 @@ public:
 
 private:
     QWidget *widget;
-    Database *database;
+    SqliteDatabase *database;
 
     std::unique_ptr<QScrollArea> scrollArea;
     std::unique_ptr<QWidget> container;
