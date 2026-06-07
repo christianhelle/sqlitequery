@@ -13,7 +13,7 @@ ExportOrchestrator::~ExportOrchestrator() {
     cancel();
 }
 
-void ExportOrchestrator::startExport(std::unique_ptr<ExportStrategy> strategy, SqliteDatabase *db) {
+void ExportOrchestrator::startExport(std::unique_ptr<ExportStrategy> strategy, IDatabase *db) {
     progress_ = std::make_unique<ExportDataProgress>();
     tcs_ = std::make_unique<CancellationTokenSource>();
     auto token = tcs_->get();

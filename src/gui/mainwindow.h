@@ -10,6 +10,7 @@
 #include "../database/dbexportdata.h"
 #include "../database/dbquery.h"
 #include "../database/dbtree.h"
+#include "../database/sqlitedatabase.h"
 #include "highlighter.h"
 #include "sessionmanager.h"
 #include "exportorchestrator.h"

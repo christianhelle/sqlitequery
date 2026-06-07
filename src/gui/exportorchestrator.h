@@ -14,7 +14,7 @@ public:
     explicit ExportOrchestrator(QObject *parent = nullptr);
     ~ExportOrchestrator() override;
 
-    void startExport(std::unique_ptr<ExportStrategy> strategy, SqliteDatabase *db);
+    void startExport(std::unique_ptr<ExportStrategy> strategy, IDatabase *db);
     void cancel();
 
     bool isExporting() const { return progress_ != nullptr; }
