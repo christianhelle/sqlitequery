@@ -2,7 +2,7 @@
 #define DBDATAEXPORT_H
 
 #include "dbexport.h"
-#include "sqlitedatabase.h"
+#include "idatabase.h"
 #include "../threading/cancellation.h"
 
 #include <utility>
@@ -15,12 +15,12 @@ public:
         DbExport(std::move(info)) {
     }
 
-    void exportDataToSqlFile(const SqliteDatabase *database,
+    void exportDataToSqlFile(IDatabase *database,
                              const QString &filename,
                              const CancellationToken *cancellationToken,
                              ExportDataProgress *progress) const;
 
-    void exportDataToCsvFile(const SqliteDatabase *database,
+    void exportDataToCsvFile(IDatabase *database,
                              const QString &outputFolder,
                              const QString &delimiter,
                              const CancellationToken *cancellationToken,
@@ -30,7 +30,7 @@ private:
     static QStringList getColumnDefs(const Table &table);
 
     [[nodiscard]] QStringList getColumnValueDefs(const Table &table,
-                                                 const QSqlQuery &query) const;
+                                                 const QList<QVariant> &values) const;
 };
 
 #endif // DBDATAEXPORT_H

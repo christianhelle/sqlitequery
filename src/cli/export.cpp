@@ -1,4 +1,5 @@
 #include "export.h"
+#include "../database/sqlitedatabase.h"
 #include "../database/dbanalyzer.h"
 
 void Export::exportDataToCsvFile(const QString &file,

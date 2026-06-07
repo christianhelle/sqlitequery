@@ -10,10 +10,11 @@ QStringList DbDataExport::getColumnDefs(const Table &table) {
 }
 
 QStringList DbDataExport::getColumnValueDefs(const Table &table,
-                                             const QSqlQuery &query) const {
+                                             const QList<QVariant> &values) const {
     QStringList valueDefinitions;
-    for (const auto &column: table.columns) {
-        auto value = query.value(column.name).toString();
+    for (int i = 0; i < table.columns.size(); ++i) {
+        const auto &column = table.columns.at(i);
+        auto value = values.at(i).toString();
         bool isText = false;
         for (const auto &type: getTextTypes()) {
             if (column.dataType.contains(type, Qt::CaseInsensitive)) {
@@ -31,7 +32,7 @@ QStringList DbDataExport::getColumnValueDefs(const Table &table,
     return valueDefinitions;
 }
 
-void DbDataExport::exportDataToSqlFile(const SqliteDatabase *database,
+void DbDataExport::exportDataToSqlFile(IDatabase *database,
                                        const QString &filename,
                                        const CancellationToken *cancellationToken,
                                        ExportDataProgress *progress) const {
@@ -49,27 +50,29 @@ void DbDataExport::exportDataToSqlFile(const SqliteDatabase *database,
         }
         out << "-- " << table.name << "\n";
 
-        QSqlQuery query(database->getConnection());
-        query.setForwardOnly(true);
-        if (!query.exec(QString("SELECT * FROM \"%1\"").arg(table.name))) {
-            file->close();
+        const auto columns = getColumnDefs(table).join(", ");
+        const QueryResult streamResult = database->streamRows(
+            QString("SELECT * FROM \"%1\"").arg(table.name),
+            [&](const QList<QVariant> &values) {
+                if (cancellationToken->isCancellationRequested())
+                    return false;
+                const auto valueList = getColumnValueDefs(table, values).join(", ");
+                out << "INSERT INTO \"" << table.name << "\"(" << columns << ") ";
+                out << "VALUES (" << valueList << ");\n";
+                progress->increment();
+                return true;
+            });
+
+        if (!streamResult.ok) {
             continue;
         }
-        const auto columns = getColumnDefs(table).join(", ");
-        while (query.next() && !cancellationToken->isCancellationRequested()) {
-            const auto values = getColumnValueDefs(table, query).join(", ");
-            out << "INSERT INTO \"" << table.name << "\"(" << columns << ") ";
-            out << "VALUES (" << values << ");\n";
-            progress->increment();
-        }
-        query.finish();
         out << "\n";
     }
     file->close();
     progress->setCompleted();
 }
 
-void DbDataExport::exportDataToCsvFile(const SqliteDatabase *database,
+void DbDataExport::exportDataToCsvFile(IDatabase *database,
                                        const QString &outputFolder,
                                        const QString &delimiter,
                                        const CancellationToken *cancellationToken,
@@ -90,21 +93,21 @@ void DbDataExport::exportDataToCsvFile(const SqliteDatabase *database,
         QTextStream out(file.get());
         out << columns << "\n";
 
-        QSqlQuery query(database->getConnection());
-        query.setForwardOnly(true);
-        if (!query.exec(QString("SELECT * FROM \"%1\"").arg(table.name))) {
-            file->close();
-            continue;
-        }
-
-        while (query.next() && !cancellationToken->isCancellationRequested()) {
-            const auto values = getColumnValueDefs(table, query).join(delimiter);
-            out << values << "\n";
-            progress->increment();
-        }
-        query.finish();
+        const QueryResult streamResult = database->streamRows(
+            QString("SELECT * FROM \"%1\"").arg(table.name),
+            [&](const QList<QVariant> &values) {
+                if (cancellationToken->isCancellationRequested())
+                    return false;
+                const auto valueList = getColumnValueDefs(table, values).join(delimiter);
+                out << valueList << "\n";
+                progress->increment();
+                return true;
+            });
 
         file->close();
+        if (!streamResult.ok) {
+            continue;
+        }
     }
 
     progress->setCompleted();
