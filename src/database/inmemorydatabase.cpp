@@ -67,3 +67,38 @@ QueryResult InMemoryDatabase::runStatement(const QString &sql) {
     }
     return result;
 }
+
+QueryResult InMemoryDatabase::streamRows(const QString &sql,
+                                         const std::function<bool(const QList<QVariant> &)> &onRow) {
+    QueryResult result;
+    if (!database.isOpen()) {
+        result.ok = false;
+        result.error = "Database is not open";
+        return result;
+    }
+
+    QSqlQuery query(database);
+    query.setForwardOnly(true);
+    if (!query.exec(sql)) {
+        result.ok = false;
+        result.error = query.lastError().text();
+        return result;
+    }
+
+    result.isSelect = query.isSelect();
+    const QSqlRecord record = query.record();
+    for (int i = 0; i < record.count(); ++i) {
+        result.columns.append(record.fieldName(i));
+    }
+
+    while (query.next()) {
+        QList<QVariant> values;
+        values.reserve(record.count());
+        for (int i = 0; i < record.count(); ++i) {
+            values.append(query.value(i));
+        }
+        if (!onRow(values))
+            break;
+    }
+    return result;
+}

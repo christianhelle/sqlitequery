@@ -22,6 +22,9 @@ public:
 
     QueryResult runStatement(const QString &sql) override;
 
+    QueryResult streamRows(const QString &sql,
+                           const std::function<bool(const QList<QVariant> &)> &onRow) override;
+
     [[nodiscard]] QSqlDatabase getConnection() const { return database; }
 
 private:
