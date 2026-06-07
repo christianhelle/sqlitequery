@@ -3,6 +3,8 @@
 
 #include <QString>
 
+#include "queryresult.h"
+
 class IDatabase {
 public:
     virtual ~IDatabase() = default;
@@ -16,6 +18,8 @@ public:
     virtual void shrink() = 0;
 
     [[nodiscard]] virtual QString getFilename() const = 0;
+
+    virtual QueryResult runStatement(const QString &sql) = 0;
 };
 
 #endif // IDATABASE_H

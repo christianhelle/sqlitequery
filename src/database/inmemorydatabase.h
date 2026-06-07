@@ -20,6 +20,8 @@ public:
 
     [[nodiscard]] QString getFilename() const override { return source; }
 
+    QueryResult runStatement(const QString &sql) override;
+
     [[nodiscard]] QSqlDatabase getConnection() const { return database; }
 
 private:

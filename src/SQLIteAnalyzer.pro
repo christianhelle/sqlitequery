@@ -42,6 +42,7 @@ HEADERS += \
     database/dbanalyzer.h \
     database/databaseinfo.h \
     database/idatabase.h \
+    database/queryresult.h \
     gui/highlighter.h \
     database/dbquery.h \
     database/sqlitedatabase.h \

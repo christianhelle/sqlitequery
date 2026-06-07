@@ -32,6 +32,7 @@ endif()
 set(COMMON_SRCS
   src/main.cpp
   src/database/idatabase.h
+  src/database/queryresult.h
   src/database/sqlitedatabase.cpp
   src/database/sqlitedatabase.h
   src/database/inmemorydatabase.cpp
