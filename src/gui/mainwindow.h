@@ -11,6 +11,8 @@
 #include "../database/dbquery.h"
 #include "../database/dbtree.h"
 #include "highlighter.h"
+#include "sessionmanager.h"
+#include "exportorchestrator.h"
 
 namespace Ui {
     class MainWindow;
@@ -32,8 +34,6 @@ public:
 
     void resizeEvent(QResizeEvent *e) override;
 
-    void loadRecentFiles() const;
-
     void openDatabase(const QString &filename);
 
     void restoreLastSession();
@@ -50,14 +50,6 @@ public slots:
     void scriptSchema() const;
 
     void setEnabledActions(bool);
-
-    void showExportDataProgress(const ExportDataProgress *progress,
-                                CancellationToken cancellationToken) const;
-
-    void exportDataAsync(const QString &filepath,
-                         const DatabaseInfo &info,
-                         std::unique_ptr<ExportDataProgress>::pointer progress,
-                         CancellationToken cancellationToken);
 
     void exportDataToSqlScript();
 
@@ -79,6 +71,10 @@ public slots:
 
     void openRecentFile();
 
+    void onExportProgress(uint64_t rowsExported);
+
+    void onExportCompleted(uint64_t rowsExported);
+
 private:
     std::unique_ptr<Ui::MainWindow> ui;
     std::unique_ptr<QMenu> recentFilesMenu;
@@ -88,8 +84,8 @@ private:
     std::unique_ptr<DbQuery> query;
     std::unique_ptr<DbTree> tree;
     std::unique_ptr<Highlighter> highlighter;
-    std::unique_ptr<ExportDataProgress> dataExportProgress;
-    std::unique_ptr<CancellationTokenSource> tcs;
+    std::unique_ptr<SessionManager> sessionManager;
+    std::unique_ptr<ExportOrchestrator> exportOrchestrator;
     bool loaded = false;
 
     void analyzeDatabase() const;

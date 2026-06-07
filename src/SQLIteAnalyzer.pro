@@ -31,7 +31,10 @@ SOURCES += \
     threading/cancellation.cpp \
     gui/prompts.cpp \
     cli/export.cpp \
-    cli/script.cpp
+    cli/script.cpp \
+    gui/exportorchestrator.cpp \
+    gui/exportstrategy.cpp \
+    gui/sessionmanager.cpp
 
 HEADERS += \
     gui/mainwindow.h \
@@ -51,6 +54,9 @@ HEADERS += \
     database/progress.h \
     gui/prompts.h \
     cli/export.h \
-    cli/script.h
+    cli/script.h \
+    gui/exportorchestrator.h \
+    gui/exportstrategy.h \
+    gui/sessionmanager.h
 
 FORMS    += gui/mainwindow.ui

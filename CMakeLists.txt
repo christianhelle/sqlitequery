@@ -59,8 +59,14 @@ set(COMMON_SRCS
   src/database/dbexportdata.cpp
   src/database/dbexportdata.h
   src/database/progress.h
-  src/gui/prompts.cpp
-  src/gui/prompts.h
+   src/gui/prompts.cpp
+   src/gui/prompts.h
+   src/gui/sessionmanager.cpp
+   src/gui/sessionmanager.h
+   src/gui/exportstrategy.cpp
+   src/gui/exportstrategy.h
+   src/gui/exportorchestrator.cpp
+   src/gui/exportorchestrator.h
   src/cli/export.cpp
   src/cli/export.h
   src/cli/script.cpp
