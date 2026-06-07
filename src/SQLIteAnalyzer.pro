@@ -19,6 +19,7 @@ SOURCES += \
     main.cpp\
     gui/mainwindow.cpp \
     database/dbanalyzer.cpp \
+    database/queryexecutor.cpp \
     gui/highlighter.cpp \
     database/dbquery.cpp \
     database/sqlitedatabase.cpp \
@@ -43,6 +44,7 @@ HEADERS += \
     database/databaseinfo.h \
     database/idatabase.h \
     database/queryresult.h \
+    database/queryexecutor.h \
     gui/highlighter.h \
     database/dbquery.h \
     database/sqlitedatabase.h \
