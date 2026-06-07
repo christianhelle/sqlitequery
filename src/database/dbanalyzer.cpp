@@ -5,9 +5,8 @@
 #include "dbanalyzer.h"
 
 #include <QFileInfo>
-#include <QSqlQuery>
 
-DbAnalyzer::DbAnalyzer(SqliteDatabase *database)
+DbAnalyzer::DbAnalyzer(IDatabase *database)
     : database(database) {
 }
 
@@ -31,18 +30,20 @@ void DbAnalyzer::loadTables(DatabaseInfo &info) const {
         return;
     }
 
-    QSqlQuery query(this->database->getConnection());
-    if (!query.exec(sql)) {
+    const QueryResult result = this->database->runStatement(sql);
+    if (!result.ok) {
         database->close();
         return;
     }
 
-    while (query.next()) {
-        Table table;
-        table.name = query.value("name").toString();
-        if (table.name == "sqlite_sequence" || table.name == "sqlite_stat1") {
+    const int nameIdx = result.columns.indexOf("name");
+    for (const auto &row: result.rows) {
+        const QString name = row.values.at(nameIdx).toString();
+        if (name == "sqlite_sequence" || name == "sqlite_stat1") {
             continue;
         }
+        Table table;
+        table.name = name;
         info.tables.append(table);
     }
 
@@ -57,19 +58,26 @@ void DbAnalyzer::loadColumns(DatabaseInfo &info) const {
     for (auto &table: info.tables) {
         const QString sql = "PRAGMA table_info (\"" + table.name + "\")";
 
-        QSqlQuery query(this->database->getConnection());
-        if (!query.exec(sql)) {
+        const QueryResult result = this->database->runStatement(sql);
+        if (!result.ok) {
             continue;
         }
 
-        while (query.next()) {
+        const int ordinalIdx = result.columns.indexOf("cid");
+        const int nameIdx = result.columns.indexOf("name");
+        const int typeIdx = result.columns.indexOf("type");
+        const int notNullIdx = result.columns.indexOf("notnull");
+        const int defaultIdx = result.columns.indexOf("dflt_value");
+        const int pkIdx = result.columns.indexOf("pk");
+
+        for (const auto &row: result.rows) {
             Column col;
-            col.ordinal = query.value("cid").toInt();
-            col.name = query.value("name").toString();
-            col.dataType = query.value("type").toString();
-            col.notNull = query.value("notnull").toBool();
-            col.defaultValue = query.value("dflt_value").toString();
-            col.primaryKey = query.value("pk").toBool();
+            col.ordinal = row.values.at(ordinalIdx).toInt();
+            col.name = row.values.at(nameIdx).toString();
+            col.dataType = row.values.at(typeIdx).toString();
+            col.notNull = row.values.at(notNullIdx).toBool();
+            col.defaultValue = row.values.at(defaultIdx).toString();
+            col.primaryKey = row.values.at(pkIdx).toBool();
             table.columns.append(col);
         }
     }

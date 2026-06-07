@@ -2,11 +2,11 @@
 #define DBANALYZER_H
 
 #include "databaseinfo.h"
-#include "sqlitedatabase.h"
+#include "idatabase.h"
 
 class DbAnalyzer {
 public:
-    explicit DbAnalyzer(SqliteDatabase *database);
+    explicit DbAnalyzer(IDatabase *database);
 
     bool analyze(DatabaseInfo &info) const;
 
@@ -15,7 +15,7 @@ public:
     void loadColumns(DatabaseInfo &info) const;
 
 private:
-    SqliteDatabase *database;
+    IDatabase *database;
 };
 
 #endif // DBANALYZER_H
