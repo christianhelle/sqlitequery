@@ -22,6 +22,8 @@
 
 **Merged pull requests:**
 
+- Refactor: Extract SessionManager and ExportOrchestrator from MainWindow [\#108](https://github.com/christianhelle/sqlitequery/pull/108) ([christianhelle](https://github.com/christianhelle))
+- Remove Squad [\#106](https://github.com/christianhelle/sqlitequery/pull/106) ([christianhelle](https://github.com/christianhelle))
 - Fix SonarCloud critical issues: thread safety, memory safety, and SQL injection [\#100](https://github.com/christianhelle/sqlitequery/pull/100) ([Copilot](https://github.com/apps/copilot-swe-agent))
 - Fix bugs and issues in the current code base [\#99](https://github.com/christianhelle/sqlitequery/pull/99) ([Copilot](https://github.com/apps/copilot-swe-agent))
 - Restrict Chocolatey publishing to release workflow only [\#98](https://github.com/christianhelle/sqlitequery/pull/98) ([Copilot](https://github.com/apps/copilot-swe-agent))
