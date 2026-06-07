@@ -51,6 +51,8 @@ set(COMMON_SRCS
   src/gui/mainwindow.cpp
   src/gui/mainwindow.h
   src/gui/mainwindow.ui
+  src/gui/queryresultpresenter.cpp
+  src/gui/queryresultpresenter.h
   src/settings/recentfiles.cpp
   src/settings/recentfiles.h
   src/settings/settings.cpp

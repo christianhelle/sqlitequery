@@ -21,6 +21,7 @@ SOURCES += \
     database/dbanalyzer.cpp \
     database/queryexecutor.cpp \
     gui/highlighter.cpp \
+    gui/queryresultpresenter.cpp \
     database/dbquery.cpp \
     database/sqlitedatabase.cpp \
     database/inmemorydatabase.cpp \
@@ -46,6 +47,7 @@ HEADERS += \
     database/queryresult.h \
     database/queryexecutor.h \
     gui/highlighter.h \
+    gui/queryresultpresenter.h \
     database/dbquery.h \
     database/sqlitedatabase.h \
     database/inmemorydatabase.h \
