@@ -14,3 +14,7 @@ bool QueryExecutionPresenter::execute(const QStringList &statements, QStringList
 void QueryExecutionPresenter::clearResults() {
     presenter->clear();
 }
+
+void QueryExecutionPresenter::presentToView(QTableView *view, const QueryResult &result) {
+    presenter->presentToView(view, result);
+}

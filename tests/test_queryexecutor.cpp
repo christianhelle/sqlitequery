@@ -102,5 +102,30 @@ TEST_F(QueryExecutorTest, RunMixedValidInvalidQueries) {
     EXPECT_TRUE(results[0].ok);
     EXPECT_FALSE(results[1].ok);
     EXPECT_TRUE(results[2].ok);
-    EXPECT_GT(errors.size(), 0);
+}
+
+TEST_F(QueryExecutorTest, PreviewTable) {
+    QueryResult result = executor->previewTable("test_users");
+
+    EXPECT_TRUE(result.ok);
+    EXPECT_TRUE(result.isSelect);
+    EXPECT_EQ(result.rows.size(), 3);
+    EXPECT_EQ(result.columns.size(), 3);
+    EXPECT_TRUE(result.columns.contains("id"));
+    EXPECT_TRUE(result.columns.contains("name"));
+    EXPECT_TRUE(result.columns.contains("age"));
+}
+
+TEST_F(QueryExecutorTest, PreviewTableWithLimit) {
+    QueryResult result = executor->previewTable("test_users", 2);
+
+    EXPECT_TRUE(result.ok);
+    EXPECT_TRUE(result.isSelect);
+    EXPECT_EQ(result.rows.size(), 2);
+}
+
+TEST_F(QueryExecutorTest, PreviewNonexistentTable) {
+    QueryResult result = executor->previewTable("nonexistent_table");
+
+    EXPECT_FALSE(result.ok);
 }

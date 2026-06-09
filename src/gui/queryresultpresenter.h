@@ -17,6 +17,8 @@ public:
 
     void present(const QList<QueryResult> &results);
 
+    void presentToView(QTableView *view, const QueryResult &result);
+
 private:
     QWidget *widget;
     std::unique_ptr<QScrollArea> scrollArea;

@@ -16,6 +16,8 @@ public:
 
     QList<QueryResult> runStatements(const QStringList &statements, QStringList *errors = nullptr);
 
+    [[nodiscard]] QueryResult previewTable(const QString &tableName, int limit = -1) const;
+
 private:
     IDatabase *database;
 };

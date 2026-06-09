@@ -65,3 +65,24 @@ void QueryResultPresenter::present(const QList<QueryResult> &results) {
     newParentRect.setHeight(newParentRect.height() * count);
     this->container->setGeometry(newParentRect);
 }
+
+void QueryResultPresenter::presentToView(QTableView *view, const QueryResult &result) {
+    auto model = std::make_unique<QStandardItemModel>(
+        static_cast<int>(result.rows.size()),
+        static_cast<int>(result.columns.size()),
+        view);
+
+    for (int col = 0; col < result.columns.size(); ++col) {
+        model->setHorizontalHeaderItem(col, new QStandardItem(result.columns.at(col)));
+    }
+    for (int row = 0; row < result.rows.size(); ++row) {
+        const auto &values = result.rows.at(row).values;
+        for (int col = 0; col < result.columns.size(); ++col) {
+            auto *item = new QStandardItem(values.at(col).toString());
+            model->setItem(row, col, item);
+        }
+    }
+
+    view->setModel(model.release());
+    view->setSortingEnabled(true);
+}

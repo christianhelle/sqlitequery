@@ -25,3 +25,11 @@ QList<QueryResult> QueryExecutor::runStatements(const QStringList &statements, Q
     }
     return results;
 }
+
+QueryResult QueryExecutor::previewTable(const QString &tableName, int limit) const {
+    QString sql = QString("SELECT * FROM \"%1\"").arg(tableName);
+    if (limit > 0) {
+        sql += QString(" LIMIT %1").arg(limit);
+    }
+    return database->runStatement(sql);
+}

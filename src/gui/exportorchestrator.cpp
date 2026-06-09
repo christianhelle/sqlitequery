@@ -39,6 +39,7 @@ void ExportOrchestrator::onExportComplete() {
     uint64_t rows = progress_->getAffectedRows();
     progress_.release();
     tcs_.release();
+    completed_ = true;
     emit exportCompleted(rows);
 }
 
@@ -46,6 +47,8 @@ void ExportOrchestrator::startProgressPolling(CancellationToken token) {
     auto _ = QtConcurrent::run([this, token]() {
         do {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            if (completed_)
+                break;
             MainThread::run([this]() {
                 emit exportProgress(progress_->getAffectedRows());
             });
@@ -58,6 +61,7 @@ void ExportOrchestrator::runExport(IDatabase *db, DatabaseInfo info,
                                    std::function<void(IDatabase *, const DatabaseInfo &, const CancellationToken *, ExportDataProgress *)> fn) {
     progress_ = std::make_unique<ExportDataProgress>();
     tcs_ = std::make_unique<CancellationTokenSource>();
+    completed_ = false;
     CancellationToken token = tcs_->get();
     ExportDataProgress *progressPtr = progress_.get();
 

@@ -6,7 +6,6 @@
 
 #include <QMessageBox>
 #include <QInputDialog>
-#include <QSqlTableModel>
 #include <QTreeWidget>
 #include <QStatusBar>
 #include <QTableView>
@@ -274,13 +273,6 @@ void MainWindow::openDatabase(const QString &filename) {
     ui->tabWidget->setCurrentIndex(0);
     ui->textEdit->clear();
 
-    if (ui->tableView->model() != Q_NULLPTR) {
-        const auto model = dynamic_cast<QSqlTableModel *>(ui->tableView->model());
-        model->clear();
-        ui->tableView->setModel(Q_NULLPTR);
-        delete model;
-    }
-
     this->setWindowTitle("SQLite Query Analyzer - " + filename);
 }
 
@@ -470,27 +462,11 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item,
         ->
         type() == QTreeWidgetItem::UserType + 1
     ) {
-        if (!this->database->open()) {
-            return;
-        }
+        const QString tableName = item->text(column);
+        QueryResult result = this->executor->previewTable(tableName);
 
-        const auto previousModel = dynamic_cast<QSqlTableModel *>(ui->tableView->model());
-        if (previousModel != Q_NULLPTR) {
-            previousModel->clear();
-        }
-
-        // ReSharper disable once CppDFAMemoryLeak
-        const auto model = new QSqlTableModel(nullptr,
-                                              this->database->getConnection());
-        model->setTable(item->text(column));
-        model->setEditStrategy(QSqlTableModel::OnFieldChange);
-
-        ui->tableView->setModel(model);
-        ui->tableView->setSortingEnabled(true);
+        this->queryPresenter->presentToView(ui->tableView, result);
         ui->tabWidget->setCurrentIndex(1);
-
-        // ReSharper disable once CppDFAMemoryLeak
-        delete previousModel;
     }
 }
 

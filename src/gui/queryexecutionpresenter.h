@@ -18,6 +18,8 @@ public:
 
     void clearResults();
 
+    void presentToView(QTableView *view, const QueryResult &result);
+
 private:
     QWidget *widget;
     QueryExecutor *executor;
