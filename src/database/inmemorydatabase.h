@@ -16,6 +16,8 @@ public:
 
     void close() override;
 
+    [[nodiscard]] bool isOpen() const override { return database.isOpen(); }
+
     void shrink() override;
 
     [[nodiscard]] QString getFilename() const override { return source; }
@@ -24,8 +26,6 @@ public:
 
     QueryResult streamRows(const QString &sql,
                            const std::function<bool(const QList<QVariant> &)> &onRow) override;
-
-    [[nodiscard]] QSqlDatabase getConnection() const { return database; }
 
 private:
     QSqlDatabase database;

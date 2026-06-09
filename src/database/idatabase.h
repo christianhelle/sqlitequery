@@ -19,6 +19,8 @@ public:
 
     virtual void close() = 0;
 
+    [[nodiscard]] virtual bool isOpen() const = 0;
+
     virtual void shrink() = 0;
 
     [[nodiscard]] virtual QString getFilename() const = 0;
