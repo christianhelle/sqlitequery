@@ -42,12 +42,12 @@ set(COMMON_SRCS
   src/database/databaseinfo.h
   src/database/dbanalyzer.cpp
   src/database/dbanalyzer.h
-  src/database/dbquery.cpp
-  src/database/dbquery.h
   src/database/dbtree.cpp
   src/database/dbtree.h
   src/gui/highlighter.cpp
   src/gui/highlighter.h
+  src/gui/queryexecutionpresenter.cpp
+  src/gui/queryexecutionpresenter.h
   src/gui/mainwindow.cpp
   src/gui/mainwindow.h
   src/gui/mainwindow.ui

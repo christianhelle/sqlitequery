@@ -8,10 +8,11 @@
 #include "../database/dbanalyzer.h"
 #include "../database/dbexport.h"
 #include "../database/dbexportdata.h"
-#include "../database/dbquery.h"
 #include "../database/dbtree.h"
+#include "../database/queryexecutor.h"
 #include "../database/sqlitedatabase.h"
 #include "highlighter.h"
+#include "queryexecutionpresenter.h"
 #include "sessionmanager.h"
 #include "exportorchestrator.h"
 
@@ -82,7 +83,8 @@ private:
     std::unique_ptr<QStatusBar> statusBar;
     std::unique_ptr<SqliteDatabase> database;
     std::unique_ptr<DbAnalyzer> analyzer;
-    std::unique_ptr<DbQuery> query;
+    std::unique_ptr<QueryExecutor> executor;
+    std::unique_ptr<QueryExecutionPresenter> queryPresenter;
     std::unique_ptr<DbTree> tree;
     std::unique_ptr<Highlighter> highlighter;
     std::unique_ptr<SessionManager> sessionManager;

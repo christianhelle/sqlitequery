@@ -26,8 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->database = std::make_unique<SqliteDatabase>();
     this->analyzer = std::make_unique<DbAnalyzer>(database.get());
-    this->query = std::make_unique<DbQuery>(ui->queryResultsGrid,
-                                             this->database.get());
+    this->executor = std::make_unique<QueryExecutor>(database.get());
+    this->queryPresenter = std::make_unique<QueryExecutionPresenter>(ui->queryResultsGrid, executor.get());
 
     this->tree = std::make_unique<DbTree>(ui->treeWidget);
     this->highlighter = std::make_unique<Highlighter>(ui->textEdit->document());
@@ -51,6 +51,8 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow() {
     saveSession();
     saveWindowState(this->window()->size());
+    this->queryPresenter.reset();
+    this->executor.reset();
     this->tree->clear();
 }
 
@@ -91,7 +93,7 @@ void MainWindow::deleteSelectedTable() {
     QElapsedTimer time;
     time.start();
 
-    const auto deleted = this->query->execute(list, &errors);
+    const auto deleted = this->queryPresenter->execute(list, &errors);
     const auto milliseconds = static_cast<double>(time.elapsed());
     const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
     this->showMessage(msg);
@@ -258,7 +260,7 @@ void MainWindow::openDatabase(const QString &filename) {
     }
 
     if (!this->database->getFilename().isEmpty()) {
-        this->query->clearResults();
+        this->queryPresenter->clearResults();
     }
 
     this->database->setSource(filename);
@@ -352,7 +354,7 @@ void MainWindow::executeQuery() const {
     QElapsedTimer time;
     time.start();
 
-    if (this->query->execute(list, &errors)) {
+    if (this->queryPresenter->execute(list, &errors)) {
         ui->tabWidget->setCurrentIndex(0);
         ui->queryResultTab->setCurrentIndex(0);
     }
