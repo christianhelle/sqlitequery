@@ -16,7 +16,8 @@ void InMemoryDatabase::setSource(const QString &filename) {
 }
 
 bool InMemoryDatabase::open() {
-    this->close();
+    if (database.isOpen())
+        return true;
     return database.open();
 }
 

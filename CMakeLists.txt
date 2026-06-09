@@ -125,3 +125,6 @@ set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Christian Resma Helle <christian.helle@outl
 set(CPACK_DEBIAN_PACKAGE_DEPENDS libxcb-xinerama0)
 set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/dist/postinst;${CMAKE_CURRENT_SOURCE_DIR}/dist/prerm")
 include(CPack)
+
+# Add tests
+add_subdirectory(tests)
