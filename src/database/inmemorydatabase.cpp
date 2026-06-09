@@ -7,10 +7,13 @@
 InMemoryDatabase::InMemoryDatabase() {
     database = QSqlDatabase::addDatabase("QSQLITE", "in_memory_connection");
     database.setDatabaseName(":memory:");
-    database.setHostName("localhost");
 }
 
 void InMemoryDatabase::setSource(const QString &filename) {
+    if (database.databaseName() == ":memory:") {
+        qWarning("InMemoryDatabase::setSource: cannot change source of in-memory database");
+        return;
+    }
     this->source = filename;
     database.setDatabaseName(filename);
 }
