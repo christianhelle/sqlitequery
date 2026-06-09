@@ -5,8 +5,9 @@
 #include <QSqlRecord>
 
 SqliteDatabase::SqliteDatabase() {
-    database = QSqlDatabase::addDatabase("QSQLITE");
-    database.setHostName("localhost");
+    static int instanceCounter = 0;
+    const QString connectionName = QString("sqlite_connection_%1").arg(++instanceCounter);
+    database = QSqlDatabase::addDatabase("QSQLITE", connectionName);
 }
 
 void SqliteDatabase::setSource(const QString &filename) {
@@ -16,7 +17,8 @@ void SqliteDatabase::setSource(const QString &filename) {
 }
 
 bool SqliteDatabase::open() {
-    this->close();
+    if (database.isOpen())
+        return true;
     return database.open();
 }
 
@@ -30,7 +32,9 @@ void SqliteDatabase::shrink() {
         database.open();
 
     QSqlQuery query(database);
-    query.exec("VACUUM");
+    if (!query.exec("VACUUM")) {
+        qWarning("VACUUM failed: %s", qPrintable(query.lastError().text()));
+    }
 }
 
 QueryResult SqliteDatabase::runStatement(const QString &sql) {

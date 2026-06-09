@@ -2,10 +2,6 @@
 
 #include <QFileInfo>
 
-#include "dbanalyzer.h"
-
-#include <QFileInfo>
-
 DbAnalyzer::DbAnalyzer(IDatabase *database)
     : database(database) {
 }
@@ -26,13 +22,14 @@ bool DbAnalyzer::analyze(DatabaseInfo &info) const {
 void DbAnalyzer::loadTables(DatabaseInfo &info) const {
     const QString sql = "SELECT * FROM sqlite_master WHERE type='table'";
 
-    if (!this->database->open()) {
+    const bool wasOpen = this->database->isOpen();
+    if (!wasOpen && !this->database->open()) {
         return;
     }
 
     const QueryResult result = this->database->runStatement(sql);
     if (!result.ok) {
-        database->close();
+        if (!wasOpen) database->close();
         return;
     }
 
@@ -47,7 +44,7 @@ void DbAnalyzer::loadTables(DatabaseInfo &info) const {
         info.tables.append(table);
     }
 
-    database->close();
+    if (!wasOpen) database->close();
 }
 
 void DbAnalyzer::loadColumns(DatabaseInfo &info) const {
