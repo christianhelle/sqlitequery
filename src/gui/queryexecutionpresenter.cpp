@@ -11,6 +11,12 @@ bool QueryExecutionPresenter::execute(const QStringList &statements, QStringList
     return errors == nullptr || errors->isEmpty();
 }
 
+bool QueryExecutionPresenter::executeScript(const QString &script, QStringList *errors) {
+    const QList<QueryResult> results = executor->runScript(script, errors);
+    presenter->present(results);
+    return errors == nullptr || errors->isEmpty();
+}
+
 void QueryExecutionPresenter::clearResults() {
     presenter->clear();
 }

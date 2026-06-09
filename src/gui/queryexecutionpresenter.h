@@ -16,6 +16,8 @@ public:
 
     bool execute(const QStringList &statements, QStringList *errors = nullptr);
 
+    bool executeScript(const QString &script, QStringList *errors = nullptr);
+
     void clearResults();
 
     void presentToView(QTableView *view, const QueryResult &result);
