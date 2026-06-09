@@ -75,7 +75,11 @@ TEST_F(DbSchemaExportTest, ExportSchemaContainsConstraints) {
     // PRIMARY KEY and NOT NULL are preserved during analysis
     EXPECT_TRUE(schema.contains("PRIMARY KEY"));
     EXPECT_TRUE(schema.contains("NOT NULL"));
-    // FOREIGN KEY and UNIQUE are lost during analysis (Column struct has no FK/unique fields)
+    // TODO: FOREIGN KEY and UNIQUE are lost during analysis — Column struct
+    // has no FK/unique fields. DbAnalyzer.analyze() only captures name, type,
+    // notNull, defaultValue, and primaryKey. DbSchemaExport/exportSchema
+    // reflects this limitation. Consider extending Column to store FK/UNIQUE
+    // in a future iteration.
 }
 
 TEST_F(DbSchemaExportTest, ExportSchemaToFile) {
