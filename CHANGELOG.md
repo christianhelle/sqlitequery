@@ -7,6 +7,7 @@
 **Implemented enhancements:**
 
 - Reduce Logging [\#85](https://github.com/christianhelle/sqlitequery/issues/85)
+- Deepen SQLite Query Analyzer architecture [\#110](https://github.com/christianhelle/sqlitequery/pull/110) ([christianhelle](https://github.com/christianhelle))
 - Restructure source files [\#105](https://github.com/christianhelle/sqlitequery/pull/105) ([christianhelle](https://github.com/christianhelle))
 - Resolve SonarCloud findings: Workflow hardening, Qt ownership, and shell modernization [\#104](https://github.com/christianhelle/sqlitequery/pull/104) ([christianhelle](https://github.com/christianhelle))
 - Enhance installer with PowerShell verification and portable asset parsing [\#103](https://github.com/christianhelle/sqlitequery/pull/103) ([christianhelle](https://github.com/christianhelle))
@@ -22,6 +23,7 @@
 
 **Merged pull requests:**
 
+- Migrate macOS workflows from QMake to CMake [\#111](https://github.com/christianhelle/sqlitequery/pull/111) ([christianhelle](https://github.com/christianhelle))
 - Refactor: Extract SessionManager and ExportOrchestrator from MainWindow [\#108](https://github.com/christianhelle/sqlitequery/pull/108) ([christianhelle](https://github.com/christianhelle))
 - Remove Squad [\#106](https://github.com/christianhelle/sqlitequery/pull/106) ([christianhelle](https://github.com/christianhelle))
 - Fix SonarCloud critical issues: thread safety, memory safety, and SQL injection [\#100](https://github.com/christianhelle/sqlitequery/pull/100) ([Copilot](https://github.com/apps/copilot-swe-agent))
