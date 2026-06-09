@@ -83,16 +83,19 @@ if ($IsWindows) {
         if (Test-Path $testExe) {
             $env:PATH = "$QtPath\bin;$QtPath\lib;$env:PATH"
             Write-Host "Executing: $testExe"
-            & $testExe
-            $env:PATH = $env:PATH -replace [regex]::Escape("$QtPath\bin;$QtPath\lib;"), ""
-            if ($LASTEXITCODE -ne 0) {
-                Write-Error "Tests failed (exit code: $LASTEXITCODE)"
+            Push-Location build
+            & .\SQLiteQueryTests.exe
+            $testExitCode = $LASTEXITCODE
+            Pop-Location
+            if ($testExitCode -ne 0) {
+                Write-Error "Tests failed (exit code: $testExitCode)"
                 exit 1
             }
             Write-Host "`n=== All tests passed ===" -ForegroundColor Green
         }
         else {
-            Write-Warning "Test executable not found at: $testExe"
+            Write-Error "Test executable not found at: $testExe"
+            exit 1
         }
     }
     
@@ -105,6 +108,30 @@ if ($IsLinux) {
     cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./linux/
     cmake --build build --config Release --parallel $(nproc)
     cmake --install build
+
+    Write-Host "`nRunning tests..."
+    $testExe = "./build/SQLiteQueryTests"
+    if (Test-Path $testExe) {
+        $originalPath = $env:PATH
+        if ($QtPath) {
+            $pathArray = ($env:PATH -split ':') | Where-Object { $_ -ne "$QtPath/bin" -and $_ -ne "$QtPath/lib" }
+            $pathArray = @("$QtPath/bin", "$QtPath/lib") + $pathArray
+            $env:PATH = $pathArray -join ':'
+        }
+        Write-Host "Executing: $testExe"
+        & $testExe
+        if ($QtPath) {
+            $env:PATH = $originalPath
+        }
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Tests failed (exit code: $LASTEXITCODE)"
+            exit 1
+        }
+        Write-Host "`n=== All tests passed ===" -ForegroundColor Green
+    }
+    else {
+        Write-Warning "Test executable not found at: $testExe"
+    }
 
     if ($Package) {
         cpack -G 7Z --config ./build/CPackConfig.cmake
@@ -125,10 +152,35 @@ if ($IsLinux) {
     }
 }
 
-if ($IsMacOS -And $Package) {
+if ($IsMacOS) {
     
     cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/tmp/sqlitequery
     cmake --build build --config Release --parallel 32
+
+    Write-Host "`nRunning tests..."
+    $testExe = "./build/SQLiteQueryTests"
+    if (Test-Path $testExe) {
+        $originalPath = $env:PATH
+        if ($QtPath) {
+            $pathArray = ($env:PATH -split ':') | Where-Object { $_ -ne "$QtPath/bin" -and $_ -ne "$QtPath/lib" }
+            $pathArray = @("$QtPath/bin", "$QtPath/lib") + $pathArray
+            $env:PATH = $pathArray -join ':'
+        }
+        Write-Host "Executing: $testExe"
+        & $testExe
+        if ($QtPath) {
+            $env:PATH = $originalPath
+        }
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Tests failed (exit code: $LASTEXITCODE)"
+            exit 1
+        }
+        Write-Host "`n=== All tests passed ===" -ForegroundColor Green
+    }
+    else {
+        Write-Warning "Test executable not found at: $testExe"
+    }
+
     if ($Package) {
         macdeployqt build/SQLiteQueryAnalyzer.app -dmg -appstore-compliant
     }
