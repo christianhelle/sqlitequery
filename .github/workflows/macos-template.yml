@@ -44,8 +44,7 @@ jobs:
           cmake --install .
 
       - name: macdeployqt
-        working-directory: src
-        run: macdeployqt SQLiteQueryAnalyzer.app -dmg -appstore-compliant
+        run: macdeployqt install/SQLiteQueryAnalyzer.app -dmg -appstore-compliant
 
       - name: Publish artifacts
         uses: actions/upload-artifact@v4
