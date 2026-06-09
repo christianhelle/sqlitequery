@@ -29,9 +29,20 @@ void Script::executeSqlFile(const QString &sqlFilePath,
     QStringList errors;
     executor.runScript(sqlScript, &errors);
 
+    if (!errors.isEmpty()) {
+        QTextStream err(stderr);
+        for (const auto &error : errors) {
+            err << "ERROR: " << error << "\n";
+        }
+    }
+
     const auto milliseconds = static_cast<double>(time.elapsed());
     const auto msg = "Script execution took " + QString::number(milliseconds / 1000) + " seconds";
     QTextStream out(stdout);
     out << msg;
     fflush(stdout);
+
+    if (!errors.isEmpty()) {
+        exit(1);
+    }
 }
