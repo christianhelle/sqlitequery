@@ -64,12 +64,15 @@ void DbDataExport::exportDataToSqlFile(IDatabase *database,
             });
 
         if (!streamResult.ok) {
+            progress->addError(table.name, streamResult.error);
             continue;
         }
         out << "\n";
     }
     file->close();
-    progress->setCompleted();
+    if (!progress->hasAnyErrors()) {
+        progress->setCompleted();
+    }
 }
 
 void DbDataExport::exportDataToCsvFile(IDatabase *database,
@@ -106,9 +109,13 @@ void DbDataExport::exportDataToCsvFile(IDatabase *database,
 
         file->close();
         if (!streamResult.ok) {
+            progress->addError(table.name, streamResult.error);
+            QFile::remove(filename);
             continue;
         }
     }
 
-    progress->setCompleted();
+    if (!progress->hasAnyErrors()) {
+        progress->setCompleted();
+    }
 }
