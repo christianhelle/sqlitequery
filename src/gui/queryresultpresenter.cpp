@@ -23,6 +23,9 @@ void QueryResultPresenter::clear() {
 }
 
 void QueryResultPresenter::present(const QList<QueryResult> &results) {
+    qDeleteAll(this->tableViews.begin(), this->tableViews.end());
+    this->tableViews.clear();
+
     const QRect widgetRect = this->widget->geometry();
     const int width = widgetRect.width();
     const int height = widgetRect.height();
@@ -40,7 +43,7 @@ void QueryResultPresenter::present(const QList<QueryResult> &results) {
         auto model = std::make_unique<QStandardItemModel>(
             static_cast<int>(result.rows.size()),
             static_cast<int>(result.columns.size()),
-            container.get());
+            nullptr);
 
         for (int col = 0; col < result.columns.size(); ++col) {
             model->setHorizontalHeaderItem(col, new QStandardItem(result.columns.at(col)));
@@ -67,10 +70,14 @@ void QueryResultPresenter::present(const QList<QueryResult> &results) {
 }
 
 void QueryResultPresenter::presentToView(QTableView *view, const QueryResult &result) {
+    if (view->model() != nullptr) {
+        view->setModel(nullptr);
+    }
+
     auto model = std::make_unique<QStandardItemModel>(
         static_cast<int>(result.rows.size()),
         static_cast<int>(result.columns.size()),
-        view);
+        nullptr);
 
     for (int col = 0; col < result.columns.size(); ++col) {
         model->setHorizontalHeaderItem(col, new QStandardItem(result.columns.at(col)));
@@ -83,6 +90,7 @@ void QueryResultPresenter::presentToView(QTableView *view, const QueryResult &re
         }
     }
 
+    model->setParent(view);
     view->setModel(model.release());
     view->setSortingEnabled(true);
 }
