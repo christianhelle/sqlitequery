@@ -16,6 +16,8 @@ public:
 
     void close() override;
 
+    [[nodiscard]] bool isOpen() const override { return database.isOpen(); }
+
     void shrink() override;
 
     [[nodiscard]] QString getFilename() const override { return source; }
