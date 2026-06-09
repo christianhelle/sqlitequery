@@ -33,7 +33,7 @@ implementation details. If you introduce a new domain term, add it to
   run SQL, it goes through the seam. The seam owns query construction.
 - **No widget pointers in non-GUI modules.** A module that takes a
   `QWidget*` is a presenter, not a domain module. Presenters are thin.
-- **No SQL string concatenation in non-database modules.** `dbquery.h`
+- **No SQL string concatenation in non-database modules.** `QueryExecutor`
   splitting-by-`;` lives in the database module, not in `mainwindow.cpp` or
   the CLI.
 

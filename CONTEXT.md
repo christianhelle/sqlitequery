@@ -22,7 +22,7 @@ architecture, the modules, and the tests all refer to the same things.
 
 ## User-facing actions
 
-- **Query** — a single SQL statement the user wrote and wants executed.
+- **Query** — a single SQL statement the user wrote and wants to execute.
 - **Script** — a sequence of Queries loaded from a `.sql` file.
 - **Export** — a one-shot transformation of Database content into a different
   representation. Two formats: **CSV** (one file per table) and **SQL**
@@ -52,8 +52,9 @@ architecture, the modules, and the tests all refer to the same things.
 - **IDatabase** — abstract Database. Production adapter is `SqliteDatabase`;
   test adapter is `InMemoryDatabase`. Anything that takes a Database takes
   `IDatabase*`. `QSqlDatabase` does not leak across this seam.
-- **ExportStrategy** — abstract DataExporter workflow (`SqlExportStrategy`,
-  `CsvExportStrategy`). Two adapters = real seam.
+- **ExportOrchestrator** — runs a DataExporter in the background, marshals
+  progress to the GUI thread, surfaces cancel and completion via exportToSql()
+  and exportToCsv().
 
 ## Out of scope (do not introduce)
 
