@@ -3,11 +3,9 @@
 #include "../settings/settings.h"
 #include "../database/dbexportschema.h"
 #include "prompts.h"
-#include "exportstrategy.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
-#include <QSqlTableModel>
 #include <QTreeWidget>
 #include <QStatusBar>
 #include <QTableView>
@@ -24,10 +22,10 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowTitle("SQLite Query Analyzer");
     this->connectSignalSlots();
 
-    this->database = std::make_unique<Database>();
+    this->database = std::make_unique<SqliteDatabase>();
     this->analyzer = std::make_unique<DbAnalyzer>(database.get());
-    this->query = std::make_unique<DbQuery>(ui->queryResultsGrid,
-                                             this->database.get());
+    this->executor = std::make_unique<QueryExecutor>(database.get());
+    this->queryPresenter = std::make_unique<QueryExecutionPresenter>(ui->queryResultsGrid, executor.get());
 
     this->tree = std::make_unique<DbTree>(ui->treeWidget);
     this->highlighter = std::make_unique<Highlighter>(ui->textEdit->document());
@@ -51,6 +49,8 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow() {
     saveSession();
     saveWindowState(this->window()->size());
+    this->queryPresenter.reset();
+    this->executor.reset();
     this->tree->clear();
 }
 
@@ -91,7 +91,7 @@ void MainWindow::deleteSelectedTable() {
     QElapsedTimer time;
     time.start();
 
-    const auto deleted = this->query->execute(list, &errors);
+    const auto deleted = this->queryPresenter->execute(list, &errors);
     const auto milliseconds = static_cast<double>(time.elapsed());
     const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
     this->showMessage(msg);
@@ -258,7 +258,7 @@ void MainWindow::openDatabase(const QString &filename) {
     }
 
     if (!this->database->getFilename().isEmpty()) {
-        this->query->clearResults();
+        this->queryPresenter->clearResults();
     }
 
     this->database->setSource(filename);
@@ -272,13 +272,6 @@ void MainWindow::openDatabase(const QString &filename) {
     ui->queryResultMessagesTextEdit->clear();
     ui->tabWidget->setCurrentIndex(0);
     ui->textEdit->clear();
-
-    if (ui->tableView->model() != Q_NULLPTR) {
-        const auto model = dynamic_cast<QSqlTableModel *>(ui->tableView->model());
-        model->clear();
-        ui->tableView->setModel(Q_NULLPTR);
-        delete model;
-    }
 
     this->setWindowTitle("SQLite Query Analyzer - " + filename);
 }
@@ -352,7 +345,7 @@ void MainWindow::executeQuery() const {
     QElapsedTimer time;
     time.start();
 
-    if (this->query->execute(list, &errors)) {
+    if (this->queryPresenter->execute(list, &errors)) {
         ui->tabWidget->setCurrentIndex(0);
         ui->queryResultTab->setCurrentIndex(0);
     }
@@ -402,8 +395,7 @@ void MainWindow::exportDataToSqlScript() {
     this->setEnabledActions(false);
     ui->queryResultTab->setCurrentIndex(1);
 
-    auto strategy = std::make_unique<SqlExportStrategy>(std::move(info), filepath);
-    exportOrchestrator->startExport(std::move(strategy), database.get());
+    exportOrchestrator->exportToSql(std::move(info), filepath, database.get());
 
     connect(exportOrchestrator.get(), &ExportOrchestrator::exportProgress,
             this, &MainWindow::onExportProgress);
@@ -425,8 +417,7 @@ void MainWindow::exportDataToCsvFiles() {
     this->setEnabledActions(false);
     ui->queryResultTab->setCurrentIndex(1);
 
-    auto strategy = std::make_unique<CsvExportStrategy>(std::move(info), outputFolder, delimiter);
-    exportOrchestrator->startExport(std::move(strategy), database.get());
+    exportOrchestrator->exportToCsv(std::move(info), outputFolder, delimiter, database.get());
 
     connect(exportOrchestrator.get(), &ExportOrchestrator::exportProgress,
             this, &MainWindow::onExportProgress);
@@ -471,27 +462,11 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item,
         ->
         type() == QTreeWidgetItem::UserType + 1
     ) {
-        if (!this->database->open()) {
-            return;
-        }
+        const QString tableName = item->text(column);
+        QueryResult result = this->executor->previewTable(tableName);
 
-        const auto previousModel = dynamic_cast<QSqlTableModel *>(ui->tableView->model());
-        if (previousModel != Q_NULLPTR) {
-            previousModel->clear();
-        }
-
-        // ReSharper disable once CppDFAMemoryLeak
-        const auto model = new QSqlTableModel(nullptr,
-                                              this->database->getDatabase());
-        model->setTable(item->text(column));
-        model->setEditStrategy(QSqlTableModel::OnFieldChange);
-
-        ui->tableView->setModel(model);
-        ui->tableView->setSortingEnabled(true);
+        this->queryPresenter->presentToView(ui->tableView, result);
         ui->tabWidget->setCurrentIndex(1);
-
-        // ReSharper disable once CppDFAMemoryLeak
-        delete previousModel;
     }
 }
 

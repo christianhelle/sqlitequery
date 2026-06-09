@@ -31,20 +31,28 @@ endif()
 # Define common source list once
 set(COMMON_SRCS
   src/main.cpp
-  src/database/database.cpp
-  src/database/database.h
+  src/database/idatabase.h
+  src/database/queryresult.h
+  src/database/queryexecutor.cpp
+  src/database/queryexecutor.h
+  src/database/sqlitedatabase.cpp
+  src/database/sqlitedatabase.h
+  src/database/inmemorydatabase.cpp
+  src/database/inmemorydatabase.h
   src/database/databaseinfo.h
   src/database/dbanalyzer.cpp
   src/database/dbanalyzer.h
-  src/database/dbquery.cpp
-  src/database/dbquery.h
   src/database/dbtree.cpp
   src/database/dbtree.h
   src/gui/highlighter.cpp
   src/gui/highlighter.h
+  src/gui/queryexecutionpresenter.cpp
+  src/gui/queryexecutionpresenter.h
   src/gui/mainwindow.cpp
   src/gui/mainwindow.h
   src/gui/mainwindow.ui
+  src/gui/queryresultpresenter.cpp
+  src/gui/queryresultpresenter.h
   src/settings/recentfiles.cpp
   src/settings/recentfiles.h
   src/settings/settings.cpp
@@ -63,8 +71,6 @@ set(COMMON_SRCS
    src/gui/prompts.h
    src/gui/sessionmanager.cpp
    src/gui/sessionmanager.h
-   src/gui/exportstrategy.cpp
-   src/gui/exportstrategy.h
    src/gui/exportorchestrator.cpp
    src/gui/exportorchestrator.h
   src/cli/export.cpp
@@ -117,3 +123,6 @@ set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Christian Resma Helle <christian.helle@outl
 set(CPACK_DEBIAN_PACKAGE_DEPENDS libxcb-xinerama0)
 set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/dist/postinst;${CMAKE_CURRENT_SOURCE_DIR}/dist/prerm")
 include(CPack)
+
+# Add tests
+add_subdirectory(tests)

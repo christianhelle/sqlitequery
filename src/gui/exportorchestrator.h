@@ -1,11 +1,16 @@
 #ifndef EXPORTORCHESTRATOR_H
 #define EXPORTORCHESTRATOR_H
 
+#include <functional>
 #include <QObject>
+#include <QString>
+#include <atomic>
 #include "../threading/cancellation.h"
 #include "../threading/mainthread.h"
+#include "../database/databaseinfo.h"
 #include "../database/progress.h"
-#include "exportstrategy.h"
+
+class IDatabase;
 
 class ExportOrchestrator : public QObject {
     Q_OBJECT
@@ -14,7 +19,8 @@ public:
     explicit ExportOrchestrator(QObject *parent = nullptr);
     ~ExportOrchestrator() override;
 
-    void startExport(std::unique_ptr<ExportStrategy> strategy, Database *db);
+    void exportToSql(DatabaseInfo info, QString filePath, IDatabase *db);
+    void exportToCsv(DatabaseInfo info, QString outputFolder, QString delimiter, IDatabase *db);
     void cancel();
 
     bool isExporting() const { return progress_ != nullptr; }
@@ -30,9 +36,12 @@ private slots:
 
 private:
     void startProgressPolling(CancellationToken token);
+    void runExport(IDatabase *db, DatabaseInfo info,
+                   std::function<void(IDatabase *, const DatabaseInfo &, const CancellationToken *, ExportDataProgress *)> fn);
 
     std::unique_ptr<ExportDataProgress> progress_;
     std::unique_ptr<CancellationTokenSource> tcs_;
+    std::atomic<bool> completed_{false};
 };
 
 #endif // EXPORTORCHESTRATOR_H

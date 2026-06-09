@@ -1,11 +1,11 @@
 #include "script.h"
 
-#include <QFile>
-#include <QSqlError>
 #include <QElapsedTimer>
+#include <QFile>
+#include <QTextStream>
 
-#include "../database/database.h"
-#include "../database/dbanalyzer.h"
+#include "../database/sqlitedatabase.h"
+#include "../database/queryexecutor.h"
 
 void Script::executeSqlFile(const QString &sqlFilePath,
                             const QString &dbFilePath) {
@@ -16,32 +16,18 @@ void Script::executeSqlFile(const QString &sqlFilePath,
 
     QElapsedTimer time;
     time.start();
-    QTextStream in(sqlFile.get());
+    const QString sqlScript = QTextStream(sqlFile.get()).readAll();
 
-    const QString sqlScript = in.readAll();
-    const QStringList queryList(sqlScript.split(";", Qt::SkipEmptyParts));
-    QStringList errors;
-
-    const auto database = std::make_unique<Database>();
+    const auto database = std::make_unique<SqliteDatabase>();
     database->setSource(dbFilePath);
     if (!database->open()) {
         qWarning("Unable to open database file");
         return;
     }
 
-    const QSqlDatabase db = database->getDatabase();
-    for (QString sql: queryList) {
-        sql = sql.trimmed().replace('\n', "", Qt::CaseInsensitive);
-        if (sql.isEmpty())
-            continue;
-
-        if (QSqlQuery query(db); !query.exec(sql)) {
-            QSqlError error;
-            errors.append((error = db.lastError()).isValid()
-                              ? error.text()
-                              : "'" + sql + "' failed");
-        }
-    }
+    QueryExecutor executor(database.get());
+    QStringList errors;
+    executor.runScript(sqlScript, &errors);
 
     const auto milliseconds = static_cast<double>(time.elapsed());
     const auto msg = "Script execution took " + QString::number(milliseconds / 1000) + " seconds";

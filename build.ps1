@@ -77,6 +77,25 @@ if ($IsWindows) {
     Copy-Item .\build\SQLiteQueryAnalyzer.exe .\build\Release\SQLiteQueryAnalyzer.exe
     & "$QtPath\bin\windeployqt.exe" .\build\Release\SQLiteQueryAnalyzer.exe
     
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "`nRunning tests..."
+        $testExe = ".\build\SQLiteQueryTests.exe"
+        if (Test-Path $testExe) {
+            $env:PATH = "$QtPath\bin;$QtPath\lib;$env:PATH"
+            Write-Host "Executing: $testExe"
+            & $testExe
+            $env:PATH = $env:PATH -replace [regex]::Escape("$QtPath\bin;$QtPath\lib;"), ""
+            if ($LASTEXITCODE -ne 0) {
+                Write-Error "Tests failed (exit code: $LASTEXITCODE)"
+                exit 1
+            }
+            Write-Host "`n=== All tests passed ===" -ForegroundColor Green
+        }
+        else {
+            Write-Warning "Test executable not found at: $testExe"
+        }
+    }
+    
     if ($Package) {
         deps/innosetup/ISCC.exe dist/setup.iss
     }
