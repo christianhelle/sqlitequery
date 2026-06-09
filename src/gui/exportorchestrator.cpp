@@ -36,21 +36,25 @@ void ExportOrchestrator::cancel() {
 }
 
 void ExportOrchestrator::onExportComplete() {
+    tearingDown_ = true;
     uint64_t rows = progress_->getAffectedRows();
-    progress_.release();
-    tcs_.release();
     completed_ = true;
+    progress_.reset();
+    tcs_.reset();
     emit exportCompleted(rows);
 }
 
 void ExportOrchestrator::startProgressPolling(CancellationToken token) {
-    auto _ = QtConcurrent::run([this, token]() {
+    QPointer<ExportOrchestrator> guard(this);
+    auto _ = QtConcurrent::run([this, token, guard]() {
         do {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            if (completed_)
+            if (completed_ || tearingDown_)
                 break;
-            MainThread::run([this]() {
-                emit exportProgress(progress_->getAffectedRows());
+            MainThread::run([guard]() {
+                if (!guard || guard->tearingDown_)
+                    return;
+                emit guard->exportProgress(guard->progress_->getAffectedRows());
             });
         } while (!token.isCancellationRequested() &&
                  !progress_->isCompleted());
@@ -70,8 +74,11 @@ void ExportOrchestrator::runExport(IDatabase *db, DatabaseInfo info,
     });
 
     future.then([this]() {
-        MainThread::run([this]() {
-            this->onExportComplete();
+        QPointer<ExportOrchestrator> guard(this);
+        MainThread::run([guard]() {
+            if (!guard || guard->tearingDown_)
+                return;
+            guard->onExportComplete();
         });
     });
 

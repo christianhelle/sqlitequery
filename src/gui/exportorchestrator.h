@@ -4,6 +4,7 @@
 #include <functional>
 #include <QObject>
 #include <QString>
+#include <QPointer>
 #include <atomic>
 #include "../threading/cancellation.h"
 #include "../threading/mainthread.h"
@@ -42,6 +43,7 @@ private:
     std::unique_ptr<ExportDataProgress> progress_;
     std::unique_ptr<CancellationTokenSource> tcs_;
     std::atomic<bool> completed_{false};
+    std::atomic<bool> tearingDown_{false};
 };
 
 #endif // EXPORTORCHESTRATOR_H
