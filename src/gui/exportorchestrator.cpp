@@ -1,7 +1,7 @@
 #include "exportorchestrator.h"
+#include "../database/dbexportdata.h"
 #include <QtConcurrent/QtConcurrent>
 
-#include <QElapsedTimer>
 #include <chrono>
 #include <thread>
 
@@ -13,22 +13,20 @@ ExportOrchestrator::~ExportOrchestrator() {
     cancel();
 }
 
-void ExportOrchestrator::startExport(std::unique_ptr<ExportStrategy> strategy, IDatabase *db) {
-    progress_ = std::make_unique<ExportDataProgress>();
-    tcs_ = std::make_unique<CancellationTokenSource>();
-    auto token = tcs_->get();
+void ExportOrchestrator::exportToSql(DatabaseInfo info, QString filePath, IDatabase *db) {
+    auto fn = [filePath](IDatabase *db, const DatabaseInfo &info, const CancellationToken *token, ExportDataProgress *progress) {
+        DbDataExport exporter(info);
+        exporter.exportDataToSqlFile(db, filePath, token, progress);
+    };
+    runExport(db, std::move(info), std::move(fn));
+}
 
-    auto future = QtConcurrent::run([this, strategy = std::move(strategy), db, token]() {
-        strategy->execute(db, const_cast<const CancellationToken*>(&token), progress_.get());
-    });
-
-    future.then([this]() {
-        MainThread::run([this]() {
-            this->onExportComplete();
-        });
-    });
-
-    startProgressPolling(token);
+void ExportOrchestrator::exportToCsv(DatabaseInfo info, QString outputFolder, QString delimiter, IDatabase *db) {
+    auto fn = [outputFolder, delimiter](IDatabase *db, const DatabaseInfo &info, const CancellationToken *token, ExportDataProgress *progress) {
+        DbDataExport exporter(info);
+        exporter.exportDataToCsvFile(db, outputFolder, delimiter, token, progress);
+    };
+    runExport(db, std::move(info), std::move(fn));
 }
 
 void ExportOrchestrator::cancel() {
@@ -54,4 +52,24 @@ void ExportOrchestrator::startProgressPolling(CancellationToken token) {
         } while (!token.isCancellationRequested() &&
                  !progress_->isCompleted());
     });
+}
+
+void ExportOrchestrator::runExport(IDatabase *db, DatabaseInfo info,
+                                   std::function<void(IDatabase *, const DatabaseInfo &, const CancellationToken *, ExportDataProgress *)> fn) {
+    progress_ = std::make_unique<ExportDataProgress>();
+    tcs_ = std::make_unique<CancellationTokenSource>();
+    CancellationToken token = tcs_->get();
+    ExportDataProgress *progressPtr = progress_.get();
+
+    auto future = QtConcurrent::run([db, info, fn, token, progressPtr]() {
+        fn(db, info, const_cast<const CancellationToken*>(&token), progressPtr);
+    });
+
+    future.then([this]() {
+        MainThread::run([this]() {
+            this->onExportComplete();
+        });
+    });
+
+    startProgressPolling(token);
 }

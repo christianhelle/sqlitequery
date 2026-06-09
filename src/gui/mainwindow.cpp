@@ -3,7 +3,6 @@
 #include "../settings/settings.h"
 #include "../database/dbexportschema.h"
 #include "prompts.h"
-#include "exportstrategy.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
@@ -404,8 +403,7 @@ void MainWindow::exportDataToSqlScript() {
     this->setEnabledActions(false);
     ui->queryResultTab->setCurrentIndex(1);
 
-    auto strategy = std::make_unique<SqlExportStrategy>(std::move(info), filepath);
-    exportOrchestrator->startExport(std::move(strategy), database.get());
+    exportOrchestrator->exportToSql(std::move(info), filepath, database.get());
 
     connect(exportOrchestrator.get(), &ExportOrchestrator::exportProgress,
             this, &MainWindow::onExportProgress);
@@ -427,8 +425,7 @@ void MainWindow::exportDataToCsvFiles() {
     this->setEnabledActions(false);
     ui->queryResultTab->setCurrentIndex(1);
 
-    auto strategy = std::make_unique<CsvExportStrategy>(std::move(info), outputFolder, delimiter);
-    exportOrchestrator->startExport(std::move(strategy), database.get());
+    exportOrchestrator->exportToCsv(std::move(info), outputFolder, delimiter, database.get());
 
     connect(exportOrchestrator.get(), &ExportOrchestrator::exportProgress,
             this, &MainWindow::onExportProgress);

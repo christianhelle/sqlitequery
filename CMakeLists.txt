@@ -71,8 +71,6 @@ set(COMMON_SRCS
    src/gui/prompts.h
    src/gui/sessionmanager.cpp
    src/gui/sessionmanager.h
-   src/gui/exportstrategy.cpp
-   src/gui/exportstrategy.h
    src/gui/exportorchestrator.cpp
    src/gui/exportorchestrator.h
   src/cli/export.cpp

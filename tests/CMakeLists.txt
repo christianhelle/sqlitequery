@@ -21,6 +21,7 @@ set(TEST_SRCS
     test_dbanalyzer.cpp
     test_dbexportdata.cpp
     test_dbexportschema.cpp
+    test_exportorchestrator.cpp
     test_main.cpp
 )
 
@@ -37,12 +38,14 @@ set(PROD_SRCS
     ../src/database/dbexport.cpp
     ../src/database/progress.h
     ../src/threading/cancellation.cpp
+    ../src/gui/exportorchestrator.cpp
 )
 
 target_sources(${PROJECT_NAME} PRIVATE ${PROD_SRCS})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Core
+    Qt6::Gui
     Qt6::Sql
     GTest::gtest_main
     GTest::gtest
