@@ -37,13 +37,11 @@ jobs:
         with:
           version: "6.9.0"
 
-      - name: QMake
-        run: qmake
-        working-directory: src
-
-      - name: Make
-        run: make -j 32
-        working-directory: src
+      - name: CMake
+        run: |
+          cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./install .
+          cmake --build . --config Release --parallel 32
+          cmake --install .
 
       - name: macdeployqt
         working-directory: src
