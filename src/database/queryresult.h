@@ -16,7 +16,7 @@ struct QueryResult {
     bool isSelect = false;
     QStringList columns;
     QList<QueryRow> rows;
-    int rowsAffected = 0;
+    qint64 rowsAffected = 0;
 };
 
 #endif // QUERYRESULT_H

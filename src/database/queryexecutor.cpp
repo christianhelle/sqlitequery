@@ -12,7 +12,7 @@ QList<QueryResult> QueryExecutor::runScript(const QString &script, QStringList *
 QList<QueryResult> QueryExecutor::runStatements(const QStringList &statements, QStringList *errors) {
     QList<QueryResult> results;
     for (const auto &raw: statements) {
-        const QString sql = raw.trimmed().replace('\n', "", Qt::CaseInsensitive);
+        const QString sql = raw.trimmed().replace('\n', "");
         if (sql.isEmpty())
             continue;
 
