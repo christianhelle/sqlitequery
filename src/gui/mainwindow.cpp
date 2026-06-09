@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "../database/sqlitedatabase.h"
 #include "../settings/settings.h"
 #include "../database/dbexportschema.h"
 #include "prompts.h"
@@ -339,13 +340,13 @@ void MainWindow::executeQuery() const {
         return;
     }
 
-    QStringList list(ui->textEdit->toPlainText().split(";", Qt::SkipEmptyParts));
+    const QString script = ui->textEdit->toPlainText();
     QStringList errors;
 
     QElapsedTimer time;
     time.start();
 
-    if (this->queryPresenter->execute(list, &errors)) {
+    if (this->queryPresenter->executeScript(script, &errors)) {
         ui->tabWidget->setCurrentIndex(0);
         ui->queryResultTab->setCurrentIndex(0);
     }
@@ -354,15 +355,12 @@ void MainWindow::executeQuery() const {
     const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
     this->showMessage(msg);
 
-    foreach(const QString sql, list) {
-        if (sql.contains("create", Qt::CaseInsensitive) ||
-            sql.contains("drop", Qt::CaseInsensitive) ||
-            sql.contains("insert", Qt::CaseInsensitive) ||
-            sql.contains("delete", Qt::CaseInsensitive)) {
-            ui->queryResultTab->setCurrentIndex(1);
-            analyzeDatabase();
-            break;
-        }
+    if (script.contains("create", Qt::CaseInsensitive) ||
+        script.contains("drop", Qt::CaseInsensitive) ||
+        script.contains("insert", Qt::CaseInsensitive) ||
+        script.contains("delete", Qt::CaseInsensitive)) {
+        ui->queryResultTab->setCurrentIndex(1);
+        analyzeDatabase();
     }
 }
 
@@ -398,9 +396,9 @@ void MainWindow::exportDataToSqlScript() {
     exportOrchestrator->exportToSql(std::move(info), filepath, database.get());
 
     connect(exportOrchestrator.get(), &ExportOrchestrator::exportProgress,
-            this, &MainWindow::onExportProgress);
+            this, &MainWindow::onExportProgress, Qt::UniqueConnection);
     connect(exportOrchestrator.get(), &ExportOrchestrator::exportCompleted,
-            this, &MainWindow::onExportCompleted);
+            this, &MainWindow::onExportCompleted, Qt::UniqueConnection);
 }
 
 void MainWindow::exportDataToCsvFiles() {
@@ -420,9 +418,9 @@ void MainWindow::exportDataToCsvFiles() {
     exportOrchestrator->exportToCsv(std::move(info), outputFolder, delimiter, database.get());
 
     connect(exportOrchestrator.get(), &ExportOrchestrator::exportProgress,
-            this, &MainWindow::onExportProgress);
+            this, &MainWindow::onExportProgress, Qt::UniqueConnection);
     connect(exportOrchestrator.get(), &ExportOrchestrator::exportCompleted,
-            this, &MainWindow::onExportCompleted);
+            this, &MainWindow::onExportCompleted, Qt::UniqueConnection);
 }
 
 void MainWindow::cancel() const {

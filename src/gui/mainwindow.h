@@ -9,8 +9,8 @@
 #include "../database/dbexport.h"
 #include "../database/dbexportdata.h"
 #include "../database/dbtree.h"
+#include "../database/idatabase.h"
 #include "../database/queryexecutor.h"
-#include "../database/sqlitedatabase.h"
 #include "highlighter.h"
 #include "queryexecutionpresenter.h"
 #include "sessionmanager.h"
@@ -81,7 +81,7 @@ private:
     std::unique_ptr<Ui::MainWindow> ui;
     std::unique_ptr<QMenu> recentFilesMenu;
     std::unique_ptr<QStatusBar> statusBar;
-    std::unique_ptr<SqliteDatabase> database;
+    std::unique_ptr<IDatabase> database;
     std::unique_ptr<DbAnalyzer> analyzer;
     std::unique_ptr<QueryExecutor> executor;
     std::unique_ptr<QueryExecutionPresenter> queryPresenter;
