@@ -348,6 +348,10 @@ void MainWindow::executeQuery() const {
     if (this->queryPresenter->execute(list, &errors)) {
         ui->tabWidget->setCurrentIndex(0);
         ui->queryResultTab->setCurrentIndex(0);
+    } else {
+        const auto errorMessage = errors.join("\r\n");
+        ui->queryResultMessagesTextEdit->setPlainText(errorMessage);
+        ui->queryResultTab->setCurrentIndex(1);
     }
 
     const auto milliseconds = static_cast<double>(time.elapsed());
