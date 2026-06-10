@@ -16,7 +16,8 @@ void SqliteDatabase::setSource(const QString &filename) {
 }
 
 bool SqliteDatabase::open() {
-    this->close();
+    if (database.isOpen())
+        return true;
     return database.open();
 }
 
@@ -35,9 +36,9 @@ void SqliteDatabase::shrink() {
 
 QueryResult SqliteDatabase::runStatement(const QString &sql) {
     QueryResult result;
-    if (!database.isOpen()) {
+    if (!database.open()) {
         result.ok = false;
-        result.error = "Database is not open";
+        result.error = database.lastError().text();
         return result;
     }
 
