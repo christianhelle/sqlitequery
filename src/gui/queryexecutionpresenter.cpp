@@ -6,6 +6,7 @@ QueryExecutionPresenter::QueryExecutionPresenter(QWidget *parent, QueryExecutor 
 }
 
 bool QueryExecutionPresenter::execute(const QStringList &statements, QStringList *errors) {
+    this->clearResults();
     const QList<QueryResult> results = executor->runStatements(statements, errors);
     presenter->present(results);
     return errors == nullptr || errors->isEmpty();
