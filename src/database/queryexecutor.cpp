@@ -10,6 +10,12 @@ QList<QueryResult> QueryExecutor::runScript(const QString &script, QStringList *
 }
 
 QList<QueryResult> QueryExecutor::runStatements(const QStringList &statements, QStringList *errors) {
+    if (!database->open()) {
+        if (errors != nullptr)
+            errors->append("Unable to open database");
+        return {};
+    }
+
     QList<QueryResult> results;
     for (const auto &raw: statements) {
         const QString sql = raw.trimmed().replace('\n', "", Qt::CaseInsensitive);
