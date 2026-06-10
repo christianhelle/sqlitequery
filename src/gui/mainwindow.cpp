@@ -345,7 +345,13 @@ void MainWindow::executeQuery() const {
     QElapsedTimer time;
     time.start();
 
-    if (this->queryPresenter->execute(list, &errors)) {
+    const auto success = this->queryPresenter->execute(list, &errors);
+
+    const auto milliseconds = static_cast<double>(time.elapsed());
+    const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
+    this->showMessage(msg);
+
+    if (success) {
         ui->tabWidget->setCurrentIndex(0);
         ui->queryResultTab->setCurrentIndex(0);
     } else {
@@ -353,10 +359,6 @@ void MainWindow::executeQuery() const {
         ui->queryResultMessagesTextEdit->setPlainText(errorMessage);
         ui->queryResultTab->setCurrentIndex(1);
     }
-
-    const auto milliseconds = static_cast<double>(time.elapsed());
-    const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
-    this->showMessage(msg);
 
     foreach(const QString sql, list) {
         if (sql.contains("create", Qt::CaseInsensitive) ||
