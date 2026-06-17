@@ -72,3 +72,4 @@ Makefile.Debug
 Makefile.Release
 dist/artifacts
 cmake-build-debug-visual-studio-2026/
+linux/include
