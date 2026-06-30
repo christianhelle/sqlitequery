@@ -54,12 +54,9 @@ jobs:
           cpack -G DEB
           cpack -G RPM
 
-      #- name: Snapcraft
-      #  run: |
-      #    sudo snap install snapcraft --classic
-      #    snapcraft
-      #  env:
-      #    SNAPCRAFT_BUILD_ENVIRONMENT: host
+      - name: Build Snap package
+        id: snapcraft
+        uses: snapcore/action-build@v1
 
       - name: Publish Zip archive
         uses: actions/upload-artifact@v4
@@ -82,9 +79,8 @@ jobs:
           path: |
             SQLiteQueryAnalyzer-${{ inputs.version }}-Linux.rpm
 
-    #- name: Publish Snap package
-    #  uses: actions/upload-artifact@v4
-    #  with:
-    #    name: Snap_v${{ inputs.version }}
-    #    path: |
-    #      *.snap
+      - name: Publish Snap package
+        uses: actions/upload-artifact@v4
+        with:
+          name: Snap_Package_v${{ inputs.version }}
+          path: ${{ steps.snapcraft.outputs.snap }}
