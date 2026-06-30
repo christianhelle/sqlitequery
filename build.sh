@@ -128,12 +128,12 @@ if [[ "$OS" == "Linux" ]]; then
       echo "Snap package creation skipped (DISABLE_SNAP=true)."
     elif command -v snapcraft &>/dev/null; then
       echo "Creating snap package..."
-      snapcraft
+      snapcraft pack
     else
       echo "snapcraft not found. Snap package will not be created."
       echo "To install snapcraft, run: sudo snap install snapcraft --classic"
-      echo "Alternatively, build via Docker:"
-      echo "  docker run --rm -v \$(pwd):/build -w /build snapcore/snapcraft:stable snapcraft"
+      echo "snapcraft builds the core24 snap using LXD; install and initialise it with:"
+      echo "  sudo snap install lxd && sudo lxd init --auto"
     fi
 
     echo "Package creation complete"
