@@ -98,7 +98,7 @@ if ($IsLinux) {
         cpack -G RPM --config ./build/CPackConfig.cmake
 
         if (Get-Command snapcraft -ErrorAction SilentlyContinue) {
-            snapcraft
+            snapcraft pack
         } else {
             Write-Warning "snapcraft not found. Snap package will not be created."
             Write-Warning "To install snapcraft, run: sudo snap install snapcraft --classic"
