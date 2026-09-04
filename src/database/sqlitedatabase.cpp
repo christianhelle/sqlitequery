@@ -37,7 +37,7 @@ void SqliteDatabase::shrink() {
     query.exec("VACUUM");
 }
 
-QueryResult SqliteDatabase::runStatement(const QString &sql, const int maxRows) {
+QueryResult SqliteDatabase::runStatement(const QString &sql) {
     QueryResult result;
     if (!database.isOpen()) {
         result.ok = false;
@@ -61,10 +61,6 @@ QueryResult SqliteDatabase::runStatement(const QString &sql, const int maxRows) 
             result.columns.append(record.fieldName(i));
         }
         while (query.next()) {
-            if (maxRows >= 0 && result.rows.size() >= maxRows) {
-                result.truncated = true;
-                break;
-            }
             QueryRow row;
             row.values.reserve(columnCount);
             for (int i = 0; i < columnCount; ++i) {

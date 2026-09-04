@@ -10,8 +10,7 @@ QList<QueryResult> QueryExecutor::runScript(const QString &script, QStringList *
 }
 
 QList<QueryResult> QueryExecutor::runStatements(const QStringList &statements,
-                                               QStringList *errors,
-                                               const int maxRows) {
+                                               QStringList *errors) {
     QList<QueryResult> results;
     results.reserve(statements.size());
     for (const auto &raw: statements) {
@@ -19,7 +18,7 @@ QList<QueryResult> QueryExecutor::runStatements(const QStringList &statements,
         if (sql.isEmpty())
             continue;
 
-        QueryResult result = database->runStatement(sql, maxRows);
+        QueryResult result = database->runStatement(sql);
         if (!result.ok) {
             if (errors != nullptr)
                 errors->append(result.error.isEmpty() ? QString("Query failed") : result.error);

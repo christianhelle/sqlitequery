@@ -25,9 +25,7 @@ public:
 
     [[nodiscard]] virtual QString getFilename() const = 0;
 
-    // maxRows < 0 reads the whole result set; otherwise the read stops after
-    // maxRows rows and the result is flagged as truncated.
-    virtual QueryResult runStatement(const QString &sql, int maxRows = -1) = 0;
+    virtual QueryResult runStatement(const QString &sql) = 0;
 
     // A lazily fetched, pageable model over the statement's result set. Rows
     // are read in pages as they are scrolled into view, so a result set of any

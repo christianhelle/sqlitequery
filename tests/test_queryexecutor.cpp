@@ -155,61 +155,6 @@ TEST_F(QueryExecutorTest, PreviewTableCapsLargeTables) {
     EXPECT_EQ(limited.rows.size(), 1000);
 }
 
-// A row cap must bound what a statement reads, without rewriting the SQL.
-TEST_F(QueryExecutorTest, RunStatementHonoursRowCap) {
-    const QueryResult capped = db->runStatement("SELECT * FROM test_users", 2);
-
-    EXPECT_TRUE(capped.ok);
-    EXPECT_TRUE(capped.isSelect);
-    EXPECT_EQ(capped.rows.size(), 2);
-    EXPECT_TRUE(capped.truncated);
-    EXPECT_EQ(capped.columns.size(), 3);
-}
-
-TEST_F(QueryExecutorTest, RunStatementIsNotTruncatedWhenCapNotReached) {
-    const QueryResult capped = db->runStatement("SELECT * FROM test_users", 100);
-
-    EXPECT_EQ(capped.rows.size(), 3);
-    EXPECT_FALSE(capped.truncated);
-}
-
-TEST_F(QueryExecutorTest, RunStatementIsNotTruncatedWhenCapEqualsRowCount) {
-    const QueryResult capped = db->runStatement("SELECT * FROM test_users", 3);
-
-    EXPECT_EQ(capped.rows.size(), 3);
-    EXPECT_FALSE(capped.truncated);
-}
-
-TEST_F(QueryExecutorTest, RunStatementWithoutCapReadsEverything) {
-    const QueryResult all = db->runStatement("SELECT * FROM test_users");
-
-    EXPECT_EQ(all.rows.size(), 3);
-    EXPECT_FALSE(all.truncated);
-}
-
-// The query editor runs arbitrary SQL through runStatements; an unbounded
-// SELECT must still come back bounded, and say that it was cut short.
-TEST_F(QueryExecutorTest, RunStatementsHonoursRowCap) {
-    QStringList rows;
-    rows << "BEGIN TRANSACTION";
-    for (int i = 0; i < 20000; ++i) {
-        rows << QString("INSERT INTO test_users (name, age) VALUES ('user%1', %1)").arg(i);
-    }
-    rows << "COMMIT";
-    executor->runStatements(rows);
-
-    QStringList statements;
-    statements << "SELECT * FROM test_users";
-    QStringList errors;
-    const auto results = executor->runStatements(statements, &errors, 1000);
-
-    ASSERT_EQ(results.size(), 1);
-    EXPECT_TRUE(errors.isEmpty());
-    EXPECT_TRUE(results.at(0).ok);
-    EXPECT_EQ(results.at(0).rows.size(), 1000);
-    EXPECT_TRUE(results.at(0).truncated);
-}
-
 TEST_F(QueryExecutorTest, PreviewNonexistentTable) {
     QueryResult result = executor->previewTable("nonexistent_table");
 

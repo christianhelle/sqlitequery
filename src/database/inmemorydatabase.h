@@ -20,7 +20,7 @@ public:
 
     [[nodiscard]] QString getFilename() const override { return source; }
 
-    QueryResult runStatement(const QString &sql, int maxRows = -1) override;
+    QueryResult runStatement(const QString &sql) override;
 
     QAbstractItemModel *createResultModel(const QString &sql,
                                           QString *error = nullptr) override;
