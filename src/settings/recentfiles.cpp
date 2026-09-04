@@ -42,7 +42,7 @@ void RecentFiles::add(const QString &filepath) {
 }
 
 void RecentFiles::clear() {
-    QFile(getRecentsFilePath()).deleteLater();
+    QFile::remove(getRecentsFilePath());
 }
 
 QStringList RecentFiles::getList() {
