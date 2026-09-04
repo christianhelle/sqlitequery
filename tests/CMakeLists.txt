@@ -34,6 +34,7 @@ set(PROD_SRCS
     ../src/database/sqlitedatabase.cpp
     ../src/database/inmemorydatabase.cpp
     ../src/database/pagedresultmodel.cpp
+    ../src/database/sqlresultreader.cpp
     ../src/database/queryexecutor.cpp
     ../src/database/dbanalyzer.cpp
     ../src/database/dbexportdata.cpp
