@@ -1,5 +1,7 @@
 #include "zoompresenter.h"
 
+#include <algorithm>
+
 #include <QAbstractScrollArea>
 #include <QApplication>
 #include <QEvent>
@@ -92,15 +94,12 @@ bool ZoomPresenter::ownsFocus() const {
     if (focus == nullptr)
         return false;
 
-    for (const auto &existing: targets) {
-        // A scrolling widget can hand focus to a child of its own, so the
-        // whole subtree counts as the target holding the focus.
-        const QWidget *widget = existing.widget.data();
-        if (widget != nullptr && (widget == focus || widget->isAncestorOf(focus)))
-            return true;
-    }
-
-    return false;
+    // A scrolling widget can hand focus to a child of its own, so the whole
+    // subtree counts as the target holding the focus.
+    return std::any_of(targets.begin(), targets.end(), [focus](const Target &target) {
+        const QWidget *widget = target.widget.data();
+        return widget != nullptr && (widget == focus || widget->isAncestorOf(focus));
+    });
 }
 
 bool ZoomPresenter::eventFilter(QObject *watched, QEvent *event) {
