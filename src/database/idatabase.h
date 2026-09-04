@@ -9,6 +9,8 @@
 
 #include "queryresult.h"
 
+class QAbstractItemModel;
+
 class IDatabase {
 public:
     virtual ~IDatabase() = default;
@@ -26,6 +28,14 @@ public:
     // maxRows < 0 reads the whole result set; otherwise the read stops after
     // maxRows rows and the result is flagged as truncated.
     virtual QueryResult runStatement(const QString &sql, int maxRows = -1) = 0;
+
+    // A lazily fetched, pageable model over the statement's result set. Rows
+    // are read in pages as they are scrolled into view, so a result set of any
+    // size can be browsed. The caller owns the returned model.
+    // Returns nullptr when the statement returns no rows, or when it failed --
+    // `error` then holds the reason.
+    virtual QAbstractItemModel *createResultModel(const QString &sql,
+                                                  QString *error = nullptr) = 0;
 
     virtual QueryResult streamRows(const QString &sql,
                                    const std::function<bool(const QList<QVariant> &)> &onRow) = 0;

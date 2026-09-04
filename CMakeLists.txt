@@ -43,6 +43,8 @@ set(COMMON_SRCS
   src/database/dbanalyzer.cpp
   src/database/dbanalyzer.h
   src/database/dbtree.cpp
+  src/database/pagedresultmodel.cpp
+  src/database/pagedresultmodel.h
   src/database/dbtree.h
   src/gui/highlighter.cpp
   src/gui/highlighter.h

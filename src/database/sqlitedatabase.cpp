@@ -4,6 +4,10 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 
+#include <memory>
+
+#include "pagedresultmodel.h"
+
 SqliteDatabase::SqliteDatabase() {
     database = QSqlDatabase::addDatabase("QSQLITE");
     database.setHostName("localhost");
@@ -72,6 +76,27 @@ QueryResult SqliteDatabase::runStatement(const QString &sql, const int maxRows) 
         result.rowsAffected = query.numRowsAffected();
     }
     return result;
+}
+
+QAbstractItemModel *SqliteDatabase::createResultModel(const QString &sql, QString *error) {
+    if (!database.isOpen()) {
+        if (error != nullptr)
+            *error = "Database is not open";
+        return nullptr;
+    }
+
+    auto model = std::make_unique<PagedResultModel>(database, sql);
+    if (!model->errorText().isEmpty()) {
+        if (error != nullptr)
+            *error = model->errorText();
+        return nullptr;
+    }
+
+    // The statement ran but returns no rows, so there is nothing to display.
+    if (model->columnCount() == 0)
+        return nullptr;
+
+    return model.release();
 }
 
 QueryResult SqliteDatabase::streamRows(const QString &sql,

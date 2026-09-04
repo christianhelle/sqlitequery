@@ -36,6 +36,10 @@ architecture, the modules, and the tests all refer to the same things.
 - **Tree** — renders a DatabaseInfo into the left-hand QTreeWidget.
 - **QueryExecutor** — runs a list of Queries against a Database, returns
   results. Pure logic, no widgets.
+- **PagedResult** — a lazily fetched view over a Query's result set. Rows are
+  read in pages as they are scrolled into view, so a result set of any size can
+  be browsed without holding it in memory. Ordering is done by the Database,
+  not over the rows already fetched.
 - **QueryResultPresenter** — renders QueryExecutor output into the result
   area of the main window. Owns the scroll area and table views.
 - **SchemaExporter** — produces a `CREATE TABLE` script from a DatabaseInfo.

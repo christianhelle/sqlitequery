@@ -2,6 +2,10 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlRecord>
+
+#include <memory>
+
+#include "pagedresultmodel.h"
 #include <QSqlError>
 
 InMemoryDatabase::InMemoryDatabase() {
@@ -73,6 +77,27 @@ QueryResult InMemoryDatabase::runStatement(const QString &sql, const int maxRows
         result.rowsAffected = query.numRowsAffected();
     }
     return result;
+}
+
+QAbstractItemModel *InMemoryDatabase::createResultModel(const QString &sql, QString *error) {
+    if (!database.isOpen()) {
+        if (error != nullptr)
+            *error = "Database is not open";
+        return nullptr;
+    }
+
+    auto model = std::make_unique<PagedResultModel>(database, sql);
+    if (!model->errorText().isEmpty()) {
+        if (error != nullptr)
+            *error = model->errorText();
+        return nullptr;
+    }
+
+    // The statement ran but returns no rows, so there is nothing to display.
+    if (model->columnCount() == 0)
+        return nullptr;
+
+    return model.release();
 }
 
 QueryResult InMemoryDatabase::streamRows(const QString &sql,

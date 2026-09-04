@@ -22,6 +22,9 @@ public:
 
     QueryResult runStatement(const QString &sql, int maxRows = -1) override;
 
+    QAbstractItemModel *createResultModel(const QString &sql,
+                                          QString *error = nullptr) override;
+
     QueryResult streamRows(const QString &sql,
                            const std::function<bool(const QList<QVariant> &)> &onRow) override;
 

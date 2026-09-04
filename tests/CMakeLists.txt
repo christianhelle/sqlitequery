@@ -23,6 +23,7 @@ set(TEST_SRCS
     test_dbexportschema.cpp
     test_exportorchestrator.cpp
     test_queryresultpresenter.cpp
+    test_pagedresultmodel.cpp
     test_main.cpp
 )
 
@@ -32,6 +33,7 @@ add_executable(${PROJECT_NAME} ${TEST_SRCS})
 set(PROD_SRCS
     ../src/database/sqlitedatabase.cpp
     ../src/database/inmemorydatabase.cpp
+    ../src/database/pagedresultmodel.cpp
     ../src/database/queryexecutor.cpp
     ../src/database/dbanalyzer.cpp
     ../src/database/dbexportdata.cpp
