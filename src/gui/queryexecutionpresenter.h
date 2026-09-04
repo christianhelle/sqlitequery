@@ -18,7 +18,7 @@ public:
 
     void clearResults();
 
-    void presentToView(QTableView *view, const QueryResult &result);
+    void presentToView(QTableView *view, QAbstractItemModel *model);
 
 private:
     QWidget *widget;

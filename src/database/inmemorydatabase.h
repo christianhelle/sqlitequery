@@ -1,12 +1,12 @@
 #ifndef INMEMORYDATABASE_H
 #define INMEMORYDATABASE_H
 
-#include <QSqlDatabase>
 #include <QString>
 
-#include "idatabase.h"
+#include "sqldatabaseadapter.h"
 
-class InMemoryDatabase : public IDatabase {
+// Test adapter: a SQLite database held in memory.
+class InMemoryDatabase final : public SqlDatabaseAdapter {
 public:
     InMemoryDatabase();
 
@@ -14,22 +14,7 @@ public:
 
     bool open() override;
 
-    void close() override;
-
     void shrink() override;
-
-    [[nodiscard]] QString getFilename() const override { return source; }
-
-    QueryResult runStatement(const QString &sql) override;
-
-    QueryResult streamRows(const QString &sql,
-                           const std::function<bool(const QList<QVariant> &)> &onRow) override;
-
-    [[nodiscard]] QSqlDatabase getConnection() const { return database; }
-
-private:
-    QSqlDatabase database;
-    QString source;
 };
 
 #endif // INMEMORYDATABASE_H

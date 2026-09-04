@@ -7,7 +7,7 @@
 #include <QWidget>
 #include <memory>
 
-#include "../database/queryresult.h"
+class QAbstractItemModel;
 
 class QueryResultPresenter {
 public:
@@ -15,14 +15,17 @@ public:
 
     void clear();
 
-    void present(const QList<QueryResult> &results);
+    // Takes ownership of the models and binds each to its own table view.
+    void present(const QList<QAbstractItemModel *> &models);
 
-    void presentToView(QTableView *view, const QueryResult &result);
+    // Takes ownership of the model and binds it to the given view.
+    void presentToView(QTableView *view, QAbstractItemModel *model);
 
 private:
     QWidget *widget;
-    std::unique_ptr<QScrollArea> scrollArea;
-    std::unique_ptr<QWidget> container;
+    // Owned by the parent widget, as with every other widget in the tree.
+    QScrollArea *scrollArea;
+    QWidget *container;
     QList<QTableView *> tableViews{};
 };
 

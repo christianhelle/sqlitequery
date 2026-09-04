@@ -155,3 +155,17 @@ TEST_F(DbAnalyzerTest, AnalyzeWithPrimaryKey) {
     ASSERT_NE(idCol, nullptr);
     EXPECT_TRUE(idCol->primaryKey);
 }
+
+// The analyzer must leave the database usable: the window analyses a database
+// immediately after opening it, and then runs the user's queries against it.
+TEST_F(DbAnalyzerTest, AnalyzeLeavesDatabaseUsable) {
+    DatabaseInfo info;
+    ASSERT_TRUE(analyzer->analyze(info));
+
+    runSql("INSERT INTO users (name, age) VALUES ('Alice', 30)");
+
+    QueryExecutor executor(db.get());
+    const QueryResult preview = executor.previewTable("users");
+    EXPECT_TRUE(preview.ok) << preview.error.toStdString();
+    EXPECT_EQ(preview.rows.size(), 1);
+}

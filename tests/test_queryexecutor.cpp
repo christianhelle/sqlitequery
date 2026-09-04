@@ -73,6 +73,19 @@ TEST_F(QueryExecutorTest, RunInvalidQuery) {
     EXPECT_GT(errors.size(), 0);
 }
 
+// Arbitrary text is not valid SQL and must be reported, not silently ignored.
+TEST_F(QueryExecutorTest, RunNonSqlTextReportsError) {
+    QStringList statements;
+    statements << "this is not sql at all";
+    QStringList errors;
+    const auto results = executor->runStatements(statements, &errors);
+
+    ASSERT_EQ(results.size(), 1);
+    EXPECT_FALSE(results.at(0).ok);
+    ASSERT_EQ(errors.size(), 1);
+    EXPECT_FALSE(errors.at(0).isEmpty());
+}
+
 TEST_F(QueryExecutorTest, RunMultipleQueries) {
     QStringList statements;
     statements << "SELECT COUNT(*) FROM test_users"
@@ -122,6 +135,24 @@ TEST_F(QueryExecutorTest, PreviewTableWithLimit) {
     EXPECT_TRUE(result.ok);
     EXPECT_TRUE(result.isSelect);
     EXPECT_EQ(result.rows.size(), 2);
+}
+
+// Browsing a large table must not pull the whole table into memory.
+TEST_F(QueryExecutorTest, PreviewTableCapsLargeTables) {
+    QStringList rows;
+    rows << "BEGIN TRANSACTION";
+    for (int i = 0; i < 20000; ++i) {
+        rows << QString("INSERT INTO test_users (name, age) VALUES ('user%1', %1)").arg(i);
+    }
+    rows << "COMMIT";
+    executor->runStatements(rows);
+
+    const QueryResult unlimited = executor->previewTable("test_users");
+    EXPECT_GT(unlimited.rows.size(), 1000);
+
+    const QueryResult limited = executor->previewTable("test_users", 1000);
+    EXPECT_TRUE(limited.ok);
+    EXPECT_EQ(limited.rows.size(), 1000);
 }
 
 TEST_F(QueryExecutorTest, PreviewNonexistentTable) {

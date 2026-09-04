@@ -80,7 +80,6 @@ public slots:
 private:
     std::unique_ptr<Ui::MainWindow> ui;
     std::unique_ptr<QMenu> recentFilesMenu;
-    std::unique_ptr<QStatusBar> statusBar;
     std::unique_ptr<SqliteDatabase> database;
     std::unique_ptr<DbAnalyzer> analyzer;
     std::unique_ptr<QueryExecutor> executor;
@@ -100,6 +99,10 @@ private:
     void restoreWindowState();
 
     void showMessage(const QString &message) const;
+
+    // Reports that an export is in progress and returns true when it is, so
+    // callers can bail out with a single guard.
+    [[nodiscard]] bool blockedByExport() const;
 };
 
 #endif // MAINWINDOW_H

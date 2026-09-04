@@ -49,13 +49,13 @@ void DbTree::populateTree(const DatabaseInfo &info) {
     const auto tablesRootNodePtr = tablesRootNode.get();
     this->tree->addTopLevelItem(tablesRootNode.release());
 
-    foreach(Table table, info.tables) {
+    for (const auto &table : info.tables) {
         auto tableNode = std::make_unique<QTreeWidgetItem>(QTreeWidgetItem::UserType + 1);
         tableNode->setText(0, table.name);
         const auto tableNodePtr = tableNode.get();
         tablesRootNodePtr->addChild(tableNode.release());
 
-        foreach(Column col, table.columns) {
+        for (const auto &col : table.columns) {
             auto colName = std::make_unique<QTreeWidgetItem>();
             colName->setText(0, col.name);
             const auto colNamePtr = colName.get();

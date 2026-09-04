@@ -1,5 +1,6 @@
 #include "exportorchestrator.h"
 #include "../database/dbexportdata.h"
+#include <QPointer>
 #include <QtConcurrent/QtConcurrent>
 
 #include <chrono>
@@ -11,6 +12,13 @@ ExportOrchestrator::ExportOrchestrator(QObject *parent)
 
 ExportOrchestrator::~ExportOrchestrator() {
     cancel();
+
+    // Both tasks read members of this object, so neither may outlive it. cancel()
+    // above makes them stop at their next check rather than at the end of the
+    // export. Queued progress callbacks are guarded separately by a QPointer.
+    completed_ = true;
+    exportTask_.waitForFinished();
+    pollingTask_.waitForFinished();
 }
 
 void ExportOrchestrator::exportToSql(DatabaseInfo info, QString filePath, IDatabase *db) {
@@ -36,42 +44,53 @@ void ExportOrchestrator::cancel() {
 }
 
 void ExportOrchestrator::onExportComplete() {
-    uint64_t rows = progress_->getAffectedRows();
-    progress_.release();
-    tcs_.release();
+    const uint64_t rows = progress_->getAffectedRows();
     completed_ = true;
+    progress_.reset();
+    tcs_.reset();
     emit exportCompleted(rows);
 }
 
 void ExportOrchestrator::startProgressPolling(CancellationToken token) {
-    auto _ = QtConcurrent::run([this, token]() {
+    // The polling thread outlives the export, so it keeps the progress and
+    // cancellation state alive through shared ownership instead of raw pointers.
+    auto progress = progress_;
+    auto tcs = tcs_;
+    const QPointer<ExportOrchestrator> self(this);
+    pollingTask_ = QtConcurrent::run([this, self, token, progress, tcs]() {
         do {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             if (completed_)
                 break;
-            MainThread::run([this]() {
-                emit exportProgress(progress_->getAffectedRows());
+            const uint64_t rows = progress->getAffectedRows();
+            // Queued onto the GUI thread, so it can run after this object is
+            // gone; QPointer clears itself when that happens.
+            MainThread::run([self, rows]() {
+                if (!self.isNull())
+                    emit self->exportProgress(rows);
             });
         } while (!token.isCancellationRequested() &&
-                 !progress_->isCompleted());
+                 !progress->isCompleted());
     });
 }
 
 void ExportOrchestrator::runExport(IDatabase *db, DatabaseInfo info,
                                    std::function<void(IDatabase *, const DatabaseInfo &, const CancellationToken *, ExportDataProgress *)> fn) {
-    progress_ = std::make_unique<ExportDataProgress>();
-    tcs_ = std::make_unique<CancellationTokenSource>();
+    progress_ = std::make_shared<ExportDataProgress>();
+    tcs_ = std::make_shared<CancellationTokenSource>();
     completed_ = false;
     CancellationToken token = tcs_->get();
     ExportDataProgress *progressPtr = progress_.get();
 
-    auto future = QtConcurrent::run([db, info, fn, token, progressPtr]() {
-        fn(db, info, const_cast<const CancellationToken*>(&token), progressPtr);
+    exportTask_ = QtConcurrent::run([db, info = std::move(info), fn = std::move(fn), token, progressPtr]() {
+        fn(db, info, &token, progressPtr);
     });
 
-    future.then([this]() {
-        MainThread::run([this]() {
-            this->onExportComplete();
+    const QPointer<ExportOrchestrator> self(this);
+    exportTask_.then([self]() {
+        MainThread::run([self]() {
+            if (!self.isNull())
+                self->onExportComplete();
         });
     });
 
