@@ -99,6 +99,10 @@ private:
     void restoreWindowState();
 
     void showMessage(const QString &message) const;
+
+    // Reports that an export is in progress and returns true when it is, so
+    // callers can bail out with a single guard.
+    [[nodiscard]] bool blockedByExport() const;
 };
 
 #endif // MAINWINDOW_H

@@ -240,12 +240,8 @@ void MainWindow::saveSession() const {
 }
 
 void MainWindow::createNewFile() {
-    if (exportOrchestrator->isExporting()) {
-        const auto msg = "Unable to process request. Data export in progress";
-        this->statusBar()->showMessage(msg, 5000);
-        ui->queryResultTab->setCurrentIndex(1);
+    if (blockedByExport())
         return;
-    }
 
     const QString filepath = Prompts::getFilePath(this, QFileDialog::AcceptSave);
     this->openDatabase(filepath);
@@ -253,12 +249,8 @@ void MainWindow::createNewFile() {
 }
 
 void MainWindow::openDatabase(const QString &filename) {
-    if (exportOrchestrator->isExporting()) {
-        const auto msg = "Unable to process request. Data export in progress";
-        this->statusBar()->showMessage(msg, 5000);
-        ui->queryResultTab->setCurrentIndex(1);
+    if (blockedByExport())
         return;
-    }
 
     if (!this->database->getFilename().isEmpty()) {
         this->queryPresenter->clearResults();
@@ -280,12 +272,8 @@ void MainWindow::openDatabase(const QString &filename) {
 }
 
 void MainWindow::openExistingFile() {
-    if (exportOrchestrator->isExporting()) {
-        const auto msg = "Unable to process request. Data export in progress";
-        this->statusBar()->showMessage(msg, 5000);
-        ui->queryResultTab->setCurrentIndex(1);
+    if (blockedByExport())
         return;
-    }
     const auto filepath = Prompts::getFilePath(this, QFileDialog::AcceptOpen);
     this->openDatabase(filepath);
     sessionManager->addRecentFile(filepath);
@@ -298,12 +286,8 @@ void MainWindow::appExit() const {
 }
 
 void MainWindow::shrink() const {
-    if (exportOrchestrator->isExporting()) {
-        const auto msg = "Unable to process request. Data export in progress";
-        this->statusBar()->showMessage(msg, 5000);
-        ui->queryResultTab->setCurrentIndex(1);
+    if (blockedByExport())
         return;
-    }
     if (const QString filename = this->database->getFilename();
         filename.isNull() || filename.isEmpty())
         return;
@@ -317,12 +301,8 @@ void MainWindow::refreshDatabase() const {
 }
 
 void MainWindow::analyzeDatabase() const {
-    if (exportOrchestrator->isExporting()) {
-        const auto msg = "Unable to process request. Data export in progress";
-        this->statusBar()->showMessage(msg, 5000);
-        ui->queryResultTab->setCurrentIndex(1);
+    if (blockedByExport())
         return;
-    }
 
     DatabaseInfo info;
     if (!analyzer->analyze(info)) {
@@ -333,12 +313,8 @@ void MainWindow::analyzeDatabase() const {
 }
 
 void MainWindow::executeQuery() const {
-    if (exportOrchestrator->isExporting()) {
-        const auto msg = "Unable to process request. Data export in progress";
-        this->statusBar()->showMessage(msg, 5000);
-        ui->queryResultTab->setCurrentIndex(1);
+    if (blockedByExport())
         return;
-    }
 
     const QStringList list(ui->textEdit->toPlainText().split(";", Qt::SkipEmptyParts));
     QStringList errors;
@@ -487,6 +463,15 @@ void MainWindow::about() {
                          "A fast and lightweight cross-platform GUI tool "
                          "for querying and manipulating SQLite databases.";
     QMessageBox::about(this, "About", text);
+}
+
+bool MainWindow::blockedByExport() const {
+    if (!exportOrchestrator->isExporting())
+        return false;
+
+    this->statusBar()->showMessage("Unable to process request. Data export in progress", 5000);
+    ui->queryResultTab->setCurrentIndex(1);
+    return true;
 }
 
 void MainWindow::showMessage(const QString &message) const {
