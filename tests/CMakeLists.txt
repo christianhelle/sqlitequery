@@ -4,7 +4,7 @@ project(SQLiteQueryTests LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Sql)
+find_package(Qt6 REQUIRED COMPONENTS Core Sql Widgets)
 
 # Fetch Google Test
 include(FetchContent)
@@ -22,6 +22,7 @@ set(TEST_SRCS
     test_dbexportdata.cpp
     test_dbexportschema.cpp
     test_exportorchestrator.cpp
+    test_queryresultpresenter.cpp
     test_main.cpp
 )
 
@@ -39,6 +40,7 @@ set(PROD_SRCS
     ../src/database/progress.h
     ../src/threading/cancellation.cpp
     ../src/gui/exportorchestrator.cpp
+    ../src/gui/queryresultpresenter.cpp
 )
 
 target_sources(${PROJECT_NAME} PRIVATE ${PROD_SRCS})
@@ -47,6 +49,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Core
     Qt6::Gui
     Qt6::Sql
+    Qt6::Widgets
     GTest::gtest_main
     GTest::gtest
 )
