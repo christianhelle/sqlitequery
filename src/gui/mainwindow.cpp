@@ -330,8 +330,6 @@ void MainWindow::analyzeDatabase() const {
     }
 
     this->tree->populateTree(info);
-
-    this->database->close();
 }
 
 void MainWindow::executeQuery() const {
