@@ -16,7 +16,8 @@ public:
 
     bool execute(const QStringList &statements,
                  QStringList *errors = nullptr,
-                 int maxRows = -1);
+                 int maxRows = -1,
+                 bool *truncated = nullptr);
 
     void clearResults();
 

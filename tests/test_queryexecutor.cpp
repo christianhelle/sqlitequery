@@ -187,6 +187,29 @@ TEST_F(QueryExecutorTest, RunStatementWithoutCapReadsEverything) {
     EXPECT_FALSE(all.truncated);
 }
 
+// The query editor runs arbitrary SQL through runStatements; an unbounded
+// SELECT must still come back bounded, and say that it was cut short.
+TEST_F(QueryExecutorTest, RunStatementsHonoursRowCap) {
+    QStringList rows;
+    rows << "BEGIN TRANSACTION";
+    for (int i = 0; i < 20000; ++i) {
+        rows << QString("INSERT INTO test_users (name, age) VALUES ('user%1', %1)").arg(i);
+    }
+    rows << "COMMIT";
+    executor->runStatements(rows);
+
+    QStringList statements;
+    statements << "SELECT * FROM test_users";
+    QStringList errors;
+    const auto results = executor->runStatements(statements, &errors, 1000);
+
+    ASSERT_EQ(results.size(), 1);
+    EXPECT_TRUE(errors.isEmpty());
+    EXPECT_TRUE(results.at(0).ok);
+    EXPECT_EQ(results.at(0).rows.size(), 1000);
+    EXPECT_TRUE(results.at(0).truncated);
+}
+
 TEST_F(QueryExecutorTest, PreviewNonexistentTable) {
     QueryResult result = executor->previewTable("nonexistent_table");
 

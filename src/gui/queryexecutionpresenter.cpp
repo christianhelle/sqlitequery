@@ -1,5 +1,7 @@
 #include "queryexecutionpresenter.h"
 
+#include <algorithm>
+
 QueryExecutionPresenter::QueryExecutionPresenter(QWidget *parent, QueryExecutor *executor)
     : widget(parent), executor(executor),
       presenter(std::make_unique<QueryResultPresenter>(parent)) {
@@ -7,8 +9,13 @@ QueryExecutionPresenter::QueryExecutionPresenter(QWidget *parent, QueryExecutor 
 
 bool QueryExecutionPresenter::execute(const QStringList &statements,
                                       QStringList *errors,
-                                      const int maxRows) {
+                                      const int maxRows,
+                                      bool *truncated) {
     const QList<QueryResult> results = executor->runStatements(statements, errors, maxRows);
+    if (truncated != nullptr) {
+        *truncated = std::any_of(results.begin(), results.end(),
+                                 [](const QueryResult &result) { return result.truncated; });
+    }
     presenter->present(results);
     return errors == nullptr || errors->isEmpty();
 }

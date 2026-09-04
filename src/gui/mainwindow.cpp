@@ -17,6 +17,10 @@
 // Use the query editor to see more than this.
 constexpr int PreviewRowLimit = 1000;
 
+// The grid builds an item per cell, so an unbounded SELECT would stall the UI.
+// The statement still runs; only the rows read back for display are capped.
+constexpr int MaxDisplayedRows = 10000;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent) {
     ui = std::make_unique<Ui::MainWindow>();
@@ -350,7 +354,8 @@ void MainWindow::executeQuery() const {
     QElapsedTimer time;
     time.start();
 
-    if (this->queryPresenter->execute(list, &errors)) {
+    bool truncated = false;
+    if (this->queryPresenter->execute(list, &errors, MaxDisplayedRows, &truncated)) {
         ui->tabWidget->setCurrentIndex(0);
         ui->queryResultTab->setCurrentIndex(0);
     }
@@ -359,7 +364,11 @@ void MainWindow::executeQuery() const {
     const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
 
     if (errors.isEmpty()) {
-        this->showMessage(msg);
+        this->showMessage(truncated
+                              ? QString("%1. Showing the first %2 row(s); the result set is larger")
+                                .arg(msg)
+                                .arg(MaxDisplayedRows)
+                              : msg);
     } else {
         // Report what failed instead of overwriting it with the timing.
         ui->queryResultMessagesTextEdit->setPlainText(errors.join("\r\n"));
