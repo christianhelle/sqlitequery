@@ -5,8 +5,10 @@ QueryExecutionPresenter::QueryExecutionPresenter(QWidget *parent, QueryExecutor 
       presenter(std::make_unique<QueryResultPresenter>(parent)) {
 }
 
-bool QueryExecutionPresenter::execute(const QStringList &statements, QStringList *errors) {
-    const QList<QueryResult> results = executor->runStatements(statements, errors);
+bool QueryExecutionPresenter::execute(const QStringList &statements,
+                                      QStringList *errors,
+                                      const int maxRows) {
+    const QList<QueryResult> results = executor->runStatements(statements, errors, maxRows);
     presenter->present(results);
     return errors == nullptr || errors->isEmpty();
 }

@@ -14,7 +14,11 @@ public:
 
     QList<QueryResult> runScript(const QString &script, QStringList *errors = nullptr);
 
-    QList<QueryResult> runStatements(const QStringList &statements, QStringList *errors = nullptr);
+    // maxRows < 0 reads every row; otherwise each statement stops after
+    // maxRows rows and its result is flagged as truncated.
+    QList<QueryResult> runStatements(const QStringList &statements,
+                                     QStringList *errors = nullptr,
+                                     int maxRows = -1);
 
     [[nodiscard]] QueryResult previewTable(const QString &tableName, int limit = -1) const;
 

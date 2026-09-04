@@ -14,7 +14,9 @@ class QueryExecutionPresenter {
 public:
     explicit QueryExecutionPresenter(QWidget *parent, QueryExecutor *executor);
 
-    bool execute(const QStringList &statements, QStringList *errors = nullptr);
+    bool execute(const QStringList &statements,
+                 QStringList *errors = nullptr,
+                 int maxRows = -1);
 
     void clearResults();
 
