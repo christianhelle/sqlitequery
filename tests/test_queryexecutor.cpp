@@ -124,6 +124,24 @@ TEST_F(QueryExecutorTest, PreviewTableWithLimit) {
     EXPECT_EQ(result.rows.size(), 2);
 }
 
+// Browsing a large table must not pull the whole table into memory.
+TEST_F(QueryExecutorTest, PreviewTableCapsLargeTables) {
+    QStringList rows;
+    rows << "BEGIN TRANSACTION";
+    for (int i = 0; i < 20000; ++i) {
+        rows << QString("INSERT INTO test_users (name, age) VALUES ('user%1', %1)").arg(i);
+    }
+    rows << "COMMIT";
+    executor->runStatements(rows);
+
+    const QueryResult unlimited = executor->previewTable("test_users");
+    EXPECT_GT(unlimited.rows.size(), 1000);
+
+    const QueryResult limited = executor->previewTable("test_users", 1000);
+    EXPECT_TRUE(limited.ok);
+    EXPECT_EQ(limited.rows.size(), 1000);
+}
+
 TEST_F(QueryExecutorTest, PreviewNonexistentTable) {
     QueryResult result = executor->previewTable("nonexistent_table");
 

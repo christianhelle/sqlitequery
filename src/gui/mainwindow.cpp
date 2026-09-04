@@ -13,6 +13,10 @@
 #include <chrono>
 #include <thread>
 
+// Table previews are capped so that browsing a large database stays instant.
+// Use the query editor to see more than this.
+constexpr int PreviewRowLimit = 1000;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent) {
     ui = std::make_unique<Ui::MainWindow>();
@@ -454,10 +458,22 @@ void MainWindow::treeNodeChanged(QTreeWidgetItem *item,
         type() == QTreeWidgetItem::UserType + 1
     ) {
         const QString tableName = item->text(column);
-        QueryResult result = this->executor->previewTable(tableName);
+        const QueryResult result = this->executor->previewTable(tableName, PreviewRowLimit);
+
+        if (!result.ok) {
+            this->showMessage(result.error);
+            ui->queryResultTab->setCurrentIndex(1);
+            return;
+        }
 
         this->queryPresenter->presentToView(ui->tableView, result);
         ui->tabWidget->setCurrentIndex(1);
+
+        if (result.rows.size() >= PreviewRowLimit) {
+            this->showMessage(QString("Showing the first %1 row(s) of \"%2\"")
+                              .arg(PreviewRowLimit)
+                              .arg(tableName));
+        }
     }
 }
 
