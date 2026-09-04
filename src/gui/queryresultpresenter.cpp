@@ -1,5 +1,7 @@
 #include "queryresultpresenter.h"
 
+#include <algorithm>
+
 #include <QItemSelectionModel>
 #include <QPointer>
 #include <QStandardItemModel>
@@ -25,7 +27,15 @@ void QueryResultPresenter::clear() {
 }
 
 void QueryResultPresenter::present(const QList<QueryResult> &results) {
-    // Discard the views (and the models they own) from the previous execution.
+    const bool hasResultsToShow = std::any_of(
+        results.begin(), results.end(),
+        [](const QueryResult &result) { return result.isSelect; });
+
+    // Discard the views (and the models they own) from the previous execution,
+    // but only once there is something to replace them with: a statement that
+    // renders nothing leaves the previous results on screen.
+    if (!hasResultsToShow)
+        return;
     this->clear();
 
     const QRect widgetRect = this->widget->geometry();
