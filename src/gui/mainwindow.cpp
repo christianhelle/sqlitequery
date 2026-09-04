@@ -204,6 +204,8 @@ void MainWindow::restoreWindowState() {
         });
     }
 
+    zoomPresenter->setStep(windowState.zoomStep);
+
     if (windowState.queryTextHeight > 0 &&
         windowState.queryResultHeight > 0)
         ui->splitterQueryTab->setSizes({
@@ -230,6 +232,7 @@ void MainWindow::saveWindowState(const QSize &size) const {
     state.tabWidth = tabWidth;
     state.queryTextHeight = queryTextHeight;
     state.queryResultHeight = queryResultHeight;
+    state.zoomStep = zoomPresenter->step();
     sessionManager->saveWindowState(state);
 }
 
