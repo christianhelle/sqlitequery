@@ -14,14 +14,11 @@ class QueryExecutionPresenter {
 public:
     explicit QueryExecutionPresenter(QWidget *parent, QueryExecutor *executor);
 
-    bool execute(const QStringList &statements,
-                 QStringList *errors = nullptr,
-                 int maxRows = -1,
-                 bool *truncated = nullptr);
+    bool execute(const QStringList &statements, QStringList *errors = nullptr);
 
     void clearResults();
 
-    void presentToView(QTableView *view, const QueryResult &result);
+    void presentToView(QTableView *view, QAbstractItemModel *model);
 
 private:
     QWidget *widget;

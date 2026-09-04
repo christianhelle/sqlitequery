@@ -36,3 +36,27 @@ QueryResult QueryExecutor::previewTable(const QString &tableName, int limit) con
     }
     return database->runStatement(sql);
 }
+
+QList<QAbstractItemModel *> QueryExecutor::runStatementsPaged(const QStringList &statements,
+                                                             QStringList *errors) const {
+    QList<QAbstractItemModel *> models;
+    for (const auto &raw: statements) {
+        const QString sql = raw.trimmed().replace('\n', "", Qt::CaseInsensitive);
+        if (sql.isEmpty())
+            continue;
+
+        QString error;
+        // Statements that return no rows still run; they just have nothing to show.
+        if (auto *model = database->createResultModel(sql, &error)) {
+            models.append(model);
+        } else if (!error.isEmpty() && errors != nullptr) {
+            errors->append(error);
+        }
+    }
+    return models;
+}
+
+QAbstractItemModel *QueryExecutor::previewTablePaged(const QString &tableName,
+                                                     QString *error) const {
+    return database->createResultModel(QString("SELECT * FROM \"%1\"").arg(tableName), error);
+}

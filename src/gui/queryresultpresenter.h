@@ -7,7 +7,7 @@
 #include <QWidget>
 #include <memory>
 
-#include "../database/queryresult.h"
+class QAbstractItemModel;
 
 class QueryResultPresenter {
 public:
@@ -15,9 +15,11 @@ public:
 
     void clear();
 
-    void present(const QList<QueryResult> &results);
+    // Takes ownership of the models and binds each to its own table view.
+    void present(const QList<QAbstractItemModel *> &models);
 
-    void presentToView(QTableView *view, const QueryResult &result);
+    // Takes ownership of the model and binds it to the given view.
+    void presentToView(QTableView *view, QAbstractItemModel *model);
 
 private:
     QWidget *widget;
