@@ -165,16 +165,15 @@ void MainWindow::connectSignalSlots() const {
             SLOT(about()));
     // The one-shortcut-per-action limit of the form is why these are set here:
     // Ctrl+= and Ctrl++ are both "zoom in" on a keyboard, and which one the
-    // user reaches for depends on their layout.
+    // user reaches for depends on their layout. The standard ZoomIn and
+    // ZoomOut sequences are deliberately not in these lists: they resolve to
+    // Ctrl++ and Ctrl+- already, and a sequence listed twice on one action is
+    // an ambiguous overload that Qt answers by triggering nothing.
     ui->actionZoom_In->setShortcuts({
             QKeySequence("Ctrl+="),
-            QKeySequence("Ctrl++"),
-            QKeySequence(QKeySequence::ZoomIn)
+            QKeySequence("Ctrl++")
     });
-    ui->actionZoom_Out->setShortcuts({
-            QKeySequence("Ctrl+-"),
-            QKeySequence(QKeySequence::ZoomOut)
-    });
+    ui->actionZoom_Out->setShortcut(QKeySequence("Ctrl+-"));
     connect(ui->actionZoom_In, &QAction::triggered,
             zoomPresenter.get(), &ZoomPresenter::zoomIn);
     connect(ui->actionZoom_Out, &QAction::triggered,
