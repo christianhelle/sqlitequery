@@ -7,6 +7,7 @@
 **Implemented enhancements:**
 
 - Reduce Logging [\#85](https://github.com/christianhelle/sqlitequery/issues/85)
+- Fix memory leaks, performance problems, and restore paged result browsing [\#113](https://github.com/christianhelle/sqlitequery/pull/113) ([christianhelle](https://github.com/christianhelle))
 - Deepen SQLite Query Analyzer architecture [\#110](https://github.com/christianhelle/sqlitequery/pull/110) ([christianhelle](https://github.com/christianhelle))
 - Restructure source files [\#105](https://github.com/christianhelle/sqlitequery/pull/105) ([christianhelle](https://github.com/christianhelle))
 - Resolve SonarCloud findings: Workflow hardening, Qt ownership, and shell modernization [\#104](https://github.com/christianhelle/sqlitequery/pull/104) ([christianhelle](https://github.com/christianhelle))
