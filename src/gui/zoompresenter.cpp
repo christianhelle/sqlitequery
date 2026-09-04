@@ -18,6 +18,14 @@ void ZoomPresenter::addTarget(QWidget *target) {
     if (target == nullptr)
         return;
 
+    // Registering a widget twice would capture the size it is *currently*
+    // rendered at as its new step 0, and every later zoom would compound from
+    // there. Keep the first registration, which holds the real base size.
+    for (const auto &existing: targets) {
+        if (existing.widget.data() == target)
+            return;
+    }
+
     // A widget that inherits its font, or that was sized in pixels, reports no
     // point size of its own. QFontInfo resolves what it is actually rendered
     // at, which is the size the user sees at step 0.

@@ -170,3 +170,14 @@ TEST_F(ZoomPresenterTest, ForgetsBankedScrollingWhenControlIsReleased) {
 
     EXPECT_EQ(presenter->step(), 0);
 }
+
+TEST_F(ZoomPresenterTest, RegisteringTheSameTargetTwiceDoesNotCompound) {
+    presenter->zoomIn();
+
+    // The editor is already registered and already scaled. Registering it again
+    // must not treat its current size as the size to scale from.
+    presenter->addTarget(editor.get());
+    presenter->zoomIn();
+
+    EXPECT_DOUBLE_EQ(pointSize(editor.get()), 12.0);
+}
