@@ -1,5 +1,7 @@
 #include "queryresultpresenter.h"
 
+#include <QItemSelectionModel>
+#include <QPointer>
 #include <QStandardItemModel>
 
 QueryResultPresenter::QueryResultPresenter(QWidget *parent)
@@ -23,6 +25,9 @@ void QueryResultPresenter::clear() {
 }
 
 void QueryResultPresenter::present(const QList<QueryResult> &results) {
+    // Discard the views (and the models they own) from the previous execution.
+    this->clear();
+
     const QRect widgetRect = this->widget->geometry();
     const int width = widgetRect.width();
     const int height = widgetRect.height();
@@ -37,10 +42,13 @@ void QueryResultPresenter::present(const QList<QueryResult> &results) {
         if (count > 0)
             yOffset += height;
 
+        const auto tablePtr = new QTableView(container.get());
+
+        // Parent the model to its view so it is destroyed along with the view.
         auto model = std::make_unique<QStandardItemModel>(
             static_cast<int>(result.rows.size()),
             static_cast<int>(result.columns.size()),
-            container.get());
+            tablePtr);
 
         for (int col = 0; col < result.columns.size(); ++col) {
             model->setHorizontalHeaderItem(col, new QStandardItem(result.columns.at(col)));
@@ -53,7 +61,6 @@ void QueryResultPresenter::present(const QList<QueryResult> &results) {
             }
         }
 
-        const auto tablePtr = new QTableView(container.get());
         tablePtr->setModel(model.release());
         tablePtr->setGeometry(QRect(0, yOffset, width, height));
         tablePtr->show();
@@ -83,6 +90,13 @@ void QueryResultPresenter::presentToView(QTableView *view, const QueryResult &re
         }
     }
 
+    // setModel() does not delete the outgoing model, and only clears its
+    // selection model in some cases, so drop whatever survives to stop them
+    // accumulating on the shared view. QPointer guards against a double delete.
+    const QPointer<QAbstractItemModel> previousModel = view->model();
+    const QPointer<QItemSelectionModel> previousSelection = view->selectionModel();
     view->setModel(model.release());
+    delete previousSelection;
+    delete previousModel;
     view->setSortingEnabled(true);
 }
