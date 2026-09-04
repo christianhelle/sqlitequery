@@ -36,31 +36,36 @@ void ExportOrchestrator::cancel() {
 }
 
 void ExportOrchestrator::onExportComplete() {
-    uint64_t rows = progress_->getAffectedRows();
-    progress_.release();
-    tcs_.release();
+    const uint64_t rows = progress_->getAffectedRows();
     completed_ = true;
+    progress_.reset();
+    tcs_.reset();
     emit exportCompleted(rows);
 }
 
 void ExportOrchestrator::startProgressPolling(CancellationToken token) {
-    auto _ = QtConcurrent::run([this, token]() {
+    // The polling thread outlives the export, so it keeps the progress and
+    // cancellation state alive through shared ownership instead of raw pointers.
+    auto progress = progress_;
+    auto tcs = tcs_;
+    auto _ = QtConcurrent::run([this, token, progress, tcs]() {
         do {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             if (completed_)
                 break;
-            MainThread::run([this]() {
-                emit exportProgress(progress_->getAffectedRows());
+            const uint64_t rows = progress->getAffectedRows();
+            MainThread::run([this, rows]() {
+                emit exportProgress(rows);
             });
         } while (!token.isCancellationRequested() &&
-                 !progress_->isCompleted());
+                 !progress->isCompleted());
     });
 }
 
 void ExportOrchestrator::runExport(IDatabase *db, DatabaseInfo info,
                                    std::function<void(IDatabase *, const DatabaseInfo &, const CancellationToken *, ExportDataProgress *)> fn) {
-    progress_ = std::make_unique<ExportDataProgress>();
-    tcs_ = std::make_unique<CancellationTokenSource>();
+    progress_ = std::make_shared<ExportDataProgress>();
+    tcs_ = std::make_shared<CancellationTokenSource>();
     completed_ = false;
     CancellationToken token = tcs_->get();
     ExportDataProgress *progressPtr = progress_.get();

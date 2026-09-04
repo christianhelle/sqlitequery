@@ -39,8 +39,8 @@ private:
     void runExport(IDatabase *db, DatabaseInfo info,
                    std::function<void(IDatabase *, const DatabaseInfo &, const CancellationToken *, ExportDataProgress *)> fn);
 
-    std::unique_ptr<ExportDataProgress> progress_;
-    std::unique_ptr<CancellationTokenSource> tcs_;
+    std::shared_ptr<ExportDataProgress> progress_;
+    std::shared_ptr<CancellationTokenSource> tcs_;
     std::atomic<bool> completed_{false};
 };
 
