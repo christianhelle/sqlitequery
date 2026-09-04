@@ -181,3 +181,26 @@ TEST_F(ZoomPresenterTest, RegisteringTheSameTargetTwiceDoesNotCompound) {
 
     EXPECT_DOUBLE_EQ(pointSize(editor.get()), 12.0);
 }
+
+TEST_F(ZoomPresenterTest, DoesNotOwnFocusWhenNothingIsFocused) {
+    EXPECT_FALSE(presenter->ownsFocus());
+}
+
+TEST_F(ZoomPresenterTest, OwnsFocusWhenATargetIsFocused) {
+    editor->show();
+    editor->setFocus();
+    QApplication::processEvents();
+
+    ASSERT_EQ(QApplication::focusWidget(), editor.get());
+    EXPECT_TRUE(presenter->ownsFocus());
+}
+
+TEST_F(ZoomPresenterTest, DoesNotOwnFocusWhenAnUnregisteredWidgetIsFocused) {
+    QTextEdit stranger;
+    stranger.show();
+    stranger.setFocus();
+    QApplication::processEvents();
+
+    ASSERT_EQ(QApplication::focusWidget(), &stranger);
+    EXPECT_FALSE(presenter->ownsFocus());
+}

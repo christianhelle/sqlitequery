@@ -31,6 +31,10 @@ public:
 
     void setStep(int step);
 
+    // Reports whether the keyboard focus is inside one of the targets, so a
+    // window holding several presenters can send a zoom to the right one.
+    [[nodiscard]] bool ownsFocus() const;
+
     // Turns Ctrl+wheel over a target into zoom steps instead of scrolling.
     bool eventFilter(QObject *watched, QEvent *event) override;
 

@@ -1,6 +1,7 @@
 #include "zoompresenter.h"
 
 #include <QAbstractScrollArea>
+#include <QApplication>
 #include <QEvent>
 #include <QFont>
 #include <QFontInfo>
@@ -84,6 +85,22 @@ void ZoomPresenter::applyToTargets() const {
         font.setPointSizeF(basePointSize * scale);
         widget->setFont(font);
     }
+}
+
+bool ZoomPresenter::ownsFocus() const {
+    const QWidget *focus = QApplication::focusWidget();
+    if (focus == nullptr)
+        return false;
+
+    for (const auto &existing: targets) {
+        // A scrolling widget can hand focus to a child of its own, so the
+        // whole subtree counts as the target holding the focus.
+        const QWidget *widget = existing.widget.data();
+        if (widget != nullptr && (widget == focus || widget->isAncestorOf(focus)))
+            return true;
+    }
+
+    return false;
 }
 
 bool ZoomPresenter::eventFilter(QObject *watched, QEvent *event) {
