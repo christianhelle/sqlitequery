@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
+#include <QApplication>
 #include <QTextEdit>
 #include <QTreeWidget>
+#include <QWheelEvent>
 
 #include "gui/zoompresenter.h"
 
@@ -24,6 +26,13 @@ protected:
 
     static double pointSize(const QWidget *widget) {
         return widget->font().pointSizeF();
+    }
+
+    static void wheel(QWidget *target, const int angleDelta, const Qt::KeyboardModifiers modifiers) {
+        QWheelEvent event(QPointF(1, 1), target->mapToGlobal(QPointF(1, 1)),
+                          QPoint(0, 0), QPoint(0, angleDelta),
+                          Qt::NoButton, modifiers, Qt::NoScrollPhase, false);
+        QApplication::sendEvent(target, &event);
     }
 
     std::unique_ptr<QTextEdit> editor;
@@ -122,4 +131,42 @@ TEST_F(ZoomPresenterTest, IgnoresAMissingTarget) {
     presenter->zoomIn();
 
     EXPECT_DOUBLE_EQ(pointSize(editor.get()), 11.0);
+}
+
+TEST_F(ZoomPresenterTest, ControlWheelUpOverTheEditorZoomsIn) {
+    wheel(editor->viewport(), 120, Qt::ControlModifier);
+
+    EXPECT_EQ(presenter->step(), 1);
+    EXPECT_DOUBLE_EQ(pointSize(editor.get()), 11.0);
+}
+
+TEST_F(ZoomPresenterTest, ControlWheelDownOverTheTreeZoomsOut) {
+    wheel(tree->viewport(), -120, Qt::ControlModifier);
+
+    EXPECT_EQ(presenter->step(), -1);
+    EXPECT_DOUBLE_EQ(pointSize(tree.get()), 18.0);
+}
+
+TEST_F(ZoomPresenterTest, WheelWithoutControlDoesNotZoom) {
+    wheel(editor->viewport(), 120, Qt::NoModifier);
+
+    EXPECT_EQ(presenter->step(), 0);
+    EXPECT_DOUBLE_EQ(pointSize(editor.get()), 10.0);
+}
+
+TEST_F(ZoomPresenterTest, BanksTrackpadScrollingIntoWholeSteps) {
+    for (int i = 0; i < 3; ++i)
+        wheel(editor->viewport(), 30, Qt::ControlModifier);
+    EXPECT_EQ(presenter->step(), 0);
+
+    wheel(editor->viewport(), 30, Qt::ControlModifier);
+    EXPECT_EQ(presenter->step(), 1);
+}
+
+TEST_F(ZoomPresenterTest, ForgetsBankedScrollingWhenControlIsReleased) {
+    wheel(editor->viewport(), 90, Qt::ControlModifier);
+    wheel(editor->viewport(), 90, Qt::NoModifier);
+    wheel(editor->viewport(), 90, Qt::ControlModifier);
+
+    EXPECT_EQ(presenter->step(), 0);
 }

@@ -1,7 +1,15 @@
 #include "zoompresenter.h"
 
+#include <QAbstractScrollArea>
+#include <QEvent>
 #include <QFont>
 #include <QFontInfo>
+#include <QWheelEvent>
+
+namespace {
+    // Eighths of a degree in one wheel notch, per Qt's wheel documentation.
+    constexpr int notch = 120;
+}
 
 ZoomPresenter::ZoomPresenter(QObject *parent) : QObject(parent) {
 }
@@ -18,6 +26,13 @@ void ZoomPresenter::addTarget(QWidget *target) {
         basePointSize = QFontInfo(target->font()).pointSizeF();
 
     targets.append({QPointer<QWidget>(target), basePointSize});
+    target->installEventFilter(this);
+
+    // A scrolling widget delivers wheel events to its viewport, not to itself,
+    // so that is where the gesture has to be watched for.
+    if (const auto *scrollArea = qobject_cast<QAbstractScrollArea *>(target))
+        scrollArea->viewport()->installEventFilter(this);
+
     applyToTargets();
 }
 
@@ -61,4 +76,28 @@ void ZoomPresenter::applyToTargets() const {
         font.setPointSizeF(basePointSize * scale);
         widget->setFont(font);
     }
+}
+
+bool ZoomPresenter::eventFilter(QObject *watched, QEvent *event) {
+    if (event->type() != QEvent::Wheel)
+        return QObject::eventFilter(watched, event);
+
+    const auto *wheel = static_cast<QWheelEvent *>(event);
+    if (!wheel->modifiers().testFlag(Qt::ControlModifier)) {
+        bankedWheelDelta = 0;
+        return QObject::eventFilter(watched, event);
+    }
+
+    bankedWheelDelta += wheel->angleDelta().y();
+    while (bankedWheelDelta >= notch) {
+        bankedWheelDelta -= notch;
+        zoomIn();
+    }
+    while (bankedWheelDelta <= -notch) {
+        bankedWheelDelta += notch;
+        zoomOut();
+    }
+
+    // Swallow the event so the target zooms instead of also scrolling.
+    return true;
 }

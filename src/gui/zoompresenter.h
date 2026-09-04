@@ -31,6 +31,9 @@ public:
 
     void setStep(int step);
 
+    // Turns Ctrl+wheel over a target into zoom steps instead of scrolling.
+    bool eventFilter(QObject *watched, QEvent *event) override;
+
 signals:
     void zoomChanged(int step);
 
@@ -44,6 +47,9 @@ private:
 
     ZoomLevel level;
     QList<Target> targets;
+    // A wheel notch is 120 eighths of a degree. Trackpads report far smaller
+    // amounts, so they are banked until they add up to a notch.
+    int bankedWheelDelta = 0;
 };
 
 #endif // ZOOMPRESENTER_H
