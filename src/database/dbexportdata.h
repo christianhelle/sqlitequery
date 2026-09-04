@@ -29,8 +29,10 @@ public:
 private:
     static QStringList getColumnDefs(const Table &table);
 
-    [[nodiscard]] QStringList getColumnValueDefs(const Table &table,
-                                                 const QList<QVariant> &values) const;
+    [[nodiscard]] QList<bool> getTextColumnFlags(const Table &table) const;
+
+    static QStringList getColumnValueDefs(const QList<bool> &isTextColumn,
+                                          const QList<QVariant> &values);
 };
 
 #endif // DBDATAEXPORT_H

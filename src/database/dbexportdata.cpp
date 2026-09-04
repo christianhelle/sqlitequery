@@ -9,12 +9,12 @@ QStringList DbDataExport::getColumnDefs(const Table &table) {
     return columnDefinitions;
 }
 
-QStringList DbDataExport::getColumnValueDefs(const Table &table,
-                                             const QList<QVariant> &values) const {
-    QStringList valueDefinitions;
-    for (int i = 0; i < table.columns.size(); ++i) {
-        const auto &column = table.columns.at(i);
-        auto value = values.at(i).toString();
+// Whether a column holds text depends only on the schema, so this is resolved
+// once per table rather than once per exported cell.
+QList<bool> DbDataExport::getTextColumnFlags(const Table &table) const {
+    QList<bool> isTextColumn;
+    isTextColumn.reserve(table.columns.size());
+    for (const auto &column: table.columns) {
         bool isText = false;
         for (const auto &type: getTextTypes()) {
             if (column.dataType.contains(type, Qt::CaseInsensitive)) {
@@ -22,7 +22,18 @@ QStringList DbDataExport::getColumnValueDefs(const Table &table,
                 break;
             }
         }
-        if (isText) {
+        isTextColumn.append(isText);
+    }
+    return isTextColumn;
+}
+
+QStringList DbDataExport::getColumnValueDefs(const QList<bool> &isTextColumn,
+                                             const QList<QVariant> &values) {
+    QStringList valueDefinitions;
+    valueDefinitions.reserve(isTextColumn.size());
+    for (int i = 0; i < isTextColumn.size(); ++i) {
+        auto value = values.at(i).toString();
+        if (isTextColumn.at(i)) {
             value = value.replace("\"", "\"\"");
             valueDefinitions.append(QString("\"%1\"").arg(value));
         } else {
@@ -51,12 +62,13 @@ void DbDataExport::exportDataToSqlFile(IDatabase *database,
         out << "-- " << table.name << "\n";
 
         const auto columns = getColumnDefs(table).join(", ");
+        const auto isTextColumn = getTextColumnFlags(table);
         const QueryResult streamResult = database->streamRows(
             QString("SELECT * FROM \"%1\"").arg(table.name),
             [&](const QList<QVariant> &values) {
                 if (cancellationToken->isCancellationRequested())
                     return false;
-                const auto valueList = getColumnValueDefs(table, values).join(", ");
+                const auto valueList = getColumnValueDefs(isTextColumn, values).join(", ");
                 out << "INSERT INTO \"" << table.name << "\"(" << columns << ") ";
                 out << "VALUES (" << valueList << ");\n";
                 progress->increment();
@@ -90,6 +102,7 @@ void DbDataExport::exportDataToCsvFile(IDatabase *database,
         }
 
         const auto columns = getColumnDefs(table).join(delimiter);
+        const auto isTextColumn = getTextColumnFlags(table);
         QTextStream out(file.get());
         out << columns << "\n";
 
@@ -98,7 +111,7 @@ void DbDataExport::exportDataToCsvFile(IDatabase *database,
             [&](const QList<QVariant> &values) {
                 if (cancellationToken->isCancellationRequested())
                     return false;
-                const auto valueList = getColumnValueDefs(table, values).join(delimiter);
+                const auto valueList = getColumnValueDefs(isTextColumn, values).join(delimiter);
                 out << valueList << "\n";
                 progress->increment();
                 return true;
