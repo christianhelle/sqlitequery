@@ -212,7 +212,9 @@ void MainWindow::saveWindowState(const QSize &size) const {
 }
 
 void MainWindow::resizeEvent(QResizeEvent *e) {
-    saveWindowState(e->size());
+    // Deliberately does not persist here: a drag-resize delivers events at
+    // screen refresh rate, and the window state is written on exit anyway.
+    QMainWindow::resizeEvent(e);
 }
 
 void MainWindow::openRecentFile() {
