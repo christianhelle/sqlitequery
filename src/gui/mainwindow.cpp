@@ -40,9 +40,6 @@ MainWindow::MainWindow(QWidget *parent) :
     this->recentFilesMenu = std::make_unique<QMenu>("Recent Files");
     ui->menuFile->insertMenu(ui->actionSave, recentFilesMenu.get());
 
-    this->statusBar = std::make_unique<QStatusBar>(this);
-    this->setStatusBar(statusBar.get());
-
     sessionManager->init();
     sessionManager->loadRecentFiles(recentFilesMenu.get(), this);
     restoreWindowState();
@@ -243,7 +240,7 @@ void MainWindow::saveSession() const {
 void MainWindow::createNewFile() {
     if (exportOrchestrator->isExporting()) {
         const auto msg = "Unable to process request. Data export in progress";
-        this->statusBar->showMessage(msg, 5000);
+        this->statusBar()->showMessage(msg, 5000);
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -256,7 +253,7 @@ void MainWindow::createNewFile() {
 void MainWindow::openDatabase(const QString &filename) {
     if (exportOrchestrator->isExporting()) {
         const auto msg = "Unable to process request. Data export in progress";
-        this->statusBar->showMessage(msg, 5000);
+        this->statusBar()->showMessage(msg, 5000);
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -283,7 +280,7 @@ void MainWindow::openDatabase(const QString &filename) {
 void MainWindow::openExistingFile() {
     if (exportOrchestrator->isExporting()) {
         const auto msg = "Unable to process request. Data export in progress";
-        this->statusBar->showMessage(msg, 5000);
+        this->statusBar()->showMessage(msg, 5000);
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -301,7 +298,7 @@ void MainWindow::appExit() const {
 void MainWindow::shrink() const {
     if (exportOrchestrator->isExporting()) {
         const auto msg = "Unable to process request. Data export in progress";
-        this->statusBar->showMessage(msg, 5000);
+        this->statusBar()->showMessage(msg, 5000);
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -320,7 +317,7 @@ void MainWindow::refreshDatabase() const {
 void MainWindow::analyzeDatabase() const {
     if (exportOrchestrator->isExporting()) {
         const auto msg = "Unable to process request. Data export in progress";
-        this->statusBar->showMessage(msg, 5000);
+        this->statusBar()->showMessage(msg, 5000);
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -338,7 +335,7 @@ void MainWindow::analyzeDatabase() const {
 void MainWindow::executeQuery() const {
     if (exportOrchestrator->isExporting()) {
         const auto msg = "Unable to process request. Data export in progress";
-        this->statusBar->showMessage(msg, 5000);
+        this->statusBar()->showMessage(msg, 5000);
         ui->queryResultTab->setCurrentIndex(1);
         return;
     }
@@ -477,7 +474,7 @@ void MainWindow::about() {
 
 void MainWindow::showMessage(const QString &message) const {
     ui->queryResultMessagesTextEdit->setPlainText(message);
-    this->statusBar->showMessage(message, 5000);
+    this->statusBar()->showMessage(message, 5000);
 }
 
 void MainWindow::onExportProgress(uint64_t rowsExported) {
