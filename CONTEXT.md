@@ -29,6 +29,10 @@ architecture, the modules, and the tests all refer to the same things.
   (single script of `INSERT` statements).
 - **Session** — the user's last-opened Database, the text they had in the
   query editor, and the last folder they exported to. Persisted between runs.
+- **Zoom** — a scale factor the user applies to the text of the query editor
+  and the Tree, in discrete steps away from the size those widgets were built
+  with. Step 0 is the untouched size. Part of the window state, so it is
+  persisted between runs.
 
 ## Modules (current shape)
 

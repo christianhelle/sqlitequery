@@ -24,6 +24,7 @@ set(TEST_SRCS
     test_exportorchestrator.cpp
     test_queryresultpresenter.cpp
     test_pagedresultmodel.cpp
+    test_zoomlevel.cpp
     test_main.cpp
 )
 
@@ -44,6 +45,7 @@ set(PROD_SRCS
     ../src/threading/cancellation.cpp
     ../src/gui/exportorchestrator.cpp
     ../src/gui/queryresultpresenter.cpp
+    ../src/gui/zoomlevel.cpp
 )
 
 target_sources(${PROJECT_NAME} PRIVATE ${PROD_SRCS})
