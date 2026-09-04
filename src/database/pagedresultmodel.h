@@ -13,7 +13,7 @@ class PagedResultModel final : public QSqlQueryModel {
     Q_OBJECT
 
 public:
-    PagedResultModel(QSqlDatabase database, QString sql, QObject *parent = nullptr);
+    PagedResultModel(const QSqlDatabase &database, QString sql, QObject *parent = nullptr);
 
     // Empty unless the statement failed to execute.
     [[nodiscard]] QString errorText() const { return error; }

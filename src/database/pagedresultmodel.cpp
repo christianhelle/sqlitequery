@@ -6,9 +6,9 @@
 
 #include <utility>
 
-PagedResultModel::PagedResultModel(QSqlDatabase database, QString sql, QObject *parent)
+PagedResultModel::PagedResultModel(const QSqlDatabase &database, QString sql, QObject *parent)
     : QSqlQueryModel(parent),
-      database(std::move(database)),
+      database(database),
       statement(std::move(sql)) {
     run(statement);
 }

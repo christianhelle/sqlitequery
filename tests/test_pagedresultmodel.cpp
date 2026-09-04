@@ -97,7 +97,7 @@ TEST_F(PagedResultTest, ReturnsNoModelForStatementWithoutRows) {
 TEST_F(PagedResultTest, RunsMultiLineStatements) {
     QueryExecutor executor(db.get());
     QStringList statements;
-    statements << "SELECT id, name" "\n" "FROM big" "\n" "WHERE id <= 10";
+    statements << "SELECT id, name\nFROM big\nWHERE id <= 10";
     QStringList errors;
 
     const auto models = executor.runStatementsPaged(statements, &errors);
@@ -111,7 +111,7 @@ TEST_F(PagedResultTest, RunsMultiLineStatements) {
 TEST_F(PagedResultTest, KeepsStatementsAfterALineComment) {
     QueryExecutor executor(db.get());
     QStringList statements;
-    statements << "SELECT id -- the identifier" "\n" "FROM big";
+    statements << "SELECT id -- the identifier\nFROM big";
     QStringList errors;
 
     const auto models = executor.runStatementsPaged(statements, &errors);

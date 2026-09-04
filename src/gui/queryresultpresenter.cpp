@@ -74,7 +74,7 @@ void QueryResultPresenter::presentToView(QTableView *view, QAbstractItemModel *m
 
     model->setParent(view);
     view->setModel(model);
-    delete previousSelection;
-    delete previousModel;
+    delete previousSelection.data();
+    delete previousModel.data();
     view->setSortingEnabled(true);
 }
