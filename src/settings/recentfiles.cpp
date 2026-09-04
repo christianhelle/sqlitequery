@@ -34,7 +34,7 @@ void RecentFiles::add(const QString &filepath) {
     }
 
     QTextStream out(file.get());
-    for (const auto &path: files) {
+    for (const auto &path : files) {
         out << path << "\n";
     }
 

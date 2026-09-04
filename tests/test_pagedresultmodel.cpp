@@ -91,3 +91,86 @@ TEST_F(PagedResultTest, ReturnsNoModelForStatementWithoutRows) {
     const QueryResult count = db->runStatement("SELECT COUNT(*) FROM big");
     EXPECT_EQ(count.rows.at(0).values.at(0).toInt(), RowCount + 1);
 }
+
+// Multi-line SQL is how anyone writes a query in the editor; the newlines must
+// survive, and a `--` comment must not swallow the rest of the statement.
+TEST_F(PagedResultTest, RunsMultiLineStatements) {
+    QueryExecutor executor(db.get());
+    QStringList statements;
+    statements << "SELECT id, name" "\n" "FROM big" "\n" "WHERE id <= 10";
+    QStringList errors;
+
+    const auto models = executor.runStatementsPaged(statements, &errors);
+
+    EXPECT_TRUE(errors.isEmpty()) << errors.join("; ").toStdString();
+    ASSERT_EQ(models.size(), 1);
+    EXPECT_EQ(models.at(0)->columnCount(), 2);
+    qDeleteAll(models);
+}
+
+TEST_F(PagedResultTest, KeepsStatementsAfterALineComment) {
+    QueryExecutor executor(db.get());
+    QStringList statements;
+    statements << "SELECT id -- the identifier" "\n" "FROM big";
+    QStringList errors;
+
+    const auto models = executor.runStatementsPaged(statements, &errors);
+
+    EXPECT_TRUE(errors.isEmpty()) << errors.join("; ").toStdString();
+    ASSERT_EQ(models.size(), 1);
+    qDeleteAll(models);
+}
+
+// A table name may legitimately contain a double quote, and it reaches the
+// query as an identifier, so it has to be escaped rather than interpolated.
+TEST_F(PagedResultTest, PreviewsATableWhoseNameContainsAQuote) {
+    QueryExecutor executor(db.get());
+    QStringList create;
+    create << "CREATE TABLE \"we\"\"ird\" (id INTEGER PRIMARY KEY)";
+    create << "INSERT INTO \"we\"\"ird\" (id) VALUES (7)";
+    executor.runStatements(create);
+
+    QString error;
+    const std::unique_ptr<QAbstractItemModel> model(
+        executor.previewTablePaged("we\"ird", &error));
+
+    ASSERT_NE(model, nullptr) << error.toStdString();
+    EXPECT_EQ(model->rowCount(), 1);
+    EXPECT_EQ(model->data(model->index(0, 0)).toInt(), 7);
+}
+
+// Sorting a statement that cannot be wrapped in a subquery must not re-run it.
+TEST_F(PagedResultTest, DoesNotReExecuteAStatementItCannotSort) {
+    const QueryResult before = db->runStatement("SELECT COUNT(*) FROM big");
+    const int rowsBefore = before.rows.at(0).values.at(0).toInt();
+
+    const std::unique_ptr<QAbstractItemModel> model(
+        db->createResultModel("INSERT INTO big (name) VALUES ('sorted') RETURNING id"));
+    ASSERT_NE(model, nullptr) << "RETURNING should produce a result set";
+
+    model->sort(0, Qt::AscendingOrder);
+
+    const QueryResult after = db->runStatement("SELECT COUNT(*) FROM big");
+    EXPECT_EQ(after.rows.at(0).values.at(0).toInt(), rowsBefore + 1)
+        << "the statement ran a second time while sorting";
+}
+
+TEST_F(PagedResultTest, ClearsStaleErrorOnSuccess) {
+    QString error = "left over from an earlier call";
+
+    const std::unique_ptr<QAbstractItemModel> model(
+        db->createResultModel("SELECT * FROM big", &error));
+
+    EXPECT_NE(model, nullptr);
+    EXPECT_TRUE(error.isEmpty()) << error.toStdString();
+}
+
+TEST_F(PagedResultTest, ClearsStaleErrorWhenThereIsNoResultSet) {
+    QString error = "left over from an earlier call";
+
+    const std::unique_ptr<QAbstractItemModel> model(
+        db->createResultModel("INSERT INTO big (name) VALUES ('x')", &error));
+
+    EXPECT_EQ(model, nullptr);
+    EXPECT_TRUE(error.isEmpty()) << error.toStdString();
+}

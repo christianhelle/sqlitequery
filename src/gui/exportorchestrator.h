@@ -2,6 +2,7 @@
 #define EXPORTORCHESTRATOR_H
 
 #include <functional>
+#include <QFuture>
 #include <QObject>
 #include <QString>
 #include <atomic>
@@ -39,6 +40,10 @@ private:
     void runExport(IDatabase *db, DatabaseInfo info,
                    std::function<void(IDatabase *, const DatabaseInfo &, const CancellationToken *, ExportDataProgress *)> fn);
 
+    // Held so the destructor can wait for both tasks to stop touching this
+    // object rather than letting them outlive it.
+    QFuture<void> exportTask_;
+    QFuture<void> pollingTask_;
     std::shared_ptr<ExportDataProgress> progress_;
     std::shared_ptr<CancellationTokenSource> tcs_;
     std::atomic<bool> completed_{false};

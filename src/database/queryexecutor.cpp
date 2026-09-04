@@ -1,5 +1,13 @@
 #include "queryexecutor.h"
 
+namespace {
+    // A quoted identifier escapes a double quote by doubling it.
+    QString quoteIdentifier(const QString &name) {
+        QString quoted = name;
+        return quoted.replace('"', "\"\"");
+    }
+}
+
 QueryExecutor::QueryExecutor(IDatabase *database)
     : database(database) {
 }
@@ -13,8 +21,11 @@ QList<QueryResult> QueryExecutor::runStatements(const QStringList &statements,
                                                QStringList *errors) {
     QList<QueryResult> results;
     results.reserve(statements.size());
-    for (const auto &raw: statements) {
-        const QString sql = raw.trimmed().replace('\n', "", Qt::CaseInsensitive);
+    for (const auto &raw : statements) {
+        // Newlines are left alone: SQLite treats them as whitespace, and
+        // stripping them would merge tokens across lines and swallow the rest
+        // of a line after a `--` comment.
+        const QString sql = raw.trimmed();
         if (sql.isEmpty())
             continue;
 
@@ -29,7 +40,7 @@ QList<QueryResult> QueryExecutor::runStatements(const QStringList &statements,
 }
 
 QueryResult QueryExecutor::previewTable(const QString &tableName, int limit) const {
-    QString sql = QString("SELECT * FROM \"%1\"").arg(tableName);
+    QString sql = QString("SELECT * FROM \"%1\"").arg(quoteIdentifier(tableName));
     if (limit > 0) {
         sql += QString(" LIMIT %1").arg(limit);
     }
@@ -39,8 +50,8 @@ QueryResult QueryExecutor::previewTable(const QString &tableName, int limit) con
 QList<QAbstractItemModel *> QueryExecutor::runStatementsPaged(const QStringList &statements,
                                                              QStringList *errors) const {
     QList<QAbstractItemModel *> models;
-    for (const auto &raw: statements) {
-        const QString sql = raw.trimmed().replace('\n', "", Qt::CaseInsensitive);
+    for (const auto &raw : statements) {
+        const QString sql = raw.trimmed();
         if (sql.isEmpty())
             continue;
 
@@ -57,5 +68,5 @@ QList<QAbstractItemModel *> QueryExecutor::runStatementsPaged(const QStringList 
 
 QAbstractItemModel *QueryExecutor::previewTablePaged(const QString &tableName,
                                                      QString *error) const {
-    return database->createResultModel(QString("SELECT * FROM \"%1\"").arg(tableName), error);
+    return database->createResultModel(QString("SELECT * FROM \"%1\"").arg(quoteIdentifier(tableName)), error);
 }

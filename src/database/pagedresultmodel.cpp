@@ -35,17 +35,20 @@ void PagedResultModel::sort(const int column, const Qt::SortOrder order) {
     if (column < 0 || column >= columnCount())
         return;
 
-    const QString columnName = record().fieldName(column);
+    QString columnName = record().fieldName(column);
     if (columnName.isEmpty())
         return;
+
+    // A quoted identifier escapes a double quote by doubling it.
+    columnName.replace('"', "\"\"");
 
     const QString sorted = QString("SELECT * FROM (%1) ORDER BY \"%2\" %3")
             .arg(statement,
                  columnName,
                  order == Qt::AscendingOrder ? "ASC" : "DESC");
 
-    // Not every statement can be wrapped in a subquery. When it cannot, keep
-    // showing the result as it is rather than clearing it.
-    if (!run(sorted))
-        run(statement);
+    // Not every statement can be wrapped in a subquery. run() leaves the model
+    // untouched when it fails, so there is nothing to restore -- and re-running
+    // the original would execute a statement with side effects a second time.
+    run(sorted);
 }

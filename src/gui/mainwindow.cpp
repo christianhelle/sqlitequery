@@ -341,7 +341,7 @@ void MainWindow::executeQuery() const {
             QString("Query failed with %1 error(s)").arg(errors.size()), 5000);
     }
 
-    for (const auto &sql: list) {
+    for (const auto &sql : list) {
         if (sql.contains("create", Qt::CaseInsensitive) ||
             sql.contains("drop", Qt::CaseInsensitive) ||
             sql.contains("insert", Qt::CaseInsensitive) ||

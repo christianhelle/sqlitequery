@@ -3,7 +3,7 @@
 
 QStringList DbDataExport::getColumnDefs(const Table &table) {
     QStringList columnDefinitions;
-    for (const auto &column: table.columns) {
+    for (const auto &column : table.columns) {
         columnDefinitions.append(column.name);
     }
     return columnDefinitions;
@@ -14,9 +14,9 @@ QStringList DbDataExport::getColumnDefs(const Table &table) {
 QList<bool> DbDataExport::getTextColumnFlags(const Table &table) const {
     QList<bool> isTextColumn;
     isTextColumn.reserve(table.columns.size());
-    for (const auto &column: table.columns) {
+    for (const auto &column : table.columns) {
         bool isText = false;
-        for (const auto &type: getTextTypes()) {
+        for (const auto &type : getTextTypes()) {
             if (column.dataType.contains(type, Qt::CaseInsensitive)) {
                 isText = true;
                 break;
@@ -55,7 +55,7 @@ void DbDataExport::exportDataToSqlFile(IDatabase *database,
 
     progress->reset();
     QTextStream out(file.get());
-    for (const auto &table: this->getDatabaseInfo().tables) {
+    for (const auto &table : this->getDatabaseInfo().tables) {
         if (isInternalTable(table)) {
             continue;
         }
@@ -90,7 +90,7 @@ void DbDataExport::exportDataToCsvFile(IDatabase *database,
                                        const CancellationToken *cancellationToken,
                                        ExportDataProgress *progress) const {
     progress->reset();
-    for (const auto &table: this->getDatabaseInfo().tables) {
+    for (const auto &table : this->getDatabaseInfo().tables) {
         if (isInternalTable(table) || cancellationToken->isCancellationRequested()) {
             continue;
         }

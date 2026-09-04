@@ -30,8 +30,10 @@ public:
     // A lazily fetched, pageable model over the statement's result set. Rows
     // are read in pages as they are scrolled into view, so a result set of any
     // size can be browsed. The caller owns the returned model.
-    // Returns nullptr when the statement returns no rows, or when it failed --
-    // `error` then holds the reason.
+    // Returns nullptr when the statement produces no result set (an INSERT,
+    // say) or when it failed -- `error` then holds the reason, and is cleared
+    // otherwise. A SELECT matching no rows still returns a model, so that its
+    // columns can be displayed.
     virtual QAbstractItemModel *createResultModel(const QString &sql,
                                                   QString *error = nullptr) = 0;
 

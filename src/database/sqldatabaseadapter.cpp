@@ -51,6 +51,11 @@ QueryResult SqlDatabaseAdapter::runStatement(const QString &sql) {
 }
 
 QAbstractItemModel *SqlDatabaseAdapter::createResultModel(const QString &sql, QString *error) {
+    // Cleared up front so a caller reusing one QString never sees a stale error
+    // on the paths that return nullptr without failing.
+    if (error != nullptr)
+        error->clear();
+
     if (!database.isOpen()) {
         if (error != nullptr)
             *error = "Database is not open";
