@@ -21,8 +21,9 @@ public:
 
 private:
     QWidget *widget;
-    std::unique_ptr<QScrollArea> scrollArea;
-    std::unique_ptr<QWidget> container;
+    // Owned by the parent widget, as with every other widget in the tree.
+    QScrollArea *scrollArea;
+    QWidget *container;
     QList<QTableView *> tableViews{};
 };
 

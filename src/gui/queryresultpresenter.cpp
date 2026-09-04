@@ -6,10 +6,10 @@
 
 QueryResultPresenter::QueryResultPresenter(QWidget *parent)
     : widget(parent) {
-    this->container = std::make_unique<QWidget>(this->widget);
+    this->container = new QWidget(this->widget);
     this->container->hide();
-    this->scrollArea = std::make_unique<QScrollArea>(this->widget);
-    this->scrollArea->setWidget(container.get());
+    this->scrollArea = new QScrollArea(this->widget);
+    this->scrollArea->setWidget(container);
     this->scrollArea->hide();
 }
 
@@ -42,7 +42,7 @@ void QueryResultPresenter::present(const QList<QueryResult> &results) {
         if (count > 0)
             yOffset += height;
 
-        const auto tablePtr = new QTableView(container.get());
+        const auto tablePtr = new QTableView(container);
 
         // Parent the model to its view so it is destroyed along with the view.
         auto model = std::make_unique<QStandardItemModel>(
