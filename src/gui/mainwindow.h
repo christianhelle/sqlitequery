@@ -14,6 +14,7 @@
 #include "highlighter.h"
 #include "queryexecutionpresenter.h"
 #include "sessionmanager.h"
+#include "zoompresenter.h"
 #include "exportorchestrator.h"
 
 namespace Ui {
@@ -88,6 +89,7 @@ private:
     std::unique_ptr<Highlighter> highlighter;
     std::unique_ptr<SessionManager> sessionManager;
     std::unique_ptr<ExportOrchestrator> exportOrchestrator;
+    std::unique_ptr<ZoomPresenter> zoomPresenter;
     bool loaded = false;
 
     void analyzeDatabase() const;

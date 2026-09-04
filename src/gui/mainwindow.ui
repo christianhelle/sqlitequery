@@ -129,6 +129,14 @@
                 <addaction name="menuExport_Data"/>
                 <addaction name="actionCancel"/>
             </widget>
+            <widget class="QMenu" name="menuView">
+                <property name="title">
+                    <string>View</string>
+                </property>
+                <addaction name="actionZoom_In"/>
+                <addaction name="actionZoom_Out"/>
+                <addaction name="actionReset_Zoom"/>
+            </widget>
             <widget class="QMenu" name="menuHelp">
                 <property name="title">
                     <string>Help</string>
@@ -138,6 +146,7 @@
             <addaction name="menuFile"/>
             <addaction name="menuQuery"/>
             <addaction name="menuDatabase"/>
+            <addaction name="menuView"/>
             <addaction name="menuHelp"/>
         </widget>
         <widget class="QStatusBar" name="statusBar"/>
@@ -243,6 +252,30 @@
         <action name="actionScript_CSV">
             <property name="text">
                 <string>CSV Files</string>
+            </property>
+        </action>
+        <action name="actionZoom_In">
+            <property name="text">
+                <string>Zoom In</string>
+            </property>
+            <property name="shortcut">
+                <string>Ctrl+=</string>
+            </property>
+        </action>
+        <action name="actionZoom_Out">
+            <property name="text">
+                <string>Zoom Out</string>
+            </property>
+            <property name="shortcut">
+                <string>Ctrl+-</string>
+            </property>
+        </action>
+        <action name="actionReset_Zoom">
+            <property name="text">
+                <string>Reset Zoom</string>
+            </property>
+            <property name="shortcut">
+                <string>Ctrl+0</string>
             </property>
         </action>
     </widget>

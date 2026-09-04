@@ -19,6 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->splitterMain->setStretchFactor(1, 3);
     ui->splitterQueryTab->setStretchFactor(1, 1);
+    this->zoomPresenter = std::make_unique<ZoomPresenter>(this);
+    this->zoomPresenter->addTarget(ui->textEdit);
+    this->zoomPresenter->addTarget(ui->treeWidget);
+
     this->setWindowTitle("SQLite Query Analyzer");
     this->connectSignalSlots();
 
@@ -159,6 +163,24 @@ void MainWindow::connectSignalSlots() const {
             SIGNAL(triggered()),
             this,
             SLOT(about()));
+    // The one-shortcut-per-action limit of the form is why these are set here:
+    // Ctrl+= and Ctrl++ are both "zoom in" on a keyboard, and which one the
+    // user reaches for depends on their layout.
+    ui->actionZoom_In->setShortcuts({
+            QKeySequence("Ctrl+="),
+            QKeySequence("Ctrl++"),
+            QKeySequence(QKeySequence::ZoomIn)
+    });
+    ui->actionZoom_Out->setShortcuts({
+            QKeySequence("Ctrl+-"),
+            QKeySequence(QKeySequence::ZoomOut)
+    });
+    connect(ui->actionZoom_In, &QAction::triggered,
+            zoomPresenter.get(), &ZoomPresenter::zoomIn);
+    connect(ui->actionZoom_Out, &QAction::triggered,
+            zoomPresenter.get(), &ZoomPresenter::zoomOut);
+    connect(ui->actionReset_Zoom, &QAction::triggered,
+            zoomPresenter.get(), &ZoomPresenter::resetZoom);
     connect(ui->actionRefresh,
             SIGNAL(triggered()),
             this,
