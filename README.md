@@ -25,6 +25,7 @@ making database operations seamless and straightforward.
 - Persists application state and reloads last session on startup
 - Export database schema as CREATE TABLE statements
 - Export data as an SQL script containing INSERT statements or as CSV files
+- Zoom the query editor and database tree with Ctrl +/- or Ctrl + mouse wheel
 - Desktop color theme awareness with automatic switching between dark/light themes
 - Command line interface for automation and scripting
 
