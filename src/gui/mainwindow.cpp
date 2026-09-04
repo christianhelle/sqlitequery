@@ -32,6 +32,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->sessionManager = std::make_unique<SessionManager>(this);
     this->exportOrchestrator = std::make_unique<ExportOrchestrator>(this);
+    connect(exportOrchestrator.get(), &ExportOrchestrator::exportProgress,
+            this, &MainWindow::onExportProgress);
+    connect(exportOrchestrator.get(), &ExportOrchestrator::exportCompleted,
+            this, &MainWindow::onExportCompleted);
 
     this->recentFilesMenu = std::make_unique<QMenu>("Recent Files");
     ui->menuFile->insertMenu(ui->actionSave, recentFilesMenu.get());
@@ -396,11 +400,6 @@ void MainWindow::exportDataToSqlScript() {
     ui->queryResultTab->setCurrentIndex(1);
 
     exportOrchestrator->exportToSql(std::move(info), filepath, database.get());
-
-    connect(exportOrchestrator.get(), &ExportOrchestrator::exportProgress,
-            this, &MainWindow::onExportProgress);
-    connect(exportOrchestrator.get(), &ExportOrchestrator::exportCompleted,
-            this, &MainWindow::onExportCompleted);
 }
 
 void MainWindow::exportDataToCsvFiles() {
@@ -418,11 +417,6 @@ void MainWindow::exportDataToCsvFiles() {
     ui->queryResultTab->setCurrentIndex(1);
 
     exportOrchestrator->exportToCsv(std::move(info), outputFolder, delimiter, database.get());
-
-    connect(exportOrchestrator.get(), &ExportOrchestrator::exportProgress,
-            this, &MainWindow::onExportProgress);
-    connect(exportOrchestrator.get(), &ExportOrchestrator::exportCompleted,
-            this, &MainWindow::onExportCompleted);
 }
 
 void MainWindow::cancel() const {
