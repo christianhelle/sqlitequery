@@ -1,6 +1,5 @@
-#include "sqlresultreader.h"
+#include "sqldatabaseadapter.h"
 
-#include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -9,7 +8,12 @@
 
 #include "pagedresultmodel.h"
 
-QueryResult SqlResultReader::runStatement(const QSqlDatabase &database, const QString &sql) {
+void SqlDatabaseAdapter::close() {
+    if (database.isOpen())
+        database.close();
+}
+
+QueryResult SqlDatabaseAdapter::runStatement(const QString &sql) {
     QueryResult result;
     if (!database.isOpen()) {
         result.ok = false;
@@ -46,9 +50,7 @@ QueryResult SqlResultReader::runStatement(const QSqlDatabase &database, const QS
     return result;
 }
 
-QAbstractItemModel *SqlResultReader::createResultModel(const QSqlDatabase &database,
-                                                      const QString &sql,
-                                                      QString *error) {
+QAbstractItemModel *SqlDatabaseAdapter::createResultModel(const QString &sql, QString *error) {
     if (!database.isOpen()) {
         if (error != nullptr)
             *error = "Database is not open";
@@ -69,9 +71,8 @@ QAbstractItemModel *SqlResultReader::createResultModel(const QSqlDatabase &datab
     return model.release();
 }
 
-QueryResult SqlResultReader::streamRows(const QSqlDatabase &database,
-                                        const QString &sql,
-                                        const std::function<bool(const QList<QVariant> &)> &onRow) {
+QueryResult SqlDatabaseAdapter::streamRows(const QString &sql,
+                                           const std::function<bool(const QList<QVariant> &)> &onRow) {
     QueryResult result;
     if (!database.isOpen()) {
         result.ok = false;

@@ -1,12 +1,12 @@
 #ifndef SQLITEDATABASE_H
 #define SQLITEDATABASE_H
 
-#include <QSqlDatabase>
 #include <QString>
 
-#include "idatabase.h"
+#include "sqldatabaseadapter.h"
 
-class SqliteDatabase : public IDatabase {
+// Production adapter: a SQLite database file on disk.
+class SqliteDatabase final : public SqlDatabaseAdapter {
 public:
     SqliteDatabase();
 
@@ -14,25 +14,7 @@ public:
 
     bool open() override;
 
-    void close() override;
-
     void shrink() override;
-
-    [[nodiscard]] QString getFilename() const override { return source; }
-
-    QueryResult runStatement(const QString &sql) override;
-
-    QAbstractItemModel *createResultModel(const QString &sql,
-                                          QString *error = nullptr) override;
-
-    QueryResult streamRows(const QString &sql,
-                           const std::function<bool(const QList<QVariant> &)> &onRow) override;
-
-    [[nodiscard]] QSqlDatabase getConnection() const { return database; }
-
-private:
-    QSqlDatabase database;
-    QString source;
 };
 
 #endif // SQLITEDATABASE_H

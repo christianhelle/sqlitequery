@@ -45,8 +45,8 @@ set(COMMON_SRCS
   src/database/dbtree.cpp
   src/database/pagedresultmodel.cpp
   src/database/pagedresultmodel.h
-  src/database/sqlresultreader.cpp
-  src/database/sqlresultreader.h
+  src/database/sqldatabaseadapter.cpp
+  src/database/sqldatabaseadapter.h
   src/database/dbtree.h
   src/gui/highlighter.cpp
   src/gui/highlighter.h
