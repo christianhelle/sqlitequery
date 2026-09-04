@@ -357,7 +357,17 @@ void MainWindow::executeQuery() const {
 
     const auto milliseconds = static_cast<double>(time.elapsed());
     const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
-    this->showMessage(msg);
+
+    if (errors.isEmpty()) {
+        this->showMessage(msg);
+    } else {
+        // Report what failed instead of overwriting it with the timing.
+        ui->queryResultMessagesTextEdit->setPlainText(errors.join("\r\n"));
+        ui->tabWidget->setCurrentIndex(0);
+        ui->queryResultTab->setCurrentIndex(1);
+        this->statusBar()->showMessage(
+            QString("Query failed with %1 error(s)").arg(errors.size()), 5000);
+    }
 
     for (const auto &sql: list) {
         if (sql.contains("create", Qt::CaseInsensitive) ||

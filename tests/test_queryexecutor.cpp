@@ -73,6 +73,19 @@ TEST_F(QueryExecutorTest, RunInvalidQuery) {
     EXPECT_GT(errors.size(), 0);
 }
 
+// Arbitrary text is not valid SQL and must be reported, not silently ignored.
+TEST_F(QueryExecutorTest, RunNonSqlTextReportsError) {
+    QStringList statements;
+    statements << "this is not sql at all";
+    QStringList errors;
+    const auto results = executor->runStatements(statements, &errors);
+
+    ASSERT_EQ(results.size(), 1);
+    EXPECT_FALSE(results.at(0).ok);
+    ASSERT_EQ(errors.size(), 1);
+    EXPECT_FALSE(errors.at(0).isEmpty());
+}
+
 TEST_F(QueryExecutorTest, RunMultipleQueries) {
     QStringList statements;
     statements << "SELECT COUNT(*) FROM test_users"
