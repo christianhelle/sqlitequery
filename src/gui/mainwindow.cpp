@@ -343,7 +343,7 @@ void MainWindow::executeQuery() const {
         return;
     }
 
-    QStringList list(ui->textEdit->toPlainText().split(";", Qt::SkipEmptyParts));
+    const QStringList list(ui->textEdit->toPlainText().split(";", Qt::SkipEmptyParts));
     QStringList errors;
 
     QElapsedTimer time;
@@ -358,7 +358,7 @@ void MainWindow::executeQuery() const {
     const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
     this->showMessage(msg);
 
-    foreach(const QString sql, list) {
+    for (const auto &sql: list) {
         if (sql.contains("create", Qt::CaseInsensitive) ||
             sql.contains("drop", Qt::CaseInsensitive) ||
             sql.contains("insert", Qt::CaseInsensitive) ||
