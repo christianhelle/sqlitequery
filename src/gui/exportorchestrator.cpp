@@ -70,8 +70,8 @@ void ExportOrchestrator::runExport(IDatabase *db, DatabaseInfo info,
     CancellationToken token = tcs_->get();
     ExportDataProgress *progressPtr = progress_.get();
 
-    auto future = QtConcurrent::run([db, info, fn, token, progressPtr]() {
-        fn(db, info, const_cast<const CancellationToken*>(&token), progressPtr);
+    auto future = QtConcurrent::run([db, info = std::move(info), fn = std::move(fn), token, progressPtr]() {
+        fn(db, info, &token, progressPtr);
     });
 
     future.then([this]() {
