@@ -51,6 +51,8 @@ architecture, the modules, and the tests all refer to the same things.
   Database + DatabaseInfo. Long-running; reports progress; cancellable.
 - **ExportOrchestrator** — runs a DataExporter in the background, marshals
   progress to the GUI thread, surfaces cancel and completion.
+- **ZoomPresenter** — applies a Zoom to the query editor and the Tree, and
+  turns the zoom gestures over those widgets into steps.
 - **SessionManager** — persists and restores the Session and window state.
 - **MainWindow** — Qt shell. Wires the modules to menu actions and the UI
   form. Does not contain business logic.
