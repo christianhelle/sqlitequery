@@ -41,23 +41,18 @@ void Settings::getMainWindowState(WindowState *state) {
     settings.endGroup();
 }
 
-void Settings::setMainWindowState(const QSizeF &size,
-                                  const QPoint &position,
-                                  const int treeWidth,
-                                  const int tabWidth,
-                                  const int queryTextHeight,
-                                  const int queryResultHeight) {
+void Settings::setMainWindowState(const WindowState &state) {
     QSettings settings;
     settings.beginGroup("MainWindow");
-    settings.setValue("main_window_size", size);
-    settings.setValue("main_window_position", position);
-    if (treeWidth > 0 && tabWidth > 0) {
-        settings.setValue("main_window_tree_width", treeWidth);
-        settings.setValue("main_window_tab_width", tabWidth);
+    settings.setValue("main_window_size", state.size);
+    settings.setValue("main_window_position", state.position);
+    if (state.treeWidth > 0 && state.tabWidth > 0) {
+        settings.setValue("main_window_tree_width", state.treeWidth);
+        settings.setValue("main_window_tab_width", state.tabWidth);
     }
-    if (queryTextHeight > 0 && queryResultHeight > 0) {
-        settings.setValue("main_window_query_text_height", queryTextHeight);
-        settings.setValue("main_window_query_result_height", queryResultHeight);
+    if (state.queryTextHeight > 0 && state.queryResultHeight > 0) {
+        settings.setValue("main_window_query_text_height", state.queryTextHeight);
+        settings.setValue("main_window_query_result_height", state.queryResultHeight);
     }
     settings.endGroup();
 }
