@@ -52,16 +52,18 @@ QueryResult InMemoryDatabase::runStatement(const QString &sql) {
     result.isSelect = query.isSelect();
     if (result.isSelect) {
         const QSqlRecord record = query.record();
-        for (int i = 0; i < record.count(); ++i) {
+        const int columnCount = record.count();
+        result.columns.reserve(columnCount);
+        for (int i = 0; i < columnCount; ++i) {
             result.columns.append(record.fieldName(i));
         }
         while (query.next()) {
             QueryRow row;
-            row.values.reserve(record.count());
-            for (int i = 0; i < record.count(); ++i) {
+            row.values.reserve(columnCount);
+            for (int i = 0; i < columnCount; ++i) {
                 row.values.append(query.value(i));
             }
-            result.rows.append(row);
+            result.rows.append(std::move(row));
         }
     } else {
         result.rowsAffected = query.numRowsAffected();
@@ -88,14 +90,17 @@ QueryResult InMemoryDatabase::streamRows(const QString &sql,
 
     result.isSelect = query.isSelect();
     const QSqlRecord record = query.record();
-    for (int i = 0; i < record.count(); ++i) {
+    const int columnCount = record.count();
+    result.columns.reserve(columnCount);
+    for (int i = 0; i < columnCount; ++i) {
         result.columns.append(record.fieldName(i));
     }
 
+    QList<QVariant> values;
+    values.reserve(columnCount);
     while (query.next()) {
-        QList<QVariant> values;
-        values.reserve(record.count());
-        for (int i = 0; i < record.count(); ++i) {
+        values.clear();
+        for (int i = 0; i < columnCount; ++i) {
             values.append(query.value(i));
         }
         if (!onRow(values))
