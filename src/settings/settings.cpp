@@ -38,7 +38,8 @@ void Settings::getMainWindowState(WindowState *state) {
     state->tabWidth = settings.value("main_window_tab_width", 0).toInt();
     state->queryTextHeight = settings.value("main_window_query_text_height", 0).toInt();
     state->queryResultHeight = settings.value("main_window_query_result_height", 0).toInt();
-    state->zoomStep = settings.value("main_window_zoom_step", 0).toInt();
+    state->editorZoomStep = settings.value("main_window_editor_zoom_step", 0).toInt();
+    state->treeZoomStep = settings.value("main_window_tree_zoom_step", 0).toInt();
     settings.endGroup();
 }
 
@@ -55,7 +56,8 @@ void Settings::setMainWindowState(const WindowState &state) {
         settings.setValue("main_window_query_text_height", state.queryTextHeight);
         settings.setValue("main_window_query_result_height", state.queryResultHeight);
     }
-    settings.setValue("main_window_zoom_step", state.zoomStep);
+    settings.setValue("main_window_editor_zoom_step", state.editorZoomStep);
+    settings.setValue("main_window_tree_zoom_step", state.treeZoomStep);
     settings.endGroup();
 }
 

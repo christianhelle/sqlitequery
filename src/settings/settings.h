@@ -11,7 +11,8 @@ struct WindowState {
     int tabWidth{};
     int queryTextHeight{};
     int queryResultHeight{};
-    int zoomStep{};
+    int editorZoomStep{};
+    int treeZoomStep{};
 };
 
 struct SessionState {

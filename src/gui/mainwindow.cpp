@@ -19,9 +19,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->splitterMain->setStretchFactor(1, 3);
     ui->splitterQueryTab->setStretchFactor(1, 1);
-    this->zoomPresenter = std::make_unique<ZoomPresenter>(this);
-    this->zoomPresenter->addTarget(ui->textEdit);
-    this->zoomPresenter->addTarget(ui->treeWidget);
+    // Two presenters, so each pane carries its own zoom level.
+    this->editorZoom = std::make_unique<ZoomPresenter>(this);
+    this->editorZoom->addTarget(ui->textEdit);
+    this->treeZoom = std::make_unique<ZoomPresenter>(this);
+    this->treeZoom->addTarget(ui->treeWidget);
 
     this->setWindowTitle("SQLite Query Analyzer");
     this->connectSignalSlots();
@@ -174,12 +176,14 @@ void MainWindow::connectSignalSlots() const {
             QKeySequence("Ctrl++")
     });
     ui->actionZoom_Out->setShortcut(QKeySequence("Ctrl+-"));
+    // Ctrl+wheel needs no routing: each presenter only watches its own pane.
+    // The keyboard has no pointer to go by, so it follows the focus instead.
     connect(ui->actionZoom_In, &QAction::triggered,
-            zoomPresenter.get(), &ZoomPresenter::zoomIn);
+            this, [this] { zoomForFocus()->zoomIn(); });
     connect(ui->actionZoom_Out, &QAction::triggered,
-            zoomPresenter.get(), &ZoomPresenter::zoomOut);
+            this, [this] { zoomForFocus()->zoomOut(); });
     connect(ui->actionReset_Zoom, &QAction::triggered,
-            zoomPresenter.get(), &ZoomPresenter::resetZoom);
+            this, [this] { zoomForFocus()->resetZoom(); });
     connect(ui->actionRefresh,
             SIGNAL(triggered()),
             this,
@@ -203,7 +207,8 @@ void MainWindow::restoreWindowState() {
         });
     }
 
-    zoomPresenter->setStep(windowState.zoomStep);
+    editorZoom->setStep(windowState.editorZoomStep);
+    treeZoom->setStep(windowState.treeZoomStep);
 
     if (windowState.queryTextHeight > 0 &&
         windowState.queryResultHeight > 0)
@@ -231,7 +236,8 @@ void MainWindow::saveWindowState(const QSize &size) const {
     state.tabWidth = tabWidth;
     state.queryTextHeight = queryTextHeight;
     state.queryResultHeight = queryResultHeight;
-    state.zoomStep = zoomPresenter->step();
+    state.editorZoomStep = editorZoom->step();
+    state.treeZoomStep = treeZoom->step();
     sessionManager->saveWindowState(state);
 }
 
@@ -322,6 +328,15 @@ void MainWindow::shrink() const {
 
 void MainWindow::refreshDatabase() const {
     this->analyzeDatabase();
+}
+
+ZoomPresenter *MainWindow::zoomForFocus() const {
+    if (treeZoom->ownsFocus())
+        return treeZoom.get();
+
+    // The editor is the surface the user works in, so it takes a zoom that
+    // arrives while the focus is somewhere neither pane owns.
+    return editorZoom.get();
 }
 
 void MainWindow::analyzeDatabase() const {
