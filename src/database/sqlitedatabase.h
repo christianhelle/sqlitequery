@@ -20,7 +20,7 @@ public:
 
     [[nodiscard]] QString getFilename() const override { return source; }
 
-    QueryResult runStatement(const QString &sql) override;
+    QueryResult runStatement(const QString &sql, int maxRows = -1) override;
 
     QueryResult streamRows(const QString &sql,
                            const std::function<bool(const QList<QVariant> &)> &onRow) override;

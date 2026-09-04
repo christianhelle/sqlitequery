@@ -34,7 +34,7 @@ void InMemoryDatabase::shrink() {
     query.exec("VACUUM");
 }
 
-QueryResult InMemoryDatabase::runStatement(const QString &sql) {
+QueryResult InMemoryDatabase::runStatement(const QString &sql, const int maxRows) {
     QueryResult result;
     if (!database.isOpen()) {
         result.ok = false;
@@ -58,6 +58,10 @@ QueryResult InMemoryDatabase::runStatement(const QString &sql) {
             result.columns.append(record.fieldName(i));
         }
         while (query.next()) {
+            if (maxRows >= 0 && result.rows.size() >= maxRows) {
+                result.truncated = true;
+                break;
+            }
             QueryRow row;
             row.values.reserve(columnCount);
             for (int i = 0; i < columnCount; ++i) {

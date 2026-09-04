@@ -23,7 +23,9 @@ public:
 
     [[nodiscard]] virtual QString getFilename() const = 0;
 
-    virtual QueryResult runStatement(const QString &sql) = 0;
+    // maxRows < 0 reads the whole result set; otherwise the read stops after
+    // maxRows rows and the result is flagged as truncated.
+    virtual QueryResult runStatement(const QString &sql, int maxRows = -1) = 0;
 
     virtual QueryResult streamRows(const QString &sql,
                                    const std::function<bool(const QList<QVariant> &)> &onRow) = 0;

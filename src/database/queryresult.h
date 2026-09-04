@@ -17,6 +17,8 @@ struct QueryResult {
     QStringList columns;
     QList<QueryRow> rows;
     int rowsAffected = 0;
+    // True when a row cap stopped the read before the end of the result set.
+    bool truncated = false;
 };
 
 #endif // QUERYRESULT_H
