@@ -81,7 +81,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: artifacts/SQLiteQuerAnalyzer_MacOS_v${{ env.VERSION }}_arm64/SQLiteQueryAnalyzer.dmg
+          asset_path: artifacts/SQLiteQueryAnalyzer_MacOS_v${{ env.VERSION }}_arm64/SQLiteQueryAnalyzer.dmg
           asset_name: SQLiteQuerAnalyzer for MacOS (ARM64) v${{ env.VERSION }}.dmg
           asset_content_type: application/zip
       - name: Upload MacOS (Intel) disk image
@@ -90,7 +90,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: artifacts/SQLiteQuerAnalyzer_MacOS_v${{ env.VERSION }}_intel/SQLiteQueryAnalyzer.dmg
+          asset_path: artifacts/SQLiteQueryAnalyzer_MacOS_v${{ env.VERSION }}_intel/SQLiteQueryAnalyzer.dmg
           asset_name: SQLiteQuerAnalyzer for MacOS (Intel) v${{ env.VERSION }}.dmg
           asset_content_type: application/zip
       - name: Upload Linux DEB Package

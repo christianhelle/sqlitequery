@@ -98,7 +98,7 @@ src/
 
 ### Platform-specific notes:
 - **Linux**: Uses qt6-base-dev, builds with GCC
-- **Windows**: Requires Visual Studio, Qt 6.9.0 MSVC2022, uses windeployqt
+- **Windows**: Requires Visual Studio, Qt 6.11.2 MSVC2022, uses windeployqt
 - **macOS**: Uses Qt6 from Homebrew or official installer, uses macdeployqt for app bundles
 
 ### CLI Usage Examples:
@@ -133,7 +133,7 @@ QT_QPA_PLATFORM=offscreen ./SQLiteQueryAnalyzer --run-sql queries.sql database.d
 
 ### Environment requirements:
 - **Ubuntu 24.04 LTS**: Fully supported and tested
-- **Qt Version**: 6.4.2 minimum (Ubuntu package), 6.9.0 recommended
+- **Qt Version**: 6.4.2 minimum (Ubuntu package), 6.11.2 recommended
 - **CMake**: 3.16 or later
 - **Compiler**: GCC 13.3+ or equivalent
 - **Memory**: Build requires ~2GB RAM

@@ -41,7 +41,7 @@ Makefile
 cmake-build-debug
 artifacts/SQLiteQueryAnalyzer-Setup.exe
 *.nupkg
-6.9.0
+/6.*/
 *aqtinstall.log
 linux/usr/share/icons/hicolor/256x256/apps/sqlitequery.png
 SQLiteQueryAnalyzer-1.0-Linux.7z

@@ -2,7 +2,7 @@ param (
     [switch]
     $Package = $false,
     [string]
-    $QtPath = "C:\Qt\6.9.0\msvc2022_64"
+    $QtPath = "C:\Qt\6.11.2\msvc2022_64"
 )
 
 if ($IsWindows) {
@@ -11,13 +11,13 @@ if ($IsWindows) {
         $QtPath = $env:QT_PATH
     }
     if ([string]::IsNullOrEmpty($QtPath)) {
-        $QtPath = "C:\Qt\6.9.0\msvc2022_64"
+        $QtPath = "C:\Qt\6.11.2\msvc2022_64"
     }
     
     # Validate Qt path exists
     if (-not (Test-Path $QtPath)) {
         Write-Error "Qt path not found at: $QtPath"
-        Write-Error "Please install Qt 6.9.0 MSVC2022 64-bit from: https://www.qt.io/download"
+        Write-Error "Please install Qt 6.11.2 MSVC2022 64-bit from: https://www.qt.io/download"
         Write-Error "Or provide the Qt path via -QtPath parameter or QT_PATH environment variable"
         exit 1
     }
