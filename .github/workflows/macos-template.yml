@@ -49,6 +49,6 @@ jobs:
       - name: Publish artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: src/SQLiteQuerAnalyzer_MacOS_v${{ inputs.version }}_${{ inputs.architecture }}
+          name: SQLiteQueryAnalyzer_MacOS_v${{ inputs.version }}_${{ inputs.architecture }}
           path: |
-            SQLiteQueryAnalyzer.dmg
+            install/SQLiteQueryAnalyzer.dmg
