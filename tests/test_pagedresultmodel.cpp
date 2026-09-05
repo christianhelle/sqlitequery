@@ -204,3 +204,18 @@ TEST_F(PagedResultTest, SurvivesAnAnalyzeWhileItIsStillBeingScrolled) {
     EXPECT_EQ(model->data(model->index(everyRow - 1, 1)).toString(),
               QString("name%1").arg(RowCount - 1));
 }
+
+// Re-opening an already-open Database used to close it first, which killed a
+// live result the same way analysing did.
+TEST_F(PagedResultTest, SurvivesOpeningAnAlreadyOpenDatabase) {
+    const std::unique_ptr<QAbstractItemModel> model(
+        db->createResultModel("SELECT * FROM big"));
+    ASSERT_NE(model, nullptr);
+
+    EXPECT_TRUE(db->open());
+
+    while (model->canFetchMore(QModelIndex()))
+        model->fetchMore(QModelIndex());
+
+    EXPECT_EQ(model->rowCount(), RowCount);
+}
