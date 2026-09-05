@@ -11,6 +11,8 @@ struct WindowState {
     int tabWidth{};
     int queryTextHeight{};
     int queryResultHeight{};
+    int editorZoomStep{};
+    int treeZoomStep{};
 };
 
 struct SessionState {
@@ -27,12 +29,7 @@ public:
 
     static void getMainWindowState(WindowState *state);
 
-    static void setMainWindowState(const QSizeF &size,
-                                   const QPoint &position,
-                                   int treeWidth,
-                                   int tabWidth,
-                                   int queryTextHeight,
-                                   int queryResultHeight);
+    static void setMainWindowState(const WindowState &state);
 
     static void getSessionState(SessionState *state);
 

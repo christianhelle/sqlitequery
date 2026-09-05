@@ -57,6 +57,10 @@ set(COMMON_SRCS
   src/gui/mainwindow.ui
   src/gui/queryresultpresenter.cpp
   src/gui/queryresultpresenter.h
+  src/gui/zoomlevel.cpp
+  src/gui/zoomlevel.h
+  src/gui/zoompresenter.cpp
+  src/gui/zoompresenter.h
   src/settings/recentfiles.cpp
   src/settings/recentfiles.h
   src/settings/settings.cpp

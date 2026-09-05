@@ -14,6 +14,7 @@
 #include "highlighter.h"
 #include "queryexecutionpresenter.h"
 #include "sessionmanager.h"
+#include "zoompresenter.h"
 #include "exportorchestrator.h"
 
 namespace Ui {
@@ -88,7 +89,13 @@ private:
     std::unique_ptr<Highlighter> highlighter;
     std::unique_ptr<SessionManager> sessionManager;
     std::unique_ptr<ExportOrchestrator> exportOrchestrator;
+    std::unique_ptr<ZoomPresenter> editorZoom;
+    std::unique_ptr<ZoomPresenter> treeZoom;
     bool loaded = false;
+
+    // The pane a keyboard zoom applies to: whichever of the two holds the
+    // focus, falling back to the editor when the focus is elsewhere.
+    [[nodiscard]] ZoomPresenter *zoomForFocus() const;
 
     void analyzeDatabase() const;
 

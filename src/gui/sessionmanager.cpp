@@ -26,14 +26,7 @@ void SessionManager::restoreSession(SessionState *state) const {
 }
 
 void SessionManager::saveWindowState(const WindowState &state) {
-    Settings::setMainWindowState(
-        state.size,
-        state.position,
-        state.treeWidth,
-        state.tabWidth,
-        state.queryTextHeight,
-        state.queryResultHeight
-    );
+    Settings::setMainWindowState(state);
 }
 
 void SessionManager::restoreWindowState(WindowState *state) const {

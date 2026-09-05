@@ -29,6 +29,11 @@ architecture, the modules, and the tests all refer to the same things.
   (single script of `INSERT` statements).
 - **Session** — the user's last-opened Database, the text they had in the
   query editor, and the last folder they exported to. Persisted between runs.
+- **Zoom** — a scale factor the user applies to the text of a pane, in discrete
+  steps away from the size that pane was built with. Step 0 is the untouched
+  size. The query editor and the Tree each carry their own Zoom, so one can be
+  enlarged without the other. Part of the window state, so both are persisted
+  between runs.
 
 ## Modules (current shape)
 
@@ -47,6 +52,11 @@ architecture, the modules, and the tests all refer to the same things.
   Database + DatabaseInfo. Long-running; reports progress; cancellable.
 - **ExportOrchestrator** — runs a DataExporter in the background, marshals
   progress to the GUI thread, surfaces cancel and completion.
+- **ZoomPresenter** — owns one Zoom and applies it to the widgets registered
+  with it, turning the zoom gestures over those widgets into steps. MainWindow
+  keeps one per independently zoomable pane. Ctrl+wheel needs no routing
+  because a presenter only watches its own widgets; a keyboard zoom goes to
+  the presenter that holds the focus.
 - **SessionManager** — persists and restores the Session and window state.
 - **MainWindow** — Qt shell. Wires the modules to menu actions and the UI
   form. Does not contain business logic.
