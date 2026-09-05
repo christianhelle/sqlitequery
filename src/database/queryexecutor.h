@@ -35,6 +35,12 @@ public:
     // Splits a Script into its statements and runs them. Splitting lives here
     // rather than in a caller so that only this module knows what separates
     // one statement from the next.
+    //
+    // The split is on semicolons, so it does not yet understand a semicolon
+    // inside a string literal or a CREATE TRIGGER body -- both of which it
+    // cuts in the wrong place. Telling them apart needs a SQLite-aware
+    // splitter, which Qt's SQL module gives no access to; runScript has always
+    // had the same limitation.
     QList<QAbstractItemModel *> runScriptPaged(const QString &script,
                                                QStringList *errors = nullptr) const;
 

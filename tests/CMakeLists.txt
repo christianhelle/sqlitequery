@@ -4,6 +4,14 @@ project(SQLiteQueryTests LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# The test binary compiles Qt sources of its own now -- mainwindow.cpp carries
+# Q_OBJECT and mainwindow.ui needs uic -- so switch the generators on here
+# rather than inheriting them from the parent project. This directory is
+# configurable on its own, and was relying on properties it never set.
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 find_package(Qt6 REQUIRED COMPONENTS Core Sql Widgets)
 
 # Fetch Google Test
