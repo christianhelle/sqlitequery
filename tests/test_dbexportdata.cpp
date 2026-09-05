@@ -43,6 +43,36 @@ protected:
     QString dbPath;
     std::unique_ptr<SqliteDatabase> db;
     DatabaseInfo info;
+
+    void runSql(const QStringList &statements) const {
+        QueryExecutor(db.get()).runStatements(statements);
+    }
+
+    // Re-reads the Schema, for a test that has changed it since SetUp.
+    [[nodiscard]] DatabaseInfo reanalyze() const {
+        DatabaseInfo fresh;
+        DbAnalyzer(db.get()).analyze(fresh);
+        return fresh;
+    }
+
+    // Exports a Schema as an INSERT script and returns what was written.
+    [[nodiscard]] QString exportedSqlScript(const DatabaseInfo &schema) const {
+        QTemporaryDir exportDir;
+        exportDir.setAutoRemove(true);
+        const QString path = exportDir.path() + "/export.sql";
+
+        const DbDataExport exporter(schema);
+        CancellationTokenSource tcs;
+        const CancellationToken token = tcs.get();
+        ExportDataProgress progress;
+        exporter.exportDataToSqlFile(db.get(), path, &token, &progress);
+
+        QFile file(path);
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        const QString content = QTextStream(&file).readAll();
+        file.close();
+        return content;
+    }
 };
 
 TEST_F(DbDataExportTest, ExportToSqlFile) {
@@ -204,59 +234,23 @@ TEST_F(DbDataExportTest, ExportRowsCounted) {
 // INSERT it writes interpolates it again, so a name holding a quote used to
 // export nothing at all.
 TEST_F(DbDataExportTest, ExportsATableWhoseNameHoldsAQuote) {
-    QStringList sql;
-    sql << "CREATE TABLE \"we\"\"ird\" (id INTEGER PRIMARY KEY, name TEXT)";
-    sql << "INSERT INTO \"we\"\"ird\" (name) VALUES ('row')";
-    QueryExecutor(db.get()).runStatements(sql);
+    runSql({R"(CREATE TABLE "we""ird" (id INTEGER PRIMARY KEY, name TEXT))",
+            R"(INSERT INTO "we""ird" (name) VALUES ('row'))"});
 
-    DatabaseInfo reanalyzed;
-    DbAnalyzer(db.get()).analyze(reanalyzed);
+    const QString content = exportedSqlScript(reanalyze());
 
-    QTemporaryDir exportDir;
-    exportDir.setAutoRemove(true);
-    const QString sqlPath = exportDir.path() + "/weird.sql";
-
-    DbDataExport exporter(reanalyzed);
-    CancellationTokenSource tcs;
-    CancellationToken token = tcs.get();
-    ExportDataProgress progress;
-    exporter.exportDataToSqlFile(db.get(), sqlPath, &token, &progress);
-
-    QFile file(sqlPath);
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    const QString content = QTextStream(&file).readAll();
-    file.close();
-
-    EXPECT_TRUE(content.contains("INSERT INTO \"we\"\"ird\""));
+    EXPECT_TRUE(content.contains(R"(INSERT INTO "we""ird")"));
 }
 
 // The column list of an INSERT is SQL, so a Column named after a reserved
 // word has to be delimited or the script will not replay.
 TEST_F(DbDataExportTest, DelimitsColumnNamesInTheInsertColumnList) {
-    QStringList sql;
-    sql << "CREATE TABLE reserved (id INTEGER PRIMARY KEY, \"order\" INTEGER)";
-    sql << "INSERT INTO reserved (\"order\") VALUES (1)";
-    QueryExecutor(db.get()).runStatements(sql);
+    runSql({R"(CREATE TABLE reserved (id INTEGER PRIMARY KEY, "order" INTEGER))",
+            R"(INSERT INTO reserved ("order") VALUES (1))"});
 
-    DatabaseInfo reanalyzed;
-    DbAnalyzer(db.get()).analyze(reanalyzed);
+    const QString content = exportedSqlScript(reanalyze());
 
-    QTemporaryDir exportDir;
-    exportDir.setAutoRemove(true);
-    const QString sqlPath = exportDir.path() + "/reserved.sql";
-
-    DbDataExport exporter(reanalyzed);
-    CancellationTokenSource tcs;
-    CancellationToken token = tcs.get();
-    ExportDataProgress progress;
-    exporter.exportDataToSqlFile(db.get(), sqlPath, &token, &progress);
-
-    QFile file(sqlPath);
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    const QString content = QTextStream(&file).readAll();
-    file.close();
-
-    EXPECT_TRUE(content.contains("\"order\""));
+    EXPECT_TRUE(content.contains(R"("order")"));
 }
 
 // A CSV header is not SQL. The Column names go in as the user wrote them, so

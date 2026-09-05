@@ -16,10 +16,12 @@
 // found nothing, which is a different bug from a quoting one -- guard the
 // lookup, not the result of this.
 inline QString quotedIdentifier(const QString &name) {
+    // Explicit Qt character types rather than char literals: Qt 6.9 turned
+    // off the implicit QChar conversions these used to rely on.
     QString escaped = name;
     // A quoted identifier escapes a double quote by doubling it.
-    escaped.replace('"', "\"\"");
-    return '"' + escaped + '"';
+    escaped.replace(QLatin1Char('"'), QStringLiteral("\"\""));
+    return QLatin1Char('"') + escaped + QLatin1Char('"');
 }
 
 #endif // SQLIDENTIFIER_H
