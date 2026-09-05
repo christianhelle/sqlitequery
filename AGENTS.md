@@ -31,6 +31,10 @@ implementation details. If you introduce a new domain term, add it to
   never `friend` into a concrete class or poke at its privates.
 - **No `QSqlDatabase` outside the `database` module.** If a caller needs to
   run SQL, it goes through the seam. The seam owns query construction.
+- **Reading never changes connection state.** A module that reads a Database
+  through the seam does not call `open()` or `close()`. Opening belongs to
+  whoever owns the Database: the window, or a CLI entry point. A reader that
+  closes cuts short every PagedResult still being scrolled, silently.
 - **No widget pointers in non-GUI modules.** A module that takes a
   `QWidget*` is a presenter, not a domain module. Presenters are thin.
 - **No SQL string concatenation in non-database modules.** `dbquery.h`
