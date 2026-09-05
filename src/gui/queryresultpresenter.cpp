@@ -95,8 +95,10 @@ void QueryResultPresenter::presentToView(QTableView *view, QAbstractItemModel *m
     const QPointer<QItemSelectionModel> previousSelection = view->selectionModel();
 
     model->setParent(view);
+    // As in present(): sorting is set up while the outgoing model is still
+    // bound, because doing it afterwards would sort the table on the way in.
+    enableSortingAscending(view);
     view->setModel(model);
     delete previousSelection.data();
     delete previousModel.data();
-    view->setSortingEnabled(true);
 }
