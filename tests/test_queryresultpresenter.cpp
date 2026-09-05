@@ -7,35 +7,47 @@
 #include <QTableView>
 #include <QWidget>
 #include <algorithm>
+#include <memory>
 
 #include "gui/queryresultpresenter.h"
 
 namespace {
-    // Records what the view asked the model to sort by. A paged result answers
-    // a sort by re-running its statement, so an unasked-for sort is both the
-    // wrong order and a second execution of the query.
-    class SortSpyModel final : public QStandardItemModel {
-    public:
-        SortSpyModel(const int rows, const int columns)
-            : QStandardItemModel(rows, columns) {
-        }
-
-        void sort(const int column, const Qt::SortOrder order) override {
-            this->sortedColumns.append(column);
-            this->sortedOrders.append(order);
-            QStandardItemModel::sort(column, order);
-        }
+    // What a view asked a model to sort by. A paged result answers a sort by
+    // re-running its statement, so an unasked-for sort is both the wrong order
+    // and a second execution of the query.
+    //
+    // The record is kept outside the model and shared with it, because binding
+    // a model to a view deletes the one it replaces: a test that reads this
+    // after the next result arrives would otherwise be reading freed memory.
+    struct SortLog {
+        QList<int> columns{};
+        QList<Qt::SortOrder> orders{};
 
         // Sorting by column -1 is Qt's "leave it in its natural order", so it
         // does not count as having sorted anything.
-        [[nodiscard]] bool wasSorted() const {
-            return std::any_of(sortedColumns.begin(),
-                               sortedColumns.end(),
+        [[nodiscard]] bool sorted() const {
+            return std::any_of(columns.begin(),
+                               columns.end(),
                                [](const int column) { return column >= 0; });
         }
+    };
 
-        QList<int> sortedColumns{};
-        QList<Qt::SortOrder> sortedOrders{};
+    class SortSpyModel final : public QStandardItemModel {
+    public:
+        SortSpyModel(const int rows, const int columns, std::shared_ptr<SortLog> log)
+            : QStandardItemModel(rows, columns), log(std::move(log)) {
+        }
+
+        void sort(const int column, const Qt::SortOrder order) override {
+            if (this->log != nullptr) {
+                this->log->columns.append(column);
+                this->log->orders.append(order);
+            }
+            QStandardItemModel::sort(column, order);
+        }
+
+    private:
+        std::shared_ptr<SortLog> log;
     };
 
     void clickHeaderSection(const QTableView *view, const int section) {
@@ -63,8 +75,9 @@ protected:
     }
 
     // Stands in for a PagedResult; the presenter only ever binds models.
-    static SortSpyModel *modelWithRows(const int rows) {
-        auto *model = new SortSpyModel(rows, 2);
+    static SortSpyModel *modelWithRows(const int rows,
+                                       std::shared_ptr<SortLog> log = nullptr) {
+        auto *model = new SortSpyModel(rows, 2, std::move(log));
         for (int row = 0; row < rows; ++row) {
             model->setItem(row, 0, new QStandardItem(QString::number(row)));
             model->setItem(row, 1, new QStandardItem("name" + QString::number(row)));
@@ -151,11 +164,11 @@ TEST_F(QueryResultPresenterTest, PresentToViewIgnoresMissingModel) {
 // and makes the database order the whole result set before the first page can
 // be shown.
 TEST_F(QueryResultPresenterTest, PresentDoesNotSortTheResult) {
-    auto *model = modelWithRows(3);
+    const auto log = std::make_shared<SortLog>();
 
-    presenter->present({model});
+    presenter->present({modelWithRows(3, log)});
 
-    EXPECT_FALSE(model->wasSorted()) << "the result was sorted before anyone asked for an order";
+    EXPECT_FALSE(log->sorted()) << "the result was sorted before anyone asked for an order";
 
     const auto views = parent->findChildren<QTableView *>();
     ASSERT_EQ(views.size(), 1);
@@ -166,36 +179,38 @@ TEST_F(QueryResultPresenterTest, PresentDoesNotSortTheResult) {
 TEST_F(QueryResultPresenterTest, PresentToViewDoesNotSortTheTable) {
     QTableView view(parent.get());
 
-    auto *first = modelWithRows(3);
-    presenter->presentToView(&view, first);
-    auto *second = modelWithRows(4);
-    presenter->presentToView(&view, second);
+    const auto first = std::make_shared<SortLog>();
+    const auto second = std::make_shared<SortLog>();
 
-    EXPECT_FALSE(first->wasSorted()) << "the outgoing table was sorted on its way out";
-    EXPECT_FALSE(second->wasSorted()) << "the table was sorted before anyone asked for an order";
+    presenter->presentToView(&view, modelWithRows(3, first));
+    presenter->presentToView(&view, modelWithRows(4, second));
+
+    EXPECT_FALSE(first->sorted()) << "the outgoing table was sorted on its way out";
+    EXPECT_FALSE(second->sorted()) << "the table was sorted before anyone asked for an order";
 }
 
 TEST_F(QueryResultPresenterTest, FirstClickOnAColumnSortsAscending) {
-    auto *model = modelWithRows(3);
-    presenter->present({model});
+    const auto log = std::make_shared<SortLog>();
+    presenter->present({modelWithRows(3, log)});
     const auto views = parent->findChildren<QTableView *>();
     ASSERT_EQ(views.size(), 1);
 
     clickHeaderSection(views.at(0), 0);
 
-    ASSERT_FALSE(model->sortedOrders.isEmpty()) << "clicking the header sorted nothing";
-    EXPECT_EQ(model->sortedColumns.last(), 0);
-    EXPECT_EQ(model->sortedOrders.last(), Qt::AscendingOrder);
+    ASSERT_FALSE(log->orders.isEmpty()) << "clicking the header sorted nothing";
+    EXPECT_EQ(log->columns.last(), 0);
+    EXPECT_EQ(log->orders.last(), Qt::AscendingOrder);
 }
 
 TEST_F(QueryResultPresenterTest, SecondClickOnTheSameColumnSortsDescending) {
-    auto *model = modelWithRows(3);
-    presenter->present({model});
+    const auto log = std::make_shared<SortLog>();
+    presenter->present({modelWithRows(3, log)});
     const auto views = parent->findChildren<QTableView *>();
     ASSERT_EQ(views.size(), 1);
 
     clickHeaderSection(views.at(0), 0);
     clickHeaderSection(views.at(0), 0);
 
-    EXPECT_EQ(model->sortedOrders.last(), Qt::DescendingOrder);
+    ASSERT_FALSE(log->orders.isEmpty()) << "clicking the header sorted nothing";
+    EXPECT_EQ(log->orders.last(), Qt::DescendingOrder);
 }
