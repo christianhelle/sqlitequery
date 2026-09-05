@@ -13,8 +13,8 @@
 #include <chrono>
 #include <thread>
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent) {
+MainWindow::MainWindow(IDatabase *database, QWidget *parent) :
+    QMainWindow(parent), database(database) {
     ui = std::make_unique<Ui::MainWindow>();
     ui->setupUi(this);
     ui->splitterMain->setStretchFactor(1, 3);
@@ -28,9 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowTitle("SQLite Query Analyzer");
     this->connectSignalSlots();
 
-    this->database = std::make_unique<SqliteDatabase>();
-    this->analyzer = std::make_unique<DbAnalyzer>(database.get());
-    this->executor = std::make_unique<QueryExecutor>(database.get());
+    this->analyzer = std::make_unique<DbAnalyzer>(database);
+    this->executor = std::make_unique<QueryExecutor>(database);
     this->queryPresenter = std::make_unique<QueryExecutionPresenter>(ui->queryResultsGrid, executor.get());
 
     this->tree = std::make_unique<DbTree>(ui->treeWidget);
@@ -407,7 +406,7 @@ void MainWindow::exportDataToSqlScript() {
     this->setEnabledActions(false);
     ui->queryResultTab->setCurrentIndex(1);
 
-    exportOrchestrator->exportToSql(std::move(info), filepath, database.get());
+    exportOrchestrator->exportToSql(std::move(info), filepath, database);
 }
 
 void MainWindow::exportDataToCsvFiles() {
@@ -424,7 +423,7 @@ void MainWindow::exportDataToCsvFiles() {
     this->setEnabledActions(false);
     ui->queryResultTab->setCurrentIndex(1);
 
-    exportOrchestrator->exportToCsv(std::move(info), outputFolder, delimiter, database.get());
+    exportOrchestrator->exportToCsv(std::move(info), outputFolder, delimiter, database);
 }
 
 void MainWindow::cancel() const {

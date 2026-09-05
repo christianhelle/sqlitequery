@@ -4,6 +4,7 @@
 
 #include "cli/export.h"
 #include "cli/script.h"
+#include "database/sqlitedatabase.h"
 #include "gui/mainwindow.h"
 
 constexpr auto Version = "1.0.0";
@@ -74,14 +75,17 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
+    // The window works on this Database and does not outlive it.
+    SqliteDatabase database;
+
     if (args.length() == 1) {
-        MainWindow window;
+        MainWindow window(&database);
         window.openDatabase(args.at(0));
         window.show();
         return QApplication::exec();
     }
 
-    MainWindow window;
+    MainWindow window(&database);
     window.restoreLastSession();
     window.show();
     return QApplication::exec();

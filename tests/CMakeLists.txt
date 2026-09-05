@@ -25,6 +25,7 @@ set(TEST_SRCS
     test_exportorchestrator.cpp
     test_queryresultpresenter.cpp
     test_queryexecutionpresenter.cpp
+    test_mainwindow.cpp
     test_pagedresultmodel.cpp
     test_zoomlevel.cpp
     test_zoompresenter.cpp
@@ -49,6 +50,14 @@ set(PROD_SRCS
     ../src/gui/exportorchestrator.cpp
     ../src/gui/queryresultpresenter.cpp
     ../src/gui/queryexecutionpresenter.cpp
+    ../src/gui/mainwindow.cpp
+    ../src/gui/mainwindow.ui
+    ../src/gui/highlighter.cpp
+    ../src/gui/sessionmanager.cpp
+    ../src/gui/prompts.cpp
+    ../src/database/dbtree.cpp
+    ../src/settings/settings.cpp
+    ../src/settings/recentfiles.cpp
     ../src/gui/zoomlevel.cpp
     ../src/gui/zoompresenter.cpp
 )
