@@ -43,10 +43,14 @@ jobs:
           $version = (Get-Content -Path src/main.cpp -Raw) -replace 'constexpr auto Version = "1.0.0";', "constexpr auto Version = `"$env:VERSION`";"
           $version | Set-Content -Path src/main.cpp
 
+      # Qt 6.11 moved the Windows online repository into toolchain-specific
+      # folders (qt6_6112_msvc2022_64) that aqtinstall 3.3.0 cannot resolve, so
+      # CI installs the newest version it can reach. Local Windows builds use
+      # 6.11.2 from the Qt online installer.
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: "6.11.2"
+          version: "6.10.3"
           host: windows
           target: desktop
           arch: win64_msvc2022_64
@@ -66,12 +70,12 @@ jobs:
         shell: pwsh
         run: |
           cmake . `
-            -DCMAKE_PREFIX_PATH=${{ runner.temp }}\Qt\6.11.2\msvc2022_64 `
+            -DCMAKE_PREFIX_PATH=${{ runner.temp }}\Qt\6.10.3\msvc2022_64 `
             -DCMAKE_CXX_STANDARD=17 `
             -DCMAKE_CXX_FLAGS="/Zc:__cplusplus /permissive-" `
             -B build
           cmake --build build --config Release
-          ${{ runner.temp }}\Qt\6.11.2\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
+          ${{ runner.temp }}\Qt\6.10.3\msvc2022_64\bin\windeployqt.exe .\build\Release\SQLiteQueryAnalyzer.exe
           rm .\build\Release\vc_redist.x64.exe
 
       - name: Zip build
