@@ -61,8 +61,9 @@ namespace {
         const QPoint global = header->viewport()->mapToGlobal(position);
         QMouseEvent press(QEvent::MouseButtonPress, position, global,
                           Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+        // A release reports the buttons still held afterwards, which is none.
         QMouseEvent release(QEvent::MouseButtonRelease, position, global,
-                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+                            Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
         QApplication::sendEvent(header->viewport(), &press);
         QApplication::sendEvent(header->viewport(), &release);
     }
