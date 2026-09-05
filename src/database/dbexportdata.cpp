@@ -1,12 +1,24 @@
 #include "dbexportdata.h"
 #include <QFile>
 
-QStringList DbDataExport::getColumnDefs(const Table &table) {
-    QStringList columnDefinitions;
+#include "sqlidentifier.h"
+
+QStringList DbDataExport::columnNames(const Table &table) {
+    QStringList names;
+    names.reserve(table.columns.size());
     for (const auto &column : table.columns) {
-        columnDefinitions.append(column.name);
+        names.append(column.name);
     }
-    return columnDefinitions;
+    return names;
+}
+
+QStringList DbDataExport::quotedColumnNames(const Table &table) {
+    QStringList names;
+    names.reserve(table.columns.size());
+    for (const auto &column : table.columns) {
+        names.append(quotedIdentifier(column.name));
+    }
+    return names;
 }
 
 // Whether a column holds text depends only on the schema, so this is resolved
@@ -61,15 +73,15 @@ void DbDataExport::exportDataToSqlFile(IDatabase *database,
         }
         out << "-- " << table.name << "\n";
 
-        const auto columns = getColumnDefs(table).join(", ");
+        const auto columns = quotedColumnNames(table).join(", ");
         const auto isTextColumn = getTextColumnFlags(table);
         const QueryResult streamResult = database->streamRows(
-            QString("SELECT * FROM \"%1\"").arg(table.name),
+            QString("SELECT * FROM %1").arg(quotedIdentifier(table.name)),
             [&](const QList<QVariant> &values) {
                 if (cancellationToken->isCancellationRequested())
                     return false;
                 const auto valueList = getColumnValueDefs(isTextColumn, values).join(", ");
-                out << "INSERT INTO \"" << table.name << "\"(" << columns << ") ";
+                out << "INSERT INTO " << quotedIdentifier(table.name) << "(" << columns << ") ";
                 out << "VALUES (" << valueList << ");\n";
                 progress->increment();
                 return true;
@@ -101,13 +113,13 @@ void DbDataExport::exportDataToCsvFile(IDatabase *database,
             return;
         }
 
-        const auto columns = getColumnDefs(table).join(delimiter);
+        const auto columns = columnNames(table).join(delimiter);
         const auto isTextColumn = getTextColumnFlags(table);
         QTextStream out(file.get());
         out << columns << "\n";
 
         const QueryResult streamResult = database->streamRows(
-            QString("SELECT * FROM \"%1\"").arg(table.name),
+            QString("SELECT * FROM %1").arg(quotedIdentifier(table.name)),
             [&](const QList<QVariant> &values) {
                 if (cancellationToken->isCancellationRequested())
                     return false;

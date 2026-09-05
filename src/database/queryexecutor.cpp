@@ -1,12 +1,6 @@
 #include "queryexecutor.h"
 
-namespace {
-    // A quoted identifier escapes a double quote by doubling it.
-    QString quoteIdentifier(const QString &name) {
-        QString quoted = name;
-        return quoted.replace('"', "\"\"");
-    }
-}
+#include "sqlidentifier.h"
 
 QueryExecutor::QueryExecutor(IDatabase *database)
     : database(database) {
@@ -40,11 +34,16 @@ QList<QueryResult> QueryExecutor::runStatements(const QStringList &statements,
 }
 
 QueryResult QueryExecutor::previewTable(const QString &tableName, int limit) const {
-    QString sql = QString("SELECT * FROM \"%1\"").arg(quoteIdentifier(tableName));
+    QString sql = QString("SELECT * FROM %1").arg(quotedIdentifier(tableName));
     if (limit > 0) {
         sql += QString(" LIMIT %1").arg(limit);
     }
     return database->runStatement(sql);
+}
+
+QueryResult QueryExecutor::dropTable(const QString &tableName) const {
+    return database->runStatement(
+        QString("DROP TABLE %1").arg(quotedIdentifier(tableName)));
 }
 
 QList<QAbstractItemModel *> QueryExecutor::runStatementsPaged(const QStringList &statements,
@@ -68,5 +67,5 @@ QList<QAbstractItemModel *> QueryExecutor::runStatementsPaged(const QStringList 
 
 QAbstractItemModel *QueryExecutor::previewTablePaged(const QString &tableName,
                                                      QString *error) const {
-    return database->createResultModel(QString("SELECT * FROM \"%1\"").arg(quoteIdentifier(tableName)), error);
+    return database->createResultModel(QString("SELECT * FROM %1").arg(quotedIdentifier(tableName)), error);
 }

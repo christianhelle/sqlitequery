@@ -93,18 +93,18 @@ void MainWindow::deleteSelectedTable() {
         return;
     }
 
-    const auto list = QStringList() << "DROP TABLE " + tableName;
-    QStringList errors;
     QElapsedTimer time;
     time.start();
 
-    const auto deleted = this->queryPresenter->execute(list, &errors);
+    const QueryResult result = this->executor->dropTable(tableName);
     const auto milliseconds = static_cast<double>(time.elapsed());
     const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
     this->showMessage(msg);
 
-    if (!deleted) {
-        const auto errorMessage = errors.join("\r\n");
+    if (!result.ok) {
+        const auto errorMessage = result.error.isEmpty()
+                                      ? QString("Unable to delete " + tableName)
+                                      : result.error;
         ui->queryResultMessagesTextEdit->setPlainText(errorMessage);
         Prompts::showError(this, errorMessage);
     } else {

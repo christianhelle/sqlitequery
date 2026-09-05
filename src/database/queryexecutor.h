@@ -21,6 +21,11 @@ public:
 
     [[nodiscard]] QueryResult previewTable(const QString &tableName, int limit = -1) const;
 
+    // Drops a Table. The name is delimited here rather than by the caller, so
+    // a Table whose name holds a quote or a reserved word drops like any other
+    // and no caller outside this module has to build the statement.
+    QueryResult dropTable(const QString &tableName) const;
+
     // Display variants. Each returns a lazily fetched model whose rows are read
     // in pages as they are scrolled into view, so a result set of any size can
     // be browsed. The caller owns the returned models.

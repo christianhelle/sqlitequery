@@ -4,6 +4,8 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 
+#include "sqlidentifier.h"
+
 #include <utility>
 
 PagedResultModel::PagedResultModel(const QSqlDatabase &database, QString sql, QObject *parent)
@@ -35,16 +37,13 @@ void PagedResultModel::sort(const int column, const Qt::SortOrder order) {
     if (column < 0 || column >= columnCount())
         return;
 
-    QString columnName = record().fieldName(column);
+    const QString columnName = record().fieldName(column);
     if (columnName.isEmpty())
         return;
 
-    // A quoted identifier escapes a double quote by doubling it.
-    columnName.replace('"', "\"\"");
-
-    const QString sorted = QString("SELECT * FROM (%1) ORDER BY \"%2\" %3")
+    const QString sorted = QString("SELECT * FROM (%1) ORDER BY %2 %3")
             .arg(statement,
-                 columnName,
+                 quotedIdentifier(columnName),
                  order == Qt::AscendingOrder ? "ASC" : "DESC");
 
     // Not every statement can be wrapped in a subquery. run() leaves the model

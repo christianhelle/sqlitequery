@@ -160,3 +160,39 @@ TEST_F(QueryExecutorTest, PreviewNonexistentTable) {
 
     EXPECT_FALSE(result.ok);
 }
+
+TEST_F(QueryExecutorTest, DropTable) {
+    const QueryResult dropped = executor->dropTable("test_users");
+    EXPECT_TRUE(dropped.ok);
+
+    const QueryResult gone = executor->previewTable("test_users");
+    EXPECT_FALSE(gone.ok);
+}
+
+// The window used to build this statement itself, without delimiting the
+// name, so a Table like this one could be listed in the Tree but not deleted.
+TEST_F(QueryExecutorTest, DropsATableWhoseNameHoldsAQuote) {
+    QStringList createSql;
+    createSql << R"(CREATE TABLE "we""ird" (id INTEGER PRIMARY KEY))";
+    executor->runStatements(createSql);
+
+    const QueryResult dropped = executor->dropTable(R"(we"ird)");
+
+    EXPECT_TRUE(dropped.ok);
+    EXPECT_TRUE(dropped.error.isEmpty());
+}
+
+TEST_F(QueryExecutorTest, DropsATableNamedAfterAReservedWord) {
+    QStringList createSql;
+    createSql << R"(CREATE TABLE "order" (id INTEGER PRIMARY KEY))";
+    executor->runStatements(createSql);
+
+    EXPECT_TRUE(executor->dropTable("order").ok);
+}
+
+TEST_F(QueryExecutorTest, ReportsWhyAMissingTableCouldNotBeDropped) {
+    const QueryResult dropped = executor->dropTable("no_such_table");
+
+    EXPECT_FALSE(dropped.ok);
+    EXPECT_FALSE(dropped.error.isEmpty());
+}

@@ -43,6 +43,36 @@ protected:
     QString dbPath;
     std::unique_ptr<SqliteDatabase> db;
     DatabaseInfo info;
+
+    void runSql(const QStringList &statements) const {
+        QueryExecutor(db.get()).runStatements(statements);
+    }
+
+    // Re-reads the Schema, for a test that has changed it since SetUp.
+    [[nodiscard]] DatabaseInfo reanalyze() const {
+        DatabaseInfo fresh;
+        DbAnalyzer(db.get()).analyze(fresh);
+        return fresh;
+    }
+
+    // Exports a Schema as an INSERT script and returns what was written.
+    [[nodiscard]] QString exportedSqlScript(const DatabaseInfo &schema) const {
+        QTemporaryDir exportDir;
+        exportDir.setAutoRemove(true);
+        const QString path = exportDir.path() + "/export.sql";
+
+        const DbDataExport exporter(schema);
+        CancellationTokenSource tcs;
+        const CancellationToken token = tcs.get();
+        ExportDataProgress progress;
+        exporter.exportDataToSqlFile(db.get(), path, &token, &progress);
+
+        QFile file(path);
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        const QString content = QTextStream(&file).readAll();
+        file.close();
+        return content;
+    }
 };
 
 TEST_F(DbDataExportTest, ExportToSqlFile) {
@@ -198,4 +228,47 @@ TEST_F(DbDataExportTest, ExportRowsCounted) {
     exporter.exportDataToSqlFile(db.get(), exportDir.path() + "/export.sql", &token, &progress);
 
     EXPECT_EQ(progress.getAffectedRows(), 3u); // 3 products
+}
+
+// The SELECT that reads a table for export interpolates its name, and the
+// INSERT it writes interpolates it again, so a name holding a quote used to
+// export nothing at all.
+TEST_F(DbDataExportTest, ExportsATableWhoseNameHoldsAQuote) {
+    runSql({R"(CREATE TABLE "we""ird" (id INTEGER PRIMARY KEY, name TEXT))",
+            R"(INSERT INTO "we""ird" (name) VALUES ('row'))"});
+
+    const QString content = exportedSqlScript(reanalyze());
+
+    EXPECT_TRUE(content.contains(R"(INSERT INTO "we""ird")"));
+}
+
+// The column list of an INSERT is SQL, so a Column named after a reserved
+// word has to be delimited or the script will not replay.
+TEST_F(DbDataExportTest, DelimitsColumnNamesInTheInsertColumnList) {
+    runSql({R"(CREATE TABLE reserved (id INTEGER PRIMARY KEY, "order" INTEGER))",
+            R"(INSERT INTO reserved ("order") VALUES (1))"});
+
+    const QString content = exportedSqlScript(reanalyze());
+
+    EXPECT_TRUE(content.contains(R"("order")"));
+}
+
+// A CSV header is not SQL. The Column names go in as the user wrote them, so
+// delimiting the INSERT column list must not follow them here.
+TEST_F(DbDataExportTest, CsvHeaderKeepsColumnNamesUndelimited) {
+    QTemporaryDir exportDir;
+    exportDir.setAutoRemove(true);
+
+    DbDataExport exporter(info);
+    CancellationTokenSource tcs;
+    CancellationToken token = tcs.get();
+    ExportDataProgress progress;
+    exporter.exportDataToCsvFile(db.get(), exportDir.path(), ",", &token, &progress);
+
+    QFile file(exportDir.path() + "/products.csv");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    const QString header = QTextStream(&file).readLine();
+    file.close();
+
+    EXPECT_EQ(header, "id,name,price");
 }

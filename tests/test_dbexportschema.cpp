@@ -116,3 +116,20 @@ TEST_F(DbSchemaExportTest, ExportSchemaEmptyDatabase) {
     // Empty database returns empty schema (no tables to script)
     EXPECT_TRUE(schema.isEmpty());
 }
+
+// CREATE TABLE used to interpolate the Table and Column names raw, so a name
+// holding a quote or a reserved word produced a script that would not replay.
+TEST_F(DbSchemaExportTest, ScriptsIdentifiersThatNeedDelimiting) {
+    QStringList createSql;
+    createSql << R"(CREATE TABLE "we""ird" (id INTEGER PRIMARY KEY, "order" INTEGER))";
+    QueryExecutor(db.get()).runStatements(createSql);
+
+    DatabaseInfo reanalyzed;
+    DbAnalyzer(db.get()).analyze(reanalyzed);
+
+    const DbSchemaExport exporter(reanalyzed);
+    const QString script = exporter.exportSchema();
+
+    EXPECT_TRUE(script.contains(R"(CREATE TABLE "we""ird" ()"));
+    EXPECT_TRUE(script.contains(R"("order" INTEGER)"));
+}
