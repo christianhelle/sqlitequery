@@ -169,3 +169,22 @@ TEST_F(DbAnalyzerTest, AnalyzeLeavesDatabaseUsable) {
     EXPECT_TRUE(preview.ok) << preview.error.toStdString();
     EXPECT_EQ(preview.rows.size(), 1);
 }
+
+// PRAGMA table_info interpolates the Table name, so a name holding a quote
+// used to produce a malformed statement and the Table came back with no
+// Columns at all.
+TEST_F(DbAnalyzerTest, AnalyzeFindsColumnsOfATableWhoseNameHoldsAQuote) {
+    runSql("CREATE TABLE \"we\"\"ird\" (id INTEGER PRIMARY KEY, \"order\" INTEGER)");
+
+    DatabaseInfo info;
+    analyzer->analyze(info);
+
+    const Table *weird = nullptr;
+    for (const auto &table : info.tables) {
+        if (table.name == "we\"ird")
+            weird = &table;
+    }
+
+    ASSERT_NE(weird, nullptr);
+    EXPECT_EQ(weird->columns.size(), 2);
+}

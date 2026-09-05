@@ -2,17 +2,21 @@
 
 #include <QFile>
 
+#include "sqlidentifier.h"
+
 QString DbSchemaExport::exportSchema() const {
     QStringList createTableScripts;
     for (const auto &table: this->getDatabaseInfo().tables) {
         if (isInternalTable(table)) {
             continue;
         }
-        QString createTableScript = QString("CREATE TABLE %1 (").arg(table.name);
+        QString createTableScript = QString("CREATE TABLE %1 (").arg(quotedIdentifier(table.name));
         QStringList columnDefinitions;
         for (const auto &column: table.columns) {
+            // The Column name is an Identifier; the declared type is not,
+            // and delimiting it would break a type like VARCHAR(50).
             QString columnDefinition = QString("\n  %1 %2").arg(
-                column.name, column.dataType);
+                quotedIdentifier(column.name), column.dataType);
             if (column.primaryKey) {
                 columnDefinition += " PRIMARY KEY";
             }

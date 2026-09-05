@@ -27,7 +27,13 @@ public:
                              ExportDataProgress *progress) const;
 
 private:
-    static QStringList getColumnDefs(const Table &table);
+    // The CSV header row: Column names as the user wrote them. A CSV header
+    // is not SQL, so these are not Identifiers.
+    static QStringList columnNames(const Table &table);
+
+    // The column list of an INSERT statement, where the same names are
+    // Identifiers and have to be delimited.
+    static QStringList quotedColumnNames(const Table &table);
 
     [[nodiscard]] QList<bool> getTextColumnFlags(const Table &table) const;
 

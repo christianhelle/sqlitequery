@@ -199,3 +199,82 @@ TEST_F(DbDataExportTest, ExportRowsCounted) {
 
     EXPECT_EQ(progress.getAffectedRows(), 3u); // 3 products
 }
+
+// The SELECT that reads a table for export interpolates its name, and the
+// INSERT it writes interpolates it again, so a name holding a quote used to
+// export nothing at all.
+TEST_F(DbDataExportTest, ExportsATableWhoseNameHoldsAQuote) {
+    QStringList sql;
+    sql << "CREATE TABLE \"we\"\"ird\" (id INTEGER PRIMARY KEY, name TEXT)";
+    sql << "INSERT INTO \"we\"\"ird\" (name) VALUES ('row')";
+    QueryExecutor(db.get()).runStatements(sql);
+
+    DatabaseInfo reanalyzed;
+    DbAnalyzer(db.get()).analyze(reanalyzed);
+
+    QTemporaryDir exportDir;
+    exportDir.setAutoRemove(true);
+    const QString sqlPath = exportDir.path() + "/weird.sql";
+
+    DbDataExport exporter(reanalyzed);
+    CancellationTokenSource tcs;
+    CancellationToken token = tcs.get();
+    ExportDataProgress progress;
+    exporter.exportDataToSqlFile(db.get(), sqlPath, &token, &progress);
+
+    QFile file(sqlPath);
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    const QString content = QTextStream(&file).readAll();
+    file.close();
+
+    EXPECT_TRUE(content.contains("INSERT INTO \"we\"\"ird\""));
+}
+
+// The column list of an INSERT is SQL, so a Column named after a reserved
+// word has to be delimited or the script will not replay.
+TEST_F(DbDataExportTest, DelimitsColumnNamesInTheInsertColumnList) {
+    QStringList sql;
+    sql << "CREATE TABLE reserved (id INTEGER PRIMARY KEY, \"order\" INTEGER)";
+    sql << "INSERT INTO reserved (\"order\") VALUES (1)";
+    QueryExecutor(db.get()).runStatements(sql);
+
+    DatabaseInfo reanalyzed;
+    DbAnalyzer(db.get()).analyze(reanalyzed);
+
+    QTemporaryDir exportDir;
+    exportDir.setAutoRemove(true);
+    const QString sqlPath = exportDir.path() + "/reserved.sql";
+
+    DbDataExport exporter(reanalyzed);
+    CancellationTokenSource tcs;
+    CancellationToken token = tcs.get();
+    ExportDataProgress progress;
+    exporter.exportDataToSqlFile(db.get(), sqlPath, &token, &progress);
+
+    QFile file(sqlPath);
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    const QString content = QTextStream(&file).readAll();
+    file.close();
+
+    EXPECT_TRUE(content.contains("\"order\""));
+}
+
+// A CSV header is not SQL. The Column names go in as the user wrote them, so
+// delimiting the INSERT column list must not follow them here.
+TEST_F(DbDataExportTest, CsvHeaderKeepsColumnNamesUndelimited) {
+    QTemporaryDir exportDir;
+    exportDir.setAutoRemove(true);
+
+    DbDataExport exporter(info);
+    CancellationTokenSource tcs;
+    CancellationToken token = tcs.get();
+    ExportDataProgress progress;
+    exporter.exportDataToCsvFile(db.get(), exportDir.path(), ",", &token, &progress);
+
+    QFile file(exportDir.path() + "/products.csv");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    const QString header = QTextStream(&file).readLine();
+    file.close();
+
+    EXPECT_EQ(header, "id,name,price");
+}

@@ -2,9 +2,7 @@
 
 #include <QFileInfo>
 
-#include "dbanalyzer.h"
-
-#include <QFileInfo>
+#include "sqlidentifier.h"
 
 DbAnalyzer::DbAnalyzer(IDatabase *database)
     : database(database) {
@@ -56,7 +54,7 @@ void DbAnalyzer::loadColumns(DatabaseInfo &info) const {
     }
 
     for (auto &table: info.tables) {
-        const QString sql = "PRAGMA table_info (\"" + table.name + "\")";
+        const QString sql = "PRAGMA table_info (" + quotedIdentifier(table.name) + ")";
 
         const QueryResult result = this->database->runStatement(sql);
         if (!result.ok) {
