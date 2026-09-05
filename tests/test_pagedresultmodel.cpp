@@ -195,7 +195,9 @@ TEST_F(PagedResultTest, SurvivesAnAnalyzeWhileItIsStillBeingScrolled) {
     ASSERT_NE(model, nullptr);
 
     DatabaseInfo info;
-    DbAnalyzer(db.get()).analyze(info);
+    // Asserted, so the test cannot pass by analysing unsuccessfully and
+    // therefore never touching the connection at all.
+    ASSERT_TRUE(DbAnalyzer(db.get()).analyze(info));
 
     while (model->canFetchMore(QModelIndex()))
         model->fetchMore(QModelIndex());

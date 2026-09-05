@@ -196,16 +196,30 @@ TEST_F(DbAnalyzerTest, AnalyzeFindsColumnsOfATableWhoseNameHoldsAQuote) {
 // analysing does not disturb the connection at all, so anything already
 // reading through it keeps working.
 TEST_F(DbAnalyzerTest, AnalyzeLeavesAnOpenConnectionOpenThroughout) {
+    // More rows than a model reads up front, so there is still something to
+    // fetch after the analyze and the connection has to survive it.
+    constexpr int rowCount = 600;
+    QStringList rows;
+    rows << "BEGIN TRANSACTION";
+    for (int i = 0; i < rowCount; ++i)
+        rows << QString("INSERT INTO users (name, age) VALUES ('user%1', %1)").arg(i);
+    rows << "COMMIT";
+    QueryExecutor(db.get()).runStatements(rows);
+
     const std::unique_ptr<QAbstractItemModel> model(
         db->createResultModel("SELECT * FROM users"));
     ASSERT_NE(model, nullptr);
+    ASSERT_LT(model->rowCount(), rowCount) << "nothing left to fetch after analysing";
 
     DatabaseInfo info;
     ASSERT_TRUE(analyzer->analyze(info));
 
-    // Reading through the same connection the model holds.
-    const QueryResult afterwards = QueryExecutor(db.get()).previewTable("users");
-    EXPECT_TRUE(afterwards.ok) << afterwards.error.toStdString();
+    while (model->canFetchMore(QModelIndex()))
+        model->fetchMore(QModelIndex());
+
+    EXPECT_EQ(model->rowCount(), rowCount);
+    EXPECT_EQ(model->data(model->index(rowCount - 1, 1)).toString(),
+              QString("user%1").arg(rowCount - 1));
 }
 
 // The Analyzer does not open the Database either. A closed one cannot be read,
