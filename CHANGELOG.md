@@ -7,6 +7,9 @@
 **Implemented enhancements:**
 
 - Reduce Logging [\#85](https://github.com/christianhelle/sqlitequery/issues/85)
+- Open query results in their own order instead of sorting them backwards [\#118](https://github.com/christianhelle/sqlitequery/pull/118) ([christianhelle](https://github.com/christianhelle))
+- Fix invalid env context in release workflow [\#117](https://github.com/christianhelle/sqlitequery/pull/117) ([christianhelle](https://github.com/christianhelle))
+- Upgrade to Qt 6.11.2 [\#116](https://github.com/christianhelle/sqlitequery/pull/116) ([christianhelle](https://github.com/christianhelle))
 - Zoom the query editor and database tree [\#115](https://github.com/christianhelle/sqlitequery/pull/115) ([christianhelle](https://github.com/christianhelle))
 - Fix memory leaks, performance problems, and restore paged result browsing [\#113](https://github.com/christianhelle/sqlitequery/pull/113) ([christianhelle](https://github.com/christianhelle))
 - Deepen SQLite Query Analyzer architecture [\#110](https://github.com/christianhelle/sqlitequery/pull/110) ([christianhelle](https://github.com/christianhelle))
