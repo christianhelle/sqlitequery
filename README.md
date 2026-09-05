@@ -143,7 +143,7 @@ Here are some screenshots of SQLite Query Analyzer in action:
 
 - Git 😄
 - CMake 3.16 or later - Install from [official website](https://cmake.org/download/)
-- Qt 6.11.2 - Install from [official website](https://www.qt.io/download-qt-installer-oss)
+- Qt 6.4 or later, 6.11.2 recommended - Install from [official website](https://www.qt.io/download-qt-installer-oss)
 - [Powershell Core](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell) (Optional)
 
 ### Clone the repository
