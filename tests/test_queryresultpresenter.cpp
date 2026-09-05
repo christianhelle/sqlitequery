@@ -54,7 +54,7 @@ namespace {
     };
 
     void clickHeaderSection(const QTableView *view, const int section) {
-        auto *header = view->horizontalHeader();
+        const auto *header = view->horizontalHeader();
         const QPoint position(
             header->sectionViewportPosition(section) + header->sectionSize(section) / 2,
             header->viewport()->height() / 2);
