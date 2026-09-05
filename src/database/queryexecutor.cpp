@@ -41,6 +41,19 @@ QueryResult QueryExecutor::previewTable(const QString &tableName, int limit) con
     return database->runStatement(sql);
 }
 
+QList<QAbstractItemModel *> QueryExecutor::runScriptPaged(const QString &script,
+                                                          QStringList *errors) const {
+    return runStatementsPaged(script.split(";", Qt::SkipEmptyParts), errors);
+}
+
+int QueryExecutor::schemaVersion() const {
+    const QueryResult result = database->runStatement("PRAGMA schema_version");
+    if (!result.ok || result.rows.isEmpty() || result.rows.first().values.isEmpty())
+        return -1;
+
+    return result.rows.first().values.first().toInt();
+}
+
 QueryResult QueryExecutor::dropTable(const QString &tableName) const {
     return database->runStatement(
         QString("DROP TABLE %1").arg(quotedIdentifier(tableName)));

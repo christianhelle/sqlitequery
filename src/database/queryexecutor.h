@@ -32,6 +32,25 @@ public:
     QList<QAbstractItemModel *> runStatementsPaged(const QStringList &statements,
                                                    QStringList *errors = nullptr) const;
 
+    // Splits a Script into its statements and runs them. Splitting lives here
+    // rather than in a caller so that only this module knows what separates
+    // one statement from the next.
+    //
+    // The split is on semicolons, so it does not yet understand a semicolon
+    // inside a string literal or a CREATE TRIGGER body -- both of which it
+    // cuts in the wrong place. Telling them apart needs a SQLite-aware
+    // splitter, which Qt's SQL module gives no access to; runScript has always
+    // had the same limitation.
+    QList<QAbstractItemModel *> runScriptPaged(const QString &script,
+                                               QStringList *errors = nullptr) const;
+
+    // SQLite's own count of how many times the Schema has changed. Comparing
+    // it either side of a Script says whether the Schema actually changed --
+    // which a statement cannot be read off its text: a CREATE inside a
+    // transaction that rolls back changes nothing, and ALTER changes plenty.
+    // -1 when it could not be read.
+    [[nodiscard]] int schemaVersion() const;
+
     [[nodiscard]] QAbstractItemModel *previewTablePaged(const QString &tableName,
                                                         QString *error = nullptr) const;
 

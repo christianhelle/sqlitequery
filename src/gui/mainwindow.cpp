@@ -13,8 +13,8 @@
 #include <chrono>
 #include <thread>
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent) {
+MainWindow::MainWindow(IDatabase *database, QWidget *parent) :
+    QMainWindow(parent), database(database) {
     ui = std::make_unique<Ui::MainWindow>();
     ui->setupUi(this);
     ui->splitterMain->setStretchFactor(1, 3);
@@ -28,9 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowTitle("SQLite Query Analyzer");
     this->connectSignalSlots();
 
-    this->database = std::make_unique<SqliteDatabase>();
-    this->analyzer = std::make_unique<DbAnalyzer>(database.get());
-    this->executor = std::make_unique<QueryExecutor>(database.get());
+    this->analyzer = std::make_unique<DbAnalyzer>(database);
+    this->executor = std::make_unique<QueryExecutor>(database);
     this->queryPresenter = std::make_unique<QueryExecutionPresenter>(ui->queryResultsGrid, executor.get());
 
     this->tree = std::make_unique<DbTree>(ui->treeWidget);
@@ -355,40 +354,26 @@ void MainWindow::executeQuery() const {
     if (blockedByExport())
         return;
 
-    const QStringList list(ui->textEdit->toPlainText().split(";", Qt::SkipEmptyParts));
-    QStringList errors;
+    const ScriptOutcome outcome = queryPresenter->run(ui->textEdit->toPlainText());
 
-    QElapsedTimer time;
-    time.start();
+    ui->tabWidget->setCurrentIndex(0);
+    const auto msg = "Query execution took " +
+                     QString::number(static_cast<double>(outcome.elapsedMs) / 1000) + " seconds";
 
-    if (this->queryPresenter->execute(list, &errors)) {
-        ui->tabWidget->setCurrentIndex(0);
+    if (outcome.ok()) {
         ui->queryResultTab->setCurrentIndex(0);
-    }
-
-    const auto milliseconds = static_cast<double>(time.elapsed());
-    const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
-
-    if (errors.isEmpty()) {
         this->showMessage(msg);
     } else {
         // Report what failed instead of overwriting it with the timing.
-        ui->queryResultMessagesTextEdit->setPlainText(errors.join("\r\n"));
-        ui->tabWidget->setCurrentIndex(0);
+        ui->queryResultMessagesTextEdit->setPlainText(outcome.errors.join("\r\n"));
         ui->queryResultTab->setCurrentIndex(1);
         this->statusBar()->showMessage(
-            QString("Query failed with %1 error(s)").arg(errors.size()), 5000);
+            QString("Query failed with %1 error(s)").arg(outcome.errors.size()), 5000);
     }
 
-    for (const auto &sql : list) {
-        if (sql.contains("create", Qt::CaseInsensitive) ||
-            sql.contains("drop", Qt::CaseInsensitive) ||
-            sql.contains("insert", Qt::CaseInsensitive) ||
-            sql.contains("delete", Qt::CaseInsensitive)) {
-            ui->queryResultTab->setCurrentIndex(1);
-            analyzeDatabase();
-            break;
-        }
+    if (outcome.schemaChanged) {
+        ui->queryResultTab->setCurrentIndex(1);
+        analyzeDatabase();
     }
 }
 
@@ -421,7 +406,7 @@ void MainWindow::exportDataToSqlScript() {
     this->setEnabledActions(false);
     ui->queryResultTab->setCurrentIndex(1);
 
-    exportOrchestrator->exportToSql(std::move(info), filepath, database.get());
+    exportOrchestrator->exportToSql(std::move(info), filepath, database);
 }
 
 void MainWindow::exportDataToCsvFiles() {
@@ -438,7 +423,7 @@ void MainWindow::exportDataToCsvFiles() {
     this->setEnabledActions(false);
     ui->queryResultTab->setCurrentIndex(1);
 
-    exportOrchestrator->exportToCsv(std::move(info), outputFolder, delimiter, database.get());
+    exportOrchestrator->exportToCsv(std::move(info), outputFolder, delimiter, database);
 }
 
 void MainWindow::cancel() const {

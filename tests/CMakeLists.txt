@@ -4,6 +4,14 @@ project(SQLiteQueryTests LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# The test binary compiles Qt sources of its own now -- mainwindow.cpp carries
+# Q_OBJECT and mainwindow.ui needs uic -- so switch the generators on here
+# rather than inheriting them from the parent project. This directory is
+# configurable on its own, and was relying on properties it never set.
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 find_package(Qt6 REQUIRED COMPONENTS Core Sql Widgets)
 
 # Fetch Google Test
@@ -24,6 +32,8 @@ set(TEST_SRCS
     test_dbexportschema.cpp
     test_exportorchestrator.cpp
     test_queryresultpresenter.cpp
+    test_queryexecutionpresenter.cpp
+    test_mainwindow.cpp
     test_pagedresultmodel.cpp
     test_zoomlevel.cpp
     test_zoompresenter.cpp
@@ -47,6 +57,15 @@ set(PROD_SRCS
     ../src/threading/cancellation.cpp
     ../src/gui/exportorchestrator.cpp
     ../src/gui/queryresultpresenter.cpp
+    ../src/gui/queryexecutionpresenter.cpp
+    ../src/gui/mainwindow.cpp
+    ../src/gui/mainwindow.ui
+    ../src/gui/highlighter.cpp
+    ../src/gui/sessionmanager.cpp
+    ../src/gui/prompts.cpp
+    ../src/database/dbtree.cpp
+    ../src/settings/settings.cpp
+    ../src/settings/recentfiles.cpp
     ../src/gui/zoomlevel.cpp
     ../src/gui/zoompresenter.cpp
 )

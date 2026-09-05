@@ -10,7 +10,7 @@
 #include "../database/dbexportdata.h"
 #include "../database/dbtree.h"
 #include "../database/queryexecutor.h"
-#include "../database/sqlitedatabase.h"
+#include "../database/idatabase.h"
 #include "highlighter.h"
 #include "queryexecutionpresenter.h"
 #include "sessionmanager.h"
@@ -25,7 +25,10 @@ class MainWindow final : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    // Takes the Database it works on rather than creating one, so the window
+    // can be driven against any adapter. Does not own it: the caller outlives
+    // the window.
+    explicit MainWindow(IDatabase *database, QWidget *parent = nullptr);
 
     ~MainWindow() override;
 
@@ -81,7 +84,7 @@ public slots:
 private:
     std::unique_ptr<Ui::MainWindow> ui;
     std::unique_ptr<QMenu> recentFilesMenu;
-    std::unique_ptr<SqliteDatabase> database;
+    IDatabase *database;
     std::unique_ptr<DbAnalyzer> analyzer;
     std::unique_ptr<QueryExecutor> executor;
     std::unique_ptr<QueryExecutionPresenter> queryPresenter;
