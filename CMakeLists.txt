@@ -35,6 +35,7 @@ set(COMMON_SRCS
   src/database/queryresult.h
   src/database/queryexecutor.cpp
   src/database/queryexecutor.h
+  src/database/sqlidentifier.h
   src/database/sqlitedatabase.cpp
   src/database/sqlitedatabase.h
   src/database/inmemorydatabase.cpp

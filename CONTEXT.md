@@ -16,6 +16,11 @@ architecture, the modules, and the tests all refer to the same things.
 - **Column** — a typed field of a Table (name, declared type, nullability,
   default, primary-key flag).
 - **Index** — a secondary access path over a Table (name, column, unique).
+- **Identifier** — the name of a Table or Column as it is written into SQL.
+  Always delimited, never interpolated raw: a name may hold spaces, a
+  reserved word, or a double quote, and only the delimited form survives all
+  three. `quotedIdentifier` in the database module is the one place that
+  knows the rule.
 - **DatabaseInfo** — a snapshot of a Schema plus file-level metadata
   (filename, size, creation date, password-protected flag). Produced by the
   Analyzer; consumed by the Tree and the Exporter.
