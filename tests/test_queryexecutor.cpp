@@ -196,3 +196,34 @@ TEST_F(QueryExecutorTest, ReportsWhyAMissingTableCouldNotBeDropped) {
     EXPECT_FALSE(dropped.ok);
     EXPECT_FALSE(dropped.error.isEmpty());
 }
+
+TEST_F(QueryExecutorTest, RunScriptPagedSplitsOnSemicolons) {
+    QStringList errors;
+    const auto models = executor->runScriptPaged(
+        "SELECT * FROM test_users; SELECT name FROM test_users", &errors);
+
+    EXPECT_TRUE(errors.isEmpty());
+    EXPECT_EQ(models.size(), 2);
+    qDeleteAll(models);
+}
+
+TEST_F(QueryExecutorTest, SchemaVersionRisesWhenTheSchemaChanges) {
+    const int before = executor->schemaVersion();
+    ASSERT_GE(before, 0);
+
+    QStringList sql;
+    sql << "CREATE TABLE later (id INTEGER PRIMARY KEY)";
+    executor->runStatements(sql);
+
+    EXPECT_NE(executor->schemaVersion(), before);
+}
+
+TEST_F(QueryExecutorTest, SchemaVersionHoldsStillForAPlainSelect) {
+    const int before = executor->schemaVersion();
+
+    QStringList sql;
+    sql << "SELECT * FROM test_users";
+    executor->runStatements(sql);
+
+    EXPECT_EQ(executor->schemaVersion(), before);
+}
