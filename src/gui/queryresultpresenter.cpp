@@ -5,6 +5,26 @@
 #include <QItemSelectionModel>
 #include <QPointer>
 #include <QAbstractItemModel>
+#include <QHeaderView>
+
+namespace {
+    // Qt starts a header off pointing at the first column in descending order,
+    // and enabling sorting on a view sorts whatever model is bound to it there
+    // and then. A paged result answers a sort by re-running its statement
+    // wrapped in an ORDER BY, so every result used to be executed twice and
+    // shown backwards before anyone had asked for an order -- and the wrap
+    // undoes the paging, because the database has to order the whole result set
+    // before it can hand back the first page.
+    //
+    // Clearing the indicator first leaves the rows in the order the statement
+    // produced them and makes a sort request for column -1, which the paged
+    // model ignores. The first click on any column then sorts ascending, which
+    // is Qt's default order for a section the indicator is not already on.
+    void enableSortingAscending(QTableView *view) {
+        view->horizontalHeader()->setSortIndicator(-1, Qt::AscendingOrder);
+        view->setSortingEnabled(true);
+    }
+}
 
 QueryResultPresenter::QueryResultPresenter(QWidget *parent)
     : widget(parent) {
@@ -49,8 +69,10 @@ void QueryResultPresenter::present(const QList<QAbstractItemModel *> &models) {
 
         // Parent the model to its view so it is destroyed along with the view.
         model->setParent(tablePtr);
+        // Sorting is enabled before the model is bound, so binding it does not
+        // sort it.
+        enableSortingAscending(tablePtr);
         tablePtr->setModel(model);
-        tablePtr->setSortingEnabled(true);
         tablePtr->setGeometry(QRect(0, yOffset, width, height));
         tablePtr->show();
         this->tableViews.append(tablePtr);
