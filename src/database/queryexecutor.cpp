@@ -41,6 +41,11 @@ QueryResult QueryExecutor::previewTable(const QString &tableName, int limit) con
     return database->runStatement(sql);
 }
 
+QueryResult QueryExecutor::dropTable(const QString &tableName) const {
+    return database->runStatement(
+        QString("DROP TABLE %1").arg(quotedIdentifier(tableName)));
+}
+
 QList<QAbstractItemModel *> QueryExecutor::runStatementsPaged(const QStringList &statements,
                                                              QStringList *errors) const {
     QList<QAbstractItemModel *> models;
