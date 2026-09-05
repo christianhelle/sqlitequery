@@ -7,6 +7,7 @@
 **Implemented enhancements:**
 
 - Reduce Logging [\#85](https://github.com/christianhelle/sqlitequery/issues/85)
+- Refactor SQL identifier quoting to a single module [\#119](https://github.com/christianhelle/sqlitequery/pull/119) ([christianhelle](https://github.com/christianhelle))
 - Open query results in their own order instead of sorting them backwards [\#118](https://github.com/christianhelle/sqlitequery/pull/118) ([christianhelle](https://github.com/christianhelle))
 - Fix invalid env context in release workflow [\#117](https://github.com/christianhelle/sqlitequery/pull/117) ([christianhelle](https://github.com/christianhelle))
 - Upgrade to Qt 6.11.2 [\#116](https://github.com/christianhelle/sqlitequery/pull/116) ([christianhelle](https://github.com/christianhelle))
