@@ -7,28 +7,39 @@ env:
   VERSION: "0.3.${{ github.run_number }}"
 
 jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.set.outputs.version }}
+    steps:
+      - id: set
+        run: echo "version=$VERSION" >> "$GITHUB_OUTPUT"
   macos-arm64:
+    needs: version
     uses: ./.github/workflows/macos-template.yml
     with:
-      version: ${{ env.VERSION }}
+      version: ${{ needs.version.outputs.version }}
       os: macos-latest
       architecture: arm64
   macos-intel:
+    needs: version
     uses: ./.github/workflows/macos-template.yml
     with:
-      version: ${{ env.VERSION }}
+      version: ${{ needs.version.outputs.version }}
       os: macos-15
       architecture: intel
   windows:
+    needs: version
     uses: ./.github/workflows/windows-template.yml
     with:
-      version: ${{ env.VERSION }}
+      version: ${{ needs.version.outputs.version }}
       release: true
     secrets: inherit
   linux:
+    needs: version
     uses: ./.github/workflows/linux-template.yml
     with:
-      version: ${{ env.VERSION }}
+      version: ${{ needs.version.outputs.version }}
   release:
     needs: [macos-arm64, macos-intel, windows, linux]
     runs-on: ubuntu-latest
