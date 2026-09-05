@@ -15,23 +15,20 @@ bool DbAnalyzer::analyze(DatabaseInfo &info) const {
     info.size = file.size();
     info.creationDate = file.birthTime();
 
-    loadTables(info);
+    if (!loadTables(info))
+        return false;
+
     loadColumns(info);
 
     return true;
 }
 
-void DbAnalyzer::loadTables(DatabaseInfo &info) const {
+bool DbAnalyzer::loadTables(DatabaseInfo &info) const {
     const QString sql = "SELECT * FROM sqlite_master WHERE type='table'";
-
-    if (!this->database->open()) {
-        return;
-    }
 
     const QueryResult result = this->database->runStatement(sql);
     if (!result.ok) {
-        database->close();
-        return;
+        return false;
     }
 
     const int nameIdx = result.columns.indexOf("name");
@@ -45,14 +42,10 @@ void DbAnalyzer::loadTables(DatabaseInfo &info) const {
         info.tables.append(table);
     }
 
-    database->close();
+    return true;
 }
 
 void DbAnalyzer::loadColumns(DatabaseInfo &info) const {
-    if (!this->database->open()) {
-        return;
-    }
-
     for (auto &table: info.tables) {
         const QString sql = "PRAGMA table_info (" + quotedIdentifier(table.name) + ")";
 

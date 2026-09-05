@@ -3,6 +3,7 @@
 #include <QAbstractItemModel>
 
 #include "database/sqlitedatabase.h"
+#include "database/dbanalyzer.h"
 #include "database/queryexecutor.h"
 
 class PagedResultTest : public ::testing::Test {
@@ -173,4 +174,33 @@ TEST_F(PagedResultTest, ClearsStaleErrorWhenThereIsNoResultSet) {
 
     EXPECT_EQ(model, nullptr);
     EXPECT_TRUE(error.isEmpty()) << error.toStdString();
+}
+
+// A PagedResult reads its remaining pages from the connection it was built
+// with, so anything that closes that connection cuts the result short with no
+// error -- the rows simply stop. Analysing is the way that used to happen:
+// executeQuery re-analyses whenever it thinks the Schema changed, and the
+// Analyzer closed the connection partway through.
+TEST_F(PagedResultTest, SurvivesAnAnalyzeWhileItIsStillBeingScrolled) {
+    const std::unique_ptr<QAbstractItemModel> reference(
+        db->createResultModel("SELECT * FROM big"));
+    ASSERT_NE(reference, nullptr);
+    while (reference->canFetchMore(QModelIndex()))
+        reference->fetchMore(QModelIndex());
+    const int everyRow = reference->rowCount();
+    ASSERT_EQ(everyRow, RowCount);
+
+    const std::unique_ptr<QAbstractItemModel> model(
+        db->createResultModel("SELECT * FROM big"));
+    ASSERT_NE(model, nullptr);
+
+    DatabaseInfo info;
+    DbAnalyzer(db.get()).analyze(info);
+
+    while (model->canFetchMore(QModelIndex()))
+        model->fetchMore(QModelIndex());
+
+    EXPECT_EQ(model->rowCount(), everyRow);
+    EXPECT_EQ(model->data(model->index(everyRow - 1, 1)).toString(),
+              QString("name%1").arg(RowCount - 1));
 }

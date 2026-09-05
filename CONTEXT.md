@@ -8,6 +8,9 @@ architecture, the modules, and the tests all refer to the same things.
 
 - **Database** — an open SQLite file. The thing the user is currently looking
   at. Has a filename, may be open or closed, owns a single Qt SQL connection.
+  Whoever opens a Database keeps it open. A PagedResult reads its later pages
+  through that same connection, so closing one out from under live results
+  cuts them short and Qt reports nothing.
 - **Schema** — the set of tables, columns, and indexes inside a Database.
   Always filtered to user-visible objects (excludes `sqlite_sequence` and
   `sqlite_stat1`).

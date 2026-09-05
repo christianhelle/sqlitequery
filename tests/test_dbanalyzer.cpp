@@ -5,6 +5,8 @@
 #include "database/queryexecutor.h"
 #include "database/databaseinfo.h"
 
+#include <QAbstractItemModel>
+
 class DbAnalyzerTest : public ::testing::Test {
 protected:
     void SetUp() override {
@@ -187,4 +189,32 @@ TEST_F(DbAnalyzerTest, AnalyzeFindsColumnsOfATableWhoseNameHoldsAQuote) {
 
     ASSERT_NE(weird, nullptr);
     EXPECT_EQ(weird->columns.size(), 2);
+}
+
+// AnalyzeLeavesDatabaseUsable only proves the Database works again afterwards.
+// This states the stronger promise the Tree and the result views depend on:
+// analysing does not disturb the connection at all, so anything already
+// reading through it keeps working.
+TEST_F(DbAnalyzerTest, AnalyzeLeavesAnOpenConnectionOpenThroughout) {
+    const std::unique_ptr<QAbstractItemModel> model(
+        db->createResultModel("SELECT * FROM users"));
+    ASSERT_NE(model, nullptr);
+
+    DatabaseInfo info;
+    ASSERT_TRUE(analyzer->analyze(info));
+
+    // Reading through the same connection the model holds.
+    const QueryResult afterwards = QueryExecutor(db.get()).previewTable("users");
+    EXPECT_TRUE(afterwards.ok) << afterwards.error.toStdString();
+}
+
+// The Analyzer does not open the Database either. A closed one cannot be read,
+// and saying so is what stops a Tree being built from a Schema that failed to
+// load.
+TEST_F(DbAnalyzerTest, AnalyzeReportsFailureOnAClosedDatabase) {
+    db->close();
+
+    DatabaseInfo info;
+    EXPECT_FALSE(analyzer->analyze(info));
+    EXPECT_TRUE(info.tables.isEmpty());
 }
