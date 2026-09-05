@@ -24,6 +24,7 @@ set(TEST_SRCS
     test_dbexportschema.cpp
     test_exportorchestrator.cpp
     test_queryresultpresenter.cpp
+    test_queryexecutionpresenter.cpp
     test_pagedresultmodel.cpp
     test_zoomlevel.cpp
     test_zoompresenter.cpp
@@ -47,6 +48,7 @@ set(PROD_SRCS
     ../src/threading/cancellation.cpp
     ../src/gui/exportorchestrator.cpp
     ../src/gui/queryresultpresenter.cpp
+    ../src/gui/queryexecutionpresenter.cpp
     ../src/gui/zoomlevel.cpp
     ../src/gui/zoompresenter.cpp
 )

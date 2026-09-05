@@ -355,40 +355,26 @@ void MainWindow::executeQuery() const {
     if (blockedByExport())
         return;
 
-    const QStringList list(ui->textEdit->toPlainText().split(";", Qt::SkipEmptyParts));
-    QStringList errors;
+    const ScriptOutcome outcome = queryPresenter->run(ui->textEdit->toPlainText());
 
-    QElapsedTimer time;
-    time.start();
+    ui->tabWidget->setCurrentIndex(0);
+    const auto msg = "Query execution took " +
+                     QString::number(static_cast<double>(outcome.elapsedMs) / 1000) + " seconds";
 
-    if (this->queryPresenter->execute(list, &errors)) {
-        ui->tabWidget->setCurrentIndex(0);
+    if (outcome.ok()) {
         ui->queryResultTab->setCurrentIndex(0);
-    }
-
-    const auto milliseconds = static_cast<double>(time.elapsed());
-    const auto msg = "Query execution took " + QString::number(milliseconds / 1000) + " seconds";
-
-    if (errors.isEmpty()) {
         this->showMessage(msg);
     } else {
         // Report what failed instead of overwriting it with the timing.
-        ui->queryResultMessagesTextEdit->setPlainText(errors.join("\r\n"));
-        ui->tabWidget->setCurrentIndex(0);
+        ui->queryResultMessagesTextEdit->setPlainText(outcome.errors.join("\r\n"));
         ui->queryResultTab->setCurrentIndex(1);
         this->statusBar()->showMessage(
-            QString("Query failed with %1 error(s)").arg(errors.size()), 5000);
+            QString("Query failed with %1 error(s)").arg(outcome.errors.size()), 5000);
     }
 
-    for (const auto &sql : list) {
-        if (sql.contains("create", Qt::CaseInsensitive) ||
-            sql.contains("drop", Qt::CaseInsensitive) ||
-            sql.contains("insert", Qt::CaseInsensitive) ||
-            sql.contains("delete", Qt::CaseInsensitive)) {
-            ui->queryResultTab->setCurrentIndex(1);
-            analyzeDatabase();
-            break;
-        }
+    if (outcome.schemaChanged) {
+        ui->queryResultTab->setCurrentIndex(1);
+        analyzeDatabase();
     }
 }
 
