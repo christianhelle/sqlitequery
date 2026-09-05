@@ -43,7 +43,10 @@ namespace {
                 this->log->columns.append(column);
                 this->log->orders.append(order);
             }
-            QStandardItemModel::sort(column, order);
+            // Column -1 is Qt asking for no particular order, which is not
+            // something to hand to a model that orders rows for real.
+            if (column >= 0)
+                QStandardItemModel::sort(column, order);
         }
 
     private:
