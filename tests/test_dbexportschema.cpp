@@ -121,7 +121,7 @@ TEST_F(DbSchemaExportTest, ExportSchemaEmptyDatabase) {
 // holding a quote or a reserved word produced a script that would not replay.
 TEST_F(DbSchemaExportTest, ScriptsIdentifiersThatNeedDelimiting) {
     QStringList createSql;
-    createSql << "CREATE TABLE \"we\"\"ird\" (id INTEGER PRIMARY KEY, \"order\" INTEGER)";
+    createSql << R"(CREATE TABLE "we""ird" (id INTEGER PRIMARY KEY, "order" INTEGER))";
     QueryExecutor(db.get()).runStatements(createSql);
 
     DatabaseInfo reanalyzed;
@@ -130,6 +130,6 @@ TEST_F(DbSchemaExportTest, ScriptsIdentifiersThatNeedDelimiting) {
     const DbSchemaExport exporter(reanalyzed);
     const QString script = exporter.exportSchema();
 
-    EXPECT_TRUE(script.contains("CREATE TABLE \"we\"\"ird\" ("));
-    EXPECT_TRUE(script.contains("\"order\" INTEGER"));
+    EXPECT_TRUE(script.contains(R"(CREATE TABLE "we""ird" ()"));
+    EXPECT_TRUE(script.contains(R"("order" INTEGER)"));
 }

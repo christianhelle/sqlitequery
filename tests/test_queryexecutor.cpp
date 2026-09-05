@@ -173,10 +173,10 @@ TEST_F(QueryExecutorTest, DropTable) {
 // name, so a Table like this one could be listed in the Tree but not deleted.
 TEST_F(QueryExecutorTest, DropsATableWhoseNameHoldsAQuote) {
     QStringList createSql;
-    createSql << "CREATE TABLE \"we\"\"ird\" (id INTEGER PRIMARY KEY)";
+    createSql << R"(CREATE TABLE "we""ird" (id INTEGER PRIMARY KEY))";
     executor->runStatements(createSql);
 
-    const QueryResult dropped = executor->dropTable("we\"ird");
+    const QueryResult dropped = executor->dropTable(R"(we"ird)");
 
     EXPECT_TRUE(dropped.ok);
     EXPECT_TRUE(dropped.error.isEmpty());
@@ -184,7 +184,7 @@ TEST_F(QueryExecutorTest, DropsATableWhoseNameHoldsAQuote) {
 
 TEST_F(QueryExecutorTest, DropsATableNamedAfterAReservedWord) {
     QStringList createSql;
-    createSql << "CREATE TABLE \"order\" (id INTEGER PRIMARY KEY)";
+    createSql << R"(CREATE TABLE "order" (id INTEGER PRIMARY KEY))";
     executor->runStatements(createSql);
 
     EXPECT_TRUE(executor->dropTable("order").ok);

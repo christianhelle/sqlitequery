@@ -174,14 +174,14 @@ TEST_F(DbAnalyzerTest, AnalyzeLeavesDatabaseUsable) {
 // used to produce a malformed statement and the Table came back with no
 // Columns at all.
 TEST_F(DbAnalyzerTest, AnalyzeFindsColumnsOfATableWhoseNameHoldsAQuote) {
-    runSql("CREATE TABLE \"we\"\"ird\" (id INTEGER PRIMARY KEY, \"order\" INTEGER)");
+    runSql(R"(CREATE TABLE "we""ird" (id INTEGER PRIMARY KEY, "order" INTEGER))");
 
     DatabaseInfo info;
     analyzer->analyze(info);
 
     const Table *weird = nullptr;
     for (const auto &table : info.tables) {
-        if (table.name == "we\"ird")
+        if (table.name == R"(we"ird)")
             weird = &table;
     }
 
