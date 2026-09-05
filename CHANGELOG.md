@@ -7,6 +7,7 @@
 **Implemented enhancements:**
 
 - Reduce Logging [\#85](https://github.com/christianhelle/sqlitequery/issues/85)
+- Refactor the presenter own a script run, and hand the window its database [\#121](https://github.com/christianhelle/sqlitequery/pull/121) ([christianhelle](https://github.com/christianhelle))
 - Stop the analyzer closing the connection under live results [\#120](https://github.com/christianhelle/sqlitequery/pull/120) ([christianhelle](https://github.com/christianhelle))
 - Refactor SQL identifier quoting to a single module [\#119](https://github.com/christianhelle/sqlitequery/pull/119) ([christianhelle](https://github.com/christianhelle))
 - Open query results in their own order instead of sorting them backwards [\#118](https://github.com/christianhelle/sqlitequery/pull/118) ([christianhelle](https://github.com/christianhelle))
