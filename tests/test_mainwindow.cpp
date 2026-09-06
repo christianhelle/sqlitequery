@@ -72,7 +72,7 @@ protected:
     // Table Data tab holds a QTableView of its own, so the search starts at
     // the grid rather than at the window.
     static QList<QTableView *> resultViews(const MainWindow &window) {
-        auto *grid = window.findChild<QWidget *>("queryResultsGrid");
+        const QWidget *grid = window.findChild<QWidget *>("queryResultsGrid");
         if (grid == nullptr)
             return {};
         return grid->findChildren<QTableView *>();
