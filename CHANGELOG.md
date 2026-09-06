@@ -7,6 +7,7 @@
 **Implemented enhancements:**
 
 - Reduce Logging [\#85](https://github.com/christianhelle/sqlitequery/issues/85)
+- Zoom the table data grid with the editor [\#126](https://github.com/christianhelle/sqlitequery/pull/126) ([christianhelle](https://github.com/christianhelle))
 - Zoom the query result grid with the editor [\#125](https://github.com/christianhelle/sqlitequery/pull/125) ([christianhelle](https://github.com/christianhelle))
 - Harden Makefile install and package targets [\#123](https://github.com/christianhelle/sqlitequery/pull/123) ([christianhelle](https://github.com/christianhelle))
 - Replace build.sh with a Makefile [\#122](https://github.com/christianhelle/sqlitequery/pull/122) ([christianhelle](https://github.com/christianhelle))
