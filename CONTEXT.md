@@ -39,10 +39,11 @@ architecture, the modules, and the tests all refer to the same things.
   query editor, and the last folder they exported to. Persisted between runs.
 - **Zoom** — a scale factor the user applies to the text of a pane, in discrete
   steps away from the size that pane was built with. Step 0 is the untouched
-  size. There are two: one that the query editor shares with the result
-  Messages pane and the result views, and one that the Tree carries, so either
-  side can be enlarged without the other. Part of the window state, so both
-  are persisted between runs.
+  size. There are two: one that the query editor shares with every pane that
+  renders data -- the result Messages pane, the result views, the Table Data
+  grid -- and one that the Tree carries, so either side can be enlarged
+  without the other. Part of the window state, so both are persisted between
+  runs.
 
 ## Modules (current shape)
 
