@@ -61,10 +61,10 @@ Always reference these instructions first and fallback to search or bash command
 - The codebase currently has formatting violations - use `find src -name '*.cpp' -o -name '*.h' | xargs clang-format -i` to fix them if needed
 - Format configuration is in `src/.clang-format` using LLVM style
 
-### NO TESTING FRAMEWORK:
-- This project does not have unit tests or a formal testing framework
-- Validation is done through manual testing of CLI and GUI functionality
-- Always test actual functionality after making changes
+### Testing framework:
+- The project has a GoogleTest-based test suite under `tests/`
+- Run the tests with `make test` (builds and runs the suite)
+- Validate any behavior change against these tests before committing
 
 ## Common Tasks
 
