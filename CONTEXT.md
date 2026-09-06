@@ -39,9 +39,9 @@ architecture, the modules, and the tests all refer to the same things.
   query editor, and the last folder they exported to. Persisted between runs.
 - **Zoom** — a scale factor the user applies to the text of a pane, in discrete
   steps away from the size that pane was built with. Step 0 is the untouched
-  size. The query editor and the Tree each carry their own Zoom, so one can be
-  enlarged without the other. Part of the window state, so both are persisted
-  between runs.
+  size. There are two: one that the query editor and the result Messages pane
+  share, and one that the Tree carries, so either side can be enlarged without
+  the other. Part of the window state, so both are persisted between runs.
 
 ## Modules (current shape)
 
@@ -62,9 +62,9 @@ architecture, the modules, and the tests all refer to the same things.
   progress to the GUI thread, surfaces cancel and completion.
 - **ZoomPresenter** — owns one Zoom and applies it to the widgets registered
   with it, turning the zoom gestures over those widgets into steps. MainWindow
-  keeps one per independently zoomable pane. Ctrl+wheel needs no routing
-  because a presenter only watches its own widgets; a keyboard zoom goes to
-  the presenter that holds the focus.
+  keeps one per independently zoomable group of panes. Ctrl+wheel needs no
+  routing because a presenter only watches its own widgets; a keyboard zoom
+  goes to the presenter that holds the focus.
 - **SessionManager** — persists and restores the Session and window state.
 - **MainWindow** — Qt shell. Wires the modules to menu actions and the UI
   form. Does not contain business logic.

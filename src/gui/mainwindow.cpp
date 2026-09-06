@@ -19,9 +19,13 @@ MainWindow::MainWindow(IDatabase *database, QWidget *parent) :
     ui->setupUi(this);
     ui->splitterMain->setStretchFactor(1, 3);
     ui->splitterQueryTab->setStretchFactor(1, 1);
-    // Two presenters, so each pane carries its own zoom level.
+    // Two presenters, so the editor and the Tree zoom independently of one
+    // another. The messages pane rides on the editor's rather than carrying a
+    // third: it reports on the query the user is looking at, so the two read
+    // as one surface and stay at a single size.
     this->editorZoom = std::make_unique<ZoomPresenter>(this);
     this->editorZoom->addTarget(ui->textEdit);
+    this->editorZoom->addTarget(ui->queryResultMessagesTextEdit);
     this->treeZoom = std::make_unique<ZoomPresenter>(this);
     this->treeZoom->addTarget(ui->treeWidget);
 
