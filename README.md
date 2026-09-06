@@ -153,13 +153,21 @@ git clone https://github.com/christianhelle/sqlitequery.git
 cd sqlitequery
 ```
 
-### Build the project using cross platform powershell script
+### Build the project
+
+Use the Makefile on Linux and macOS, or the cross-platform PowerShell script on Windows:
 
 ```sh
+# Linux / macOS
+make
+```
+
+```sh
+# Windows
 pwsh build.ps1
 ```
 
-The build output folder is under `build` for MacOS and Linux, and `build` for Windows
+The build output folder is under `build` on all platforms. On Linux, `make` also installs into `./linux/`.
 
 ### Building on Linux
 
@@ -173,8 +181,19 @@ sudo apt-get install -y cmake qt6-base-dev libxkbcommon-dev
 Build project
 
 ```sh
-cmake .
-cmake --build . --config Release
+make
+```
+
+Create installable packages (DEB, RPM, 7Z, ZIP, and compressed archives)
+
+```sh
+make package
+```
+
+Install a `sqlitequery` symlink to `~/.local/bin`
+
+```sh
+make install
 ```
 
 ### Building on MacOS
@@ -189,8 +208,7 @@ brew install qt@6
 Build project
 
 ```sh
-cmake .
-cmake --build . --config Release
+make
 ```
 
 Build MacOS disk image (Optional). 
@@ -198,7 +216,7 @@ Build MacOS disk image (Optional).
 There is a bug in the Homebrew distribution of Qt which causes the use of `macdeployqt` to fail.
 
 ```sh
-macdeployqt SQLiteQueryAnalyzer.app -dmg
+make package
 ```
 
 ### Building on Windows
