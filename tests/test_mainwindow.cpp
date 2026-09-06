@@ -3,6 +3,7 @@
 #include <QAction>
 #include <QFontInfo>
 #include <QPlainTextEdit>
+#include <QTableView>
 #include <QTextEdit>
 #include <QTreeWidget>
 #include <memory>
@@ -65,6 +66,16 @@ protected:
         auto *action = window.findChild<QAction *>("actionReset_Zoom");
         ASSERT_NE(action, nullptr);
         action->trigger();
+    }
+
+    // The views a run rendered into, which live under the results grid. The
+    // Table Data tab holds a QTableView of its own, so the search starts at
+    // the grid rather than at the window.
+    static QList<QTableView *> resultViews(const MainWindow &window) {
+        const QWidget *grid = window.findChild<QWidget *>("queryResultsGrid");
+        if (grid == nullptr)
+            return {};
+        return grid->findChildren<QTableView *>();
     }
 
     // The measure ZoomPresenter works in. A widget that inherits its font, or
@@ -143,6 +154,30 @@ TEST_F(MainWindowTest, ZoomingTheEditorZoomsTheResultMessagesPane) {
     EXPECT_GT(pointSize(editor), editorBefore);
     EXPECT_NEAR(pointSize(messages),
                 messagesBefore * (pointSize(editor) / editorBefore), 0.001);
+
+    // The window persists its zoom step as it is torn down, so hand the next
+    // test the same starting point this one was given.
+    resetZoom(window);
+}
+
+// Every run builds its result views from scratch, so they have to come up at
+// the step the editor is already at rather than at their own built size.
+TEST_F(MainWindowTest, ResultViewsComeUpAtTheEditorZoom) {
+    const MainWindow window(db.get());
+    resetZoom(window);
+
+    typeQuery(window, "SELECT 1");
+    window.executeQuery();
+    ASSERT_FALSE(resultViews(window).isEmpty());
+    const double base = pointSize(resultViews(window).first());
+
+    // Zoom, then run again. The second run's views are new widgets, and the
+    // ones measured above are gone by the time they are registered.
+    zoomIn(window);
+    window.executeQuery();
+
+    ASSERT_FALSE(resultViews(window).isEmpty());
+    EXPECT_NEAR(pointSize(resultViews(window).first()), base * 1.1, 0.001);
 
     // The window persists its zoom step as it is torn down, so hand the next
     // test the same starting point this one was given.

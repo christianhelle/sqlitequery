@@ -34,6 +34,9 @@ public:
 
     void presentToView(QTableView *view, QAbstractItemModel *model);
 
+    // The views the last run rendered into.
+    [[nodiscard]] const QList<QTableView *> &resultViews() const;
+
 private:
     QueryExecutor *executor;
     std::unique_ptr<QueryResultPresenter> presenter;

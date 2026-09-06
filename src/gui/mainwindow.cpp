@@ -342,6 +342,11 @@ ZoomPresenter *MainWindow::zoomForFocus() const {
     return editorZoom.get();
 }
 
+void MainWindow::zoomResultViews() const {
+    for (auto *view: queryPresenter->resultViews())
+        editorZoom->addTarget(view);
+}
+
 void MainWindow::analyzeDatabase() const {
     if (blockedByExport())
         return;
@@ -359,6 +364,7 @@ void MainWindow::executeQuery() const {
         return;
 
     const ScriptOutcome outcome = queryPresenter->run(ui->textEdit->toPlainText());
+    zoomResultViews();
 
     ui->tabWidget->setCurrentIndex(0);
     const auto msg = "Query execution took " +

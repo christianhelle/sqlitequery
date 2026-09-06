@@ -21,6 +21,13 @@ void ZoomPresenter::addTarget(QWidget *target) {
     if (target == nullptr)
         return;
 
+    // The result views are torn down and rebuilt on every run, so a window
+    // that keeps handing over fresh ones would leave a dead entry behind each
+    // time. Clear them out as new targets arrive.
+    targets.erase(std::remove_if(targets.begin(), targets.end(),
+                                 [](const Target &existing) { return existing.widget.isNull(); }),
+                  targets.end());
+
     // Registering a widget twice would capture the size it is *currently*
     // rendered at as its new step 0, and every later zoom would compound from
     // there. Keep the first registration, which holds the real base size.

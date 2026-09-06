@@ -100,6 +100,10 @@ private:
     // focus, falling back to the editor when the focus is elsewhere.
     [[nodiscard]] ZoomPresenter *zoomForFocus() const;
 
+    // A run builds fresh result views, so they are handed to the editor Zoom
+    // after every execution to come up at the size the editor is already at.
+    void zoomResultViews() const;
+
     void analyzeDatabase() const;
 
     void saveSession() const;
