@@ -47,12 +47,12 @@ install: $(INSTALL_TARGETS)
 ifeq ($(UNAME_S),Darwin)
 	@echo "Nothing extra to install on macOS; run 'make package' to create a DMG"
 else
-	mkdir -p $(HOME)/.local/bin
-	rm -rf $(HOME)/.local/opt/sqlitequery
-	mkdir -p $(HOME)/.local/opt/sqlitequery
-	cp -rf $(INSTALL_PREFIX)/* $(HOME)/.local/opt/sqlitequery
-	rm -f $(HOME)/.local/bin/sqlitequery
-	ln -sf $(HOME)/.local/opt/sqlitequery/bin/SQLiteQueryAnalyzer $(HOME)/.local/bin/sqlitequery
+	mkdir -p "$(HOME)/.local/bin"
+	rm -rf "$(HOME)/.local/opt/sqlitequery"
+	mkdir -p "$(HOME)/.local/opt/sqlitequery"
+	cp -rf "$(INSTALL_PREFIX)"/* "$(HOME)/.local/opt/sqlitequery"
+	rm -f "$(HOME)/.local/bin/sqlitequery"
+	ln -sf "$(HOME)/.local/opt/sqlitequery/bin/SQLiteQueryAnalyzer" "$(HOME)/.local/bin/sqlitequery"
 	@echo "Installed to ~/.local/bin/sqlitequery"
 endif
 
