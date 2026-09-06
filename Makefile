@@ -61,7 +61,7 @@ ifeq ($(UNAME_S),Darwin)
 	$(PACKAGE_CMD)
 	@echo "Package creation complete"
 else
-	@for GEN in $(PACKAGE_GENERATORS); do \
+	@FAILED=0; for GEN in $(PACKAGE_GENERATORS); do \
 		echo "Creating $$GEN package..."; \
 		if $(CPACK) -G $$GEN --config "$(BUILD_DIR)/CPackConfig.cmake"; then \
 			echo "Created $$GEN package"; \
