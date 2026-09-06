@@ -63,8 +63,15 @@ ifeq ($(UNAME_S),Darwin)
 else
 	@for GEN in $(PACKAGE_GENERATORS); do \
 		echo "Creating $$GEN package..."; \
-		$(CPACK) -G $$GEN --config "$(BUILD_DIR)/CPackConfig.cmake" || exit 1; \
-	done
+		if $(CPACK) -G $$GEN --config "$(BUILD_DIR)/CPackConfig.cmake"; then \
+			echo "Created $$GEN package"; \
+		else \
+			echo "Failed to create $$GEN package"; \
+			FAILED=1; \
+		fi; \
+	done; \
+	if [ "$$FAILED" = "1" ]; then echo "One or more packages failed"; exit 1; fi
+
 	@echo "Snap packages: build them directly with snapcraft (Docker image recommended)"
 	@echo "Package creation complete"
 endif
