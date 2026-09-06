@@ -7,6 +7,8 @@
 **Implemented enhancements:**
 
 - Reduce Logging [\#85](https://github.com/christianhelle/sqlitequery/issues/85)
+- Harden Makefile install and package targets [\#123](https://github.com/christianhelle/sqlitequery/pull/123) ([christianhelle](https://github.com/christianhelle))
+- Replace build.sh with a Makefile [\#122](https://github.com/christianhelle/sqlitequery/pull/122) ([christianhelle](https://github.com/christianhelle))
 - Refactor the presenter own a script run, and hand the window its database [\#121](https://github.com/christianhelle/sqlitequery/pull/121) ([christianhelle](https://github.com/christianhelle))
 - Stop the analyzer closing the connection under live results [\#120](https://github.com/christianhelle/sqlitequery/pull/120) ([christianhelle](https://github.com/christianhelle))
 - Refactor SQL identifier quoting to a single module [\#119](https://github.com/christianhelle/sqlitequery/pull/119) ([christianhelle](https://github.com/christianhelle))
@@ -31,6 +33,7 @@
 
 **Merged pull requests:**
 
+- Zoom the result messages pane with the query editor [\#124](https://github.com/christianhelle/sqlitequery/pull/124) ([christianhelle](https://github.com/christianhelle))
 - Migrate macOS workflows from QMake to CMake [\#111](https://github.com/christianhelle/sqlitequery/pull/111) ([christianhelle](https://github.com/christianhelle))
 - Refactor: Extract SessionManager and ExportOrchestrator from MainWindow [\#108](https://github.com/christianhelle/sqlitequery/pull/108) ([christianhelle](https://github.com/christianhelle))
 - Remove Squad [\#106](https://github.com/christianhelle/sqlitequery/pull/106) ([christianhelle](https://github.com/christianhelle))
