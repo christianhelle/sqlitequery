@@ -21,6 +21,10 @@ public:
     // Takes ownership of the model and binds it to the given view.
     void presentToView(QTableView *view, QAbstractItemModel *model);
 
+    // The views holding the current results. Rebuilt by every present(), so a
+    // caller that wants to do something to them re-reads this after each run.
+    [[nodiscard]] const QList<QTableView *> &views() const { return tableViews; }
+
 private:
     QWidget *widget;
     // Owned by the parent widget, as with every other widget in the tree.

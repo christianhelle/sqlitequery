@@ -33,3 +33,7 @@ void QueryExecutionPresenter::clearResults() {
 void QueryExecutionPresenter::presentToView(QTableView *view, QAbstractItemModel *model) {
     presenter->presentToView(view, model);
 }
+
+const QList<QTableView *> &QueryExecutionPresenter::resultViews() const {
+    return presenter->views();
+}
