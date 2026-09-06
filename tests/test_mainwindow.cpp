@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <QStandardPaths>
 #include <QAction>
+#include <QFontInfo>
 #include <QPlainTextEdit>
 #include <QTextEdit>
 #include <QTreeWidget>
@@ -66,6 +67,15 @@ protected:
         action->trigger();
     }
 
+    // The measure ZoomPresenter works in. A widget that inherits its font, or
+    // that was sized in pixels, reports no point size of its own, so reading
+    // pointSizeF() straight off it can yield -1 and turn a correct scaling
+    // into a failed comparison.
+    static double pointSize(const QWidget *widget) {
+        const double size = widget->font().pointSizeF();
+        return size > 0 ? size : QFontInfo(widget->font()).pointSizeF();
+    }
+
     std::unique_ptr<InMemoryDatabase> db;
 };
 
@@ -125,12 +135,16 @@ TEST_F(MainWindowTest, ZoomingTheEditorZoomsTheResultMessagesPane) {
     // The window restores whatever zoom the last run left behind, so start
     // from a known step rather than from that.
     resetZoom(window);
-    const double editorBefore = editor->font().pointSizeF();
-    const double messagesBefore = messages->font().pointSizeF();
+    const double editorBefore = pointSize(editor);
+    const double messagesBefore = pointSize(messages);
 
     zoomIn(window);
 
-    EXPECT_GT(editor->font().pointSizeF(), editorBefore);
-    EXPECT_NEAR(messages->font().pointSizeF(),
-                messagesBefore * (editor->font().pointSizeF() / editorBefore), 0.001);
+    EXPECT_GT(pointSize(editor), editorBefore);
+    EXPECT_NEAR(pointSize(messages),
+                messagesBefore * (pointSize(editor) / editorBefore), 0.001);
+
+    // The window persists its zoom step as it is torn down, so hand the next
+    // test the same starting point this one was given.
+    resetZoom(window);
 }
