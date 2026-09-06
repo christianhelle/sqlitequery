@@ -37,7 +37,6 @@ SQLiteQueryAnalyzer
 .cmake
 .ninja*
 build.ninja
-Makefile
 cmake-build-debug
 artifacts/SQLiteQueryAnalyzer-Setup.exe
 *.nupkg

@@ -14,7 +14,7 @@ Always reference these instructions first and fallback to search or bash command
 - Install: `cmake --install build` -- takes less than 1 second.
 
 ### Alternative build using provided scripts:
-- **Linux/macOS**: `./build.sh` -- takes 12 seconds. NEVER CANCEL. Set timeout to 60+ seconds.
+- **Linux/macOS**: `make` -- takes 12 seconds. NEVER CANCEL. Set timeout to 60+ seconds.
 - **Windows**: `pwsh build.ps1` -- similar timing. NEVER CANCEL. Set timeout to 60+ seconds.
 
 ### Run the application:
@@ -74,7 +74,7 @@ src/
 ├── main.cpp              # Application entry point with CLI argument parsing
 ├── project/              # Build configuration and scripts
 │   ├── CMakeLists.txt   # Main CMake configuration
-│   ├── build.sh         # Linux/macOS build script
+│   ├── Makefile         # Linux/macOS build automation
 │   ├── build.ps1        # Windows/cross-platform PowerShell build script
 │   └── snapcraft.yaml  # Snap package configuration
 ├── gui/                  # Qt GUI components
