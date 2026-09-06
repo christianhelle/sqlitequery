@@ -72,9 +72,9 @@ Always reference these instructions first and fallback to search or bash command
 ```
 src/
 ├── main.cpp              # Application entry point with CLI argument parsing
+├── Makefile              # Linux/macOS build automation
 ├── project/              # Build configuration and scripts
 │   ├── CMakeLists.txt   # Main CMake configuration
-│   ├── Makefile         # Linux/macOS build automation
 │   ├── build.ps1        # Windows/cross-platform PowerShell build script
 │   └── snapcraft.yaml  # Snap package configuration
 ├── gui/                  # Qt GUI components
