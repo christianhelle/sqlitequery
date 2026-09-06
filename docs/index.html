@@ -309,7 +309,8 @@ sqlitequery --run-sql /path/to/script.sql /path/to/database.db</code>
                             <li>Qt 6.4.2 or later (6.11.2 recommended)</li>
                             <li>qt6-base-dev (Qt6 development packages for building from source)</li>
                             <li>libxkbcommon-dev (XKB development library)</li>
-                            <li>PowerShell Core (optional)</li>
+                            <li>Make (Linux/macOS)</li>
+                            <li>PowerShell Core (optional, Windows)</li>
                         </ul>
                     </div>
                     
@@ -320,7 +321,10 @@ sqlitequery --run-sql /path/to/script.sql /path/to/database.db</code>
 git clone https://github.com/christianhelle/sqlitequery.git
 cd sqlitequery
 
-# Build using PowerShell script (cross-platform)
+# Build using the Makefile (Linux/macOS)
+make
+
+# Or build using PowerShell script (Windows)
 pwsh build.ps1</code>
                         </div>
                     </div>
@@ -329,8 +333,13 @@ pwsh build.ps1</code>
                         <h3>Manual Build</h3>
                         <div class="code-block">
                             <code># Linux/macOS
-cmake .
-cmake --build . --config Release
+make
+
+# Create installable packages on Linux
+make package
+
+# Install a symlink to ~/.local/bin on Linux
+make install
 
 # Windows (adjust Qt path as needed)
 cmake . -DCMAKE_PREFIX_PATH=C:/Qt/6.11.2/msvc2022_64 -DCMAKE_CXX_STANDARD=17 -B build
