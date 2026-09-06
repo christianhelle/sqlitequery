@@ -70,25 +70,25 @@ Always reference these instructions first and fallback to search or bash command
 
 ### Repository structure overview:
 ```
-src/
-├── main.cpp              # Application entry point with CLI argument parsing
 ├── Makefile              # Linux/macOS build automation
-├── project/              # Build configuration and scripts
-│   ├── CMakeLists.txt   # Main CMake configuration
-│   ├── build.ps1        # Windows/cross-platform PowerShell build script
-│   └── snapcraft.yaml  # Snap package configuration
-├── gui/                  # Qt GUI components
-│   ├── mainwindow.cpp   # Main application window
-│   ├── mainwindow.ui    # UI layout file
-│   └── highlighter.cpp # SQL syntax highlighting
-├── database/            # Database operations
-│   ├── database.cpp     # Core database functionality
-│   ├── dbexport.cpp     # CSV export functionality
-│   └── dbquery.cpp      # SQL query execution
-├── cli/                 # Command-line interface
-│   ├── export.cpp       # CLI export functionality
-│   └── script.cpp       # CLI script execution
-└── settings/            # Application settings and preferences
+├── src/
+│   ├── main.cpp              # Application entry point with CLI argument parsing
+│   ├── project/              # Build configuration and scripts
+│   │   ├── CMakeLists.txt   # Main CMake configuration
+│   │   ├── build.ps1        # Windows/cross-platform PowerShell build script
+│   │   └── snapcraft.yaml  # Snap package configuration
+│   ├── gui/                  # Qt GUI components
+│   │   ├── mainwindow.cpp   # Main application window
+│   │   ├── mainwindow.ui    # UI layout file
+│   │   └── highlighter.cpp # SQL syntax highlighting
+│   ├── database/            # Database operations
+│   │   ├── database.cpp     # Core database functionality
+│   │   ├── dbexport.cpp     # CSV export functionality
+│   │   └── dbquery.cpp      # SQL query execution
+│   ├── cli/                 # Command-line interface
+│   │   ├── export.cpp       # CLI export functionality
+│   │   └── script.cpp       # CLI script execution
+│   └── settings/            # Application settings and preferences
 ```
 
 ### Key build systems:
