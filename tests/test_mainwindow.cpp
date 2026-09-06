@@ -2,6 +2,7 @@
 #include <QStandardPaths>
 #include <QAction>
 #include <QPlainTextEdit>
+#include <QTableView>
 #include <QTextEdit>
 #include <QTreeWidget>
 #include <memory>
@@ -64,6 +65,16 @@ protected:
         auto *action = window.findChild<QAction *>("actionReset_Zoom");
         ASSERT_NE(action, nullptr);
         action->trigger();
+    }
+
+    // The views a run rendered into, which live under the results grid. The
+    // Table Data tab holds a QTableView of its own, so the search starts at
+    // the grid rather than at the window.
+    static QList<QTableView *> resultViews(const MainWindow &window) {
+        auto *grid = window.findChild<QWidget *>("queryResultsGrid");
+        if (grid == nullptr)
+            return {};
+        return grid->findChildren<QTableView *>();
     }
 
     std::unique_ptr<InMemoryDatabase> db;
@@ -133,4 +144,24 @@ TEST_F(MainWindowTest, ZoomingTheEditorZoomsTheResultMessagesPane) {
     EXPECT_GT(editor->font().pointSizeF(), editorBefore);
     EXPECT_NEAR(messages->font().pointSizeF(),
                 messagesBefore * (editor->font().pointSizeF() / editorBefore), 0.001);
+}
+
+// Every run builds its result views from scratch, so they have to come up at
+// the step the editor is already at rather than at their own built size.
+TEST_F(MainWindowTest, ResultViewsComeUpAtTheEditorZoom) {
+    const MainWindow window(db.get());
+    resetZoom(window);
+
+    typeQuery(window, "SELECT 1");
+    window.executeQuery();
+    ASSERT_FALSE(resultViews(window).isEmpty());
+    const double base = resultViews(window).first()->font().pointSizeF();
+
+    // Zoom, then run again. The second run's views are new widgets, and the
+    // ones measured above are gone by the time they are registered.
+    zoomIn(window);
+    window.executeQuery();
+
+    ASSERT_FALSE(resultViews(window).isEmpty());
+    EXPECT_NEAR(resultViews(window).first()->font().pointSizeF(), base * 1.1, 0.001);
 }
