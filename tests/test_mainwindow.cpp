@@ -183,3 +183,27 @@ TEST_F(MainWindowTest, ResultViewsComeUpAtTheEditorZoom) {
     // test the same starting point this one was given.
     resetZoom(window);
 }
+
+// The Table Data grid is a fixed widget rather than one rebuilt per run, so
+// registering it once is enough -- but it still has to move with the editor.
+TEST_F(MainWindowTest, ZoomingTheEditorZoomsTheTableDataView) {
+    const MainWindow window(db.get());
+    auto *editor = window.findChild<QTextEdit *>("textEdit");
+    auto *tableData = window.findChild<QTableView *>("tableView");
+    ASSERT_NE(editor, nullptr);
+    ASSERT_NE(tableData, nullptr);
+
+    resetZoom(window);
+    const double editorBefore = pointSize(editor);
+    const double tableBefore = pointSize(tableData);
+
+    zoomIn(window);
+
+    EXPECT_GT(pointSize(editor), editorBefore);
+    EXPECT_NEAR(pointSize(tableData),
+                tableBefore * (pointSize(editor) / editorBefore), 0.001);
+
+    // The window persists its zoom step as it is torn down, so hand the next
+    // test the same starting point this one was given.
+    resetZoom(window);
+}

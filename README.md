@@ -27,8 +27,8 @@ making database operations seamless and straightforward.
 - Export data as an SQL script containing INSERT statements or as CSV files
 - Zoom the query editor and database tree independently, each with its own size,
   using Ctrl +/- on the focused pane or Ctrl + mouse wheel over it. The query
-  result grid and Messages pane zoom together with the query editor, and answer
-  both gestures themselves
+  result grid, Messages pane and Table Data grid zoom together with the query
+  editor, and answer both gestures themselves
 - Desktop color theme awareness with automatic switching between dark/light themes
 - Command line interface for automation and scripting
 
