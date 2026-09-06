@@ -39,9 +39,10 @@ architecture, the modules, and the tests all refer to the same things.
   query editor, and the last folder they exported to. Persisted between runs.
 - **Zoom** — a scale factor the user applies to the text of a pane, in discrete
   steps away from the size that pane was built with. Step 0 is the untouched
-  size. There are two: one that the query editor and the result Messages pane
-  share, and one that the Tree carries, so either side can be enlarged without
-  the other. Part of the window state, so both are persisted between runs.
+  size. There are two: one that the query editor shares with the result
+  Messages pane and the result views, and one that the Tree carries, so either
+  side can be enlarged without the other. Part of the window state, so both
+  are persisted between runs.
 
 ## Modules (current shape)
 
@@ -54,7 +55,9 @@ architecture, the modules, and the tests all refer to the same things.
   be browsed without holding it in memory. Ordering is done by the Database,
   not over the rows already fetched.
 - **QueryResultPresenter** — renders QueryExecutor output into the result
-  area of the main window. Owns the scroll area and table views.
+  area of the main window. Owns the scroll area and table views. Builds them
+  fresh on every run, so whoever wants to do something to them -- apply a
+  Zoom, say -- re-reads them after each one.
 - **SchemaExporter** — produces a `CREATE TABLE` script from a DatabaseInfo.
 - **DataExporter** — produces CSV files or an `INSERT` script from a
   Database + DatabaseInfo. Long-running; reports progress; cancellable.
