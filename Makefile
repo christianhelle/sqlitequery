@@ -47,12 +47,12 @@ install: $(INSTALL_TARGETS)
 ifeq ($(UNAME_S),Darwin)
 	@echo "Nothing extra to install on macOS; run 'make package' to create a DMG"
 else
-	mkdir -p $(HOME)/.local/bin
-	rm -rf /tmp/sqlitequery
-	mkdir -p /tmp/sqlitequery
-	cp -rf $(INSTALL_PREFIX)/* /tmp/sqlitequery
-	rm -f $(HOME)/.local/bin/sqlitequery
-	ln -sf /tmp/sqlitequery/bin/SQLiteQueryAnalyzer $(HOME)/.local/bin/sqlitequery
+	mkdir -p "$(HOME)/.local/bin"
+	rm -rf "$(HOME)/.local/opt/sqlitequery"
+	mkdir -p "$(HOME)/.local/opt/sqlitequery"
+	cp -rf "$(INSTALL_PREFIX)"/* "$(HOME)/.local/opt/sqlitequery"
+	rm -f "$(HOME)/.local/bin/sqlitequery"
+	ln -sf "$(HOME)/.local/opt/sqlitequery/bin/SQLiteQueryAnalyzer" "$(HOME)/.local/bin/sqlitequery"
 	@echo "Installed to ~/.local/bin/sqlitequery"
 endif
 
@@ -61,10 +61,17 @@ ifeq ($(UNAME_S),Darwin)
 	$(PACKAGE_CMD)
 	@echo "Package creation complete"
 else
-	@for GEN in $(PACKAGE_GENERATORS); do \
+	@FAILED=0; for GEN in $(PACKAGE_GENERATORS); do \
 		echo "Creating $$GEN package..."; \
-		$(CPACK) -G $$GEN --config ./$(BUILD_DIR)/CPackConfig.cmake || exit 1; \
-	done
+		if $(CPACK) -G $$GEN --config "$(BUILD_DIR)/CPackConfig.cmake"; then \
+			echo "Created $$GEN package"; \
+		else \
+			echo "Failed to create $$GEN package"; \
+			FAILED=1; \
+		fi; \
+	done; \
+	if [ "$$FAILED" = "1" ]; then echo "One or more packages failed"; exit 1; fi
+
 	@echo "Snap packages: build them directly with snapcraft (Docker image recommended)"
 	@echo "Package creation complete"
 endif
