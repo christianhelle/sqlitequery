@@ -169,7 +169,7 @@ TEST_F(MainWindowTest, ResultViewsComeUpAtTheEditorZoom) {
     typeQuery(window, "SELECT 1");
     window.executeQuery();
     ASSERT_FALSE(resultViews(window).isEmpty());
-    const double base = resultViews(window).first()->font().pointSizeF();
+    const double base = pointSize(resultViews(window).first());
 
     // Zoom, then run again. The second run's views are new widgets, and the
     // ones measured above are gone by the time they are registered.
@@ -177,5 +177,9 @@ TEST_F(MainWindowTest, ResultViewsComeUpAtTheEditorZoom) {
     window.executeQuery();
 
     ASSERT_FALSE(resultViews(window).isEmpty());
-    EXPECT_NEAR(resultViews(window).first()->font().pointSizeF(), base * 1.1, 0.001);
+    EXPECT_NEAR(pointSize(resultViews(window).first()), base * 1.1, 0.001);
+
+    // The window persists its zoom step as it is torn down, so hand the next
+    // test the same starting point this one was given.
+    resetZoom(window);
 }
